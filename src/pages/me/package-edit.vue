@@ -45,11 +45,13 @@
         <text class="page-pe__value">客户可选地点</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
-      <view v-if="isEdit" v-for="p in places" :key="p.name" class="info-row page-pe__row pressable" @click="edit(p.name)">
-        <text class="page-pe__label">{{ p.name }}</text>
-        <text class="page-pe__value">{{ p.fee }}</text>
-        <AppIcon name="chevron-right-gray" :size="16" />
-      </view>
+      <template v-if="isEdit">
+        <view v-for="p in places" :key="p.name" class="info-row page-pe__row pressable" @click="edit(p.name)">
+          <text class="page-pe__label">{{ p.name }}</text>
+          <text class="page-pe__value">{{ p.fee }}</text>
+          <AppIcon name="chevron-right-gray" :size="16" />
+        </view>
+      </template>
       <view class="info-row page-pe__row page-pe__row--add">
         <text class="page-pe__add">＋ 添加地点</text>
         <text class="page-pe__add-hint">允许客户自定地址 · 可能产生交通费</text>
@@ -62,16 +64,18 @@
       <text class="page-pe__sec-hint">展示在套餐详情页</text>
     </view>
     <view class="page-pe__card">
-      <view v-if="isEdit" v-for="(w, i) in linkedWorks" :key="w.title" class="info-row page-pe__row" :class="{ 'info-row--last': i === linkedWorks.length - 1 }">
-        <view class="page-pe__w-thumb" :style="{ backgroundColor: w.color }">
-          <text>{{ w.tag }}</text>
+      <template v-if="isEdit">
+        <view v-for="(w, i) in linkedWorks" :key="w.title" class="info-row page-pe__row" :class="{ 'info-row--last': i === linkedWorks.length - 1 }">
+          <view class="page-pe__w-thumb" :style="{ backgroundColor: w.color }">
+            <text>{{ w.tag }}</text>
+          </view>
+          <view class="page-pe__w-main">
+            <text class="page-pe__w-title">{{ w.title }}</text>
+            <text class="page-pe__w-sub">{{ w.sub }}</text>
+          </view>
+          <AppIcon name="edit-gray" :size="14" />
         </view>
-        <view class="page-pe__w-main">
-          <text class="page-pe__w-title">{{ w.title }}</text>
-          <text class="page-pe__w-sub">{{ w.sub }}</text>
-        </view>
-        <AppIcon name="edit-gray" :size="14" />
-      </view>
+      </template>
       <view class="info-row page-pe__row page-pe__row--add">
         <text class="page-pe__add page-pe__add--sm">＋ 添加关联作品</text>
       </view>

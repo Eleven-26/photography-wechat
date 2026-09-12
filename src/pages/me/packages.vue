@@ -23,7 +23,7 @@
     <text class="page-pk__sec">全部套餐</text>
     <view class="page-pk__card">
       <view
-        v-for="(p, i) in packages"
+        v-for="p in packages"
         :key="p.name"
         class="info-row page-pk__row pressable"
         @click="goEdit(p)"

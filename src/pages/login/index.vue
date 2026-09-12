@@ -64,7 +64,7 @@
  * 接口：api/auth.js（sendSmsCode / loginByCode，路径联调核对）。
  */
 import { sendSmsCode, loginByCode } from '@/api/auth'
-import { useUserStore } from '@/store/user'
+import { useUserStore } from '@/stores/user'
 
 export default {
   data() {
@@ -83,7 +83,7 @@ export default {
       return /^1\d{10}$/.test(this.mobile)
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.timer) clearInterval(this.timer)
   },
   methods: {

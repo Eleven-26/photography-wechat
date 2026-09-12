@@ -136,7 +136,7 @@ export default {
       this.loading = true
       try {
         const res = await getOrderList({ page: 1, page_size: 20 })
-        this.orders = (res && res.data && res.data.list) || []
+        this.orders = (res && res.list) || []
       } catch (e) {
         /* 接口未联调：降级演示数据（联调后移除） */
         this.orders = DEMO_ORDERS

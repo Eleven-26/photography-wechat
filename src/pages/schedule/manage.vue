@@ -150,8 +150,8 @@ export default {
     },
     pickDay(i) {
       if (this.weekDays[i].past || this.selIdx === i) return
-      /* 当前日开关状态入缓存，恢复/生成目标日 */
-      this.$set(this.slotCache, this.selIdx, JSON.parse(JSON.stringify(this.slots)))
+      /* 当前日开关状态入缓存，恢复/生成目标日（Vue3 响应式代理，无需 $set） */
+      this.slotCache[this.selIdx] = JSON.parse(JSON.stringify(this.slots))
       this.selIdx = i
       this.slots = this.slotCache[i] || this.genSlots(this.weekDays[i])
     },

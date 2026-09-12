@@ -8,9 +8,17 @@
  * `/api` 是网关前缀，由 devServer（开发）/ nginx（生产）**剥离**后再转发 ——
  * 后端真实路由本身不含 `/api`（见 photography-server/internal/router/router.go）。
  *
+ * ⚠️ 两个端前缀（员工区 / 客户区）不在这里，在 `api/common/apiPath.js`（与 PC 端一致：
+ *    路径与前缀同属 API 层基础设施，避免两处各写一份而漂移）。
+ *
  * 写法说明：条件编译用「先给默认值、再按平台重赋值」而非重复声明同名常量 ——
  * 后者在预处理前不是合法 JS（重复声明报错），会影响 ESLint / IDE 解析。
+ *
+ * 因此本文件豁免两条静态分析规则（原因见下），其余文件照常生效：
+ *   - no-useless-assignment：ESLint 不解析 `// #ifdef`，"默认值 + 按平台重赋值" 会被误判；
+ *   - no-unreachable：`#ifdef` / `#ifndef` 两段 return 在预处理前会形成"后者不可达"。
  */
+/* eslint-disable no-useless-assignment, no-unreachable -- 见上方文件说明（uni-app 条件编译） */
 
 /** 后端源地址：H5 留空 = 同源相对路径（走 /api 代理）；小程序无代理，必须直连后端源 */
 let apiBase = 'http://localhost:8080' // 小程序端：本地联调指向本机，上线改为 https 合法域名
@@ -18,24 +26,6 @@ let apiBase = 'http://localhost:8080' // 小程序端：本地联调指向本机
 apiBase = ''
 // #endif
 export const API_BASE = apiBase
-
-/**
- * 员工端接口前缀（本端默认，绝大多数页面用它）
- *   H5（API_BASE=''） → /api/wechat/staff/order/list → 代理剥 /api → 后端 /wechat/staff/order/list
- *   小程序（直连）     → /wechat/staff/order/list                  → 后端 /wechat/staff/order/list
- */
-let staffPrefix = '/wechat/staff'
-// #ifdef H5
-staffPrefix = '/api/wechat/staff'
-// #endif
-export const API_PREFIX_STAFF = staffPrefix
-
-/** 客户区接口前缀（仅 `pages/me/preview` 客户视角预览等客户身份场景使用） */
-let clientPrefix = '/wechat'
-// #ifdef H5
-clientPrefix = '/api/wechat'
-// #endif
-export const API_PREFIX_CLIENT = clientPrefix
 
 /**
  * 通知通道按环境降级（需求文档 v1.3 §8）：

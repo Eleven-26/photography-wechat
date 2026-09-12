@@ -1,6 +1,8 @@
 /**
  * 用户状态 —— Pinia（**员工 / 摄影师端**）
- * 管理登录态与员工信息（后端 user 表行），全局响应式读取。
+ *
+ * 目录位置对齐 SLOT 管理端 photography-frontend/src/stores/（复数）。
+ * 管理登录态与员工信息（后端 sys_user 行），全局响应式读取。
  */
 import { defineStore } from 'pinia'
 import { setAuth, clearAuth, getStaff, isLoggedIn } from '@/utils/auth'

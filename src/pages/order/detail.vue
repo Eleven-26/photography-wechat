@@ -178,7 +178,7 @@ export default {
       }
       try {
         const res = await getOrderDetail(this.orderId)
-        const data = (res && res.data) || {}
+        const data = res || {}
         this.order = data.order || data
       } catch (e) {
         /* 接口未联调：降级 D02 稿态演示数据（联调后移除） */

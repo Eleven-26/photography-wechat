@@ -70,7 +70,7 @@
  * 演示数据：联调后移除。
  */
 import AppTabBar from '@/components/AppTabBar.vue'
-import { confirmPayment } from '@/api/order'
+import { confirmPayment } from '@/api/finance'
 import { formatAmount } from '@/utils/format'
 import { isDemo } from '@/utils/demo'
 

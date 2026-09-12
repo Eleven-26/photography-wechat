@@ -128,7 +128,7 @@
  * 演示数据：联调后移除。
  */
 import AppTabBar from '@/components/AppTabBar.vue'
-import { auditRefund } from '@/api/order'
+import { auditRefund } from '@/api/finance'
 import { formatAmount } from '@/utils/format'
 import { isDemo } from '@/utils/demo'
 

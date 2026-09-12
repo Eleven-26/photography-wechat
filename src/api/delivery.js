@@ -1,48 +1,42 @@
 /**
- * 选片与交付模块 —— 在线选片 / 加选 / 修图反馈 / 成片确认
- * 后端字段：biz_delivery + biz_delivery_item（无独立选片表）
- *   delivery.stage           1-待上传样片 2-客户选片中 3-精修进行中 4-待确认交付 5-已交付
- *   delivery.select_deadline 选片截止（口径③：超时【不】自动确认，系统通知双方）
- *   delivery.extra_selected_count / extra_fee  加选张数与差价（差价自动计入尾款）
- *   delivery.customer_confirmed_at  客户确认成片时间
- *   item.is_selected / feedback_*    逐张勾选与修图反馈四件套
- * ⚠️ /delivery/select | /delivery/confirm-extra | /delivery/confirm 为 h5.go 已确认路由；其余联调核对。
+ * 交付模块 —— 交付单 / 样片与成品上传 / 客户反馈处理
+ *
+ * 后端路由：
+ *   POST /wechat/staff/delivery/create/:order_id        创建交付单（**不收 body**，真实端差异）
+ *   POST /wechat/staff/delivery/detail/:id              :id = **order_id**（与 PC 同口径）
+ *   POST /wechat/staff/delivery/upload-samples/:id      :id = 交付单 ID
+ *   POST /wechat/staff/delivery/upload-retouched/:id    :id = 交付单 ID
+ *   POST /wechat/staff/delivery/feedback/list           客户修图反馈列表（body { status?, page, page_size }）
+ *   POST /wechat/staff/delivery/feedback/handle/:item_id
  */
-import { get, post } from '@/utils/request'
-
-/** 交付单详情（选片页 C13 数据源） */
-export const getDeliveryDetail = (orderId) => get('/delivery/detail', { order_id: orderId })
-
-/** 交付明细（样片/精修列表，kind: 1-样片 2-已选 3-精修成品） */
-export const getDeliveryItems = (deliveryId) => get('/delivery/item/list', { delivery_id: deliveryId })
+import { rpc } from '@/api/common/http'
+import { API_PATHS } from '@/api/common/apiPath'
 
 /**
- * 提交选片（逐张勾选结果）
- * @param {Object} payload
- *   delivery_id    交付单 ID
- *   item_ids       已选样片 ID 数组（biz_delivery_item.id，kind=1 的子集）
- *   超选差价由后端按 addon_unit_price 计算并写入 extra_fee / extra_selected_count（前端不计算金额）
+ * 创建交付单（后端不收 body，真实端差异 —— 不要传参数）
+ * @param {number} orderId
  */
-export const submitSelect = (payload) => post('/delivery/select', payload)
+export const createDelivery = (orderId) => rpc(API_PATHS.delivery.create, {}, orderId)
+
+/** 交付单详情 @param {number} id **订单 ID**（按订单反查交付单） */
+export const getDeliveryDetail = (id) => rpc(API_PATHS.delivery.detail, {}, id)
 
 /**
- * 确认加片（extra_confirmed 置 1，差价并入尾款 → 订单进尾款待收）
- * @param {number} deliveryId
+ * 上传样片 @param {number} id 交付单 ID
+ * @param {Object} payload { items } —— items 必填且非空（空数组会 400）
  */
-export const confirmExtra = (deliveryId) => post('/delivery/confirm-extra', { delivery_id: deliveryId })
+export const uploadSamples = (id, payload) => rpc(API_PATHS.delivery.uploadSamples, payload, id)
+
+/** 上传精修成品 @param {number} id 交付单 ID @param {Object} payload { items } */
+export const uploadRetouched = (id, payload) => rpc(API_PATHS.delivery.uploadRetouched, payload, id)
+
+/** 客户修图反馈列表 @param {Object} params { status?, page, page_size } → PageOK */
+export const listFeedback = (params) => rpc(API_PATHS.delivery.feedbackList, params)
 
 /**
- * 确认成片（写 customer_confirmed_at → 交付进已交付，开放高清下载）
- * @param {number} deliveryId
+ * 标记反馈已处理并记录处理备注
+ * @param {number} itemId 交付明细 ID
+ * @param {Object} payload dto.StaffFeedbackHandleReq { remark }
  */
-export const confirmDelivery = (deliveryId) => post('/delivery/confirm', { delivery_id: deliveryId })
-
-/**
- * 提交修图反馈（画板 C14）
- * @param {Object} payload 字段对齐 biz_delivery_item 反馈四件套：
- *   item_id            交付明细 ID
- *   feedback_content   反馈内容
- *   feedback_types     修改类型（逗号分隔：局部修饰/颜色调整/构图裁剪/其他）
- *   feedback_priority  normal | important | urgent
- */
-export const submitFeedback = (payload) => post('/delivery/feedback', payload)
+export const handleFeedback = (itemId, payload) =>
+  rpc(API_PATHS.delivery.feedbackHandle, payload, itemId)

@@ -88,7 +88,7 @@
       </view>
       <view class="page-work__hairline" />
       <view
-        v-for="(t, i) in todos"
+        v-for="t in todos"
         :key="t.title"
         class="page-work__row pressable"
         @click="t.go && t.go()"

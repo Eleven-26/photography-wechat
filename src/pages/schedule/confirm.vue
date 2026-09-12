@@ -107,7 +107,7 @@
  */
 import AppButton from '@/components/AppButton.vue'
 import AppTabBar from '@/components/AppTabBar.vue'
-import { getOrderDetail, confirmSchedule } from '@/api/order'
+import { getOrderDetail, confirmBooking } from '@/api/order'
 import { demoOrderById, isDemo } from '@/utils/demo'
 
 const WEEKS = ['日', '一', '二', '三', '四', '五', '六']
@@ -180,7 +180,7 @@ export default {
       if (isDemo()) { this.order = demoOrderById(this.orderId); return }
       try {
         const res = await getOrderDetail(this.orderId)
-        const data = (res && res.data) || {}
+        const data = res || {}
         this.order = data.order || data
       } catch (e) { this.order = demoOrderById(this.orderId) }
     },
@@ -211,7 +211,7 @@ export default {
       this.submitting = true
       try {
         if (!isDemo()) {
-          await confirmSchedule(this.orderId)
+          await confirmBooking(this.orderId)
         }
         uni.showToast({ title: '档期已确认', icon: 'success' })
         setTimeout(() => this.goBack(), 600)

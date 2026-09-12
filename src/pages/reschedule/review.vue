@@ -97,11 +97,11 @@
  *   同意 → 档期变更生效（原档期释放、新档期锁定），费用变化随单展示；
  *   拒绝 → 申请驳回，档期不变。
  * 改期口径：72h 外免费 / 72h 内 20% 调度费 / 24h 内不可改（本稿 6 天 = 免调度费场景）。
- * 数据：改期申请单（原/新档期 + 费用）+ 订单摘要；审核走 /calendar/audit/:id（联调核对）。
+ * 数据：改期申请单（原/新档期 + 费用）+ 订单摘要；审核走 staff /reschedule/audit/:id（见 api/reschedule.js）。
  * 演示数据：联调后移除。
  */
 import AppTabBar from '@/components/AppTabBar.vue'
-import { auditReschedule } from '@/api/order'
+import { auditReschedule } from '@/api/reschedule'
 import { isDemo } from '@/utils/demo'
 
 export default {
@@ -145,13 +145,13 @@ export default {
       if (isDemo()) return /* 演示态直接用稿值 */
       /* 联调：getRescheduleDetail(changeId) 取申请单聚合（联调核对） */
     },
-    /** 审核改期：/calendar/audit/:id（联调核对）；演示直接成功（联调后移除） */
+    /** 审核改期：staff /reschedule/audit/:id，body 字段名 approved（见 api/reschedule.js）；演示直接成功（联调后移除） */
     async submit(approve) {
       if (this.submitting) return
       this.submitting = true
       try {
         if (!isDemo()) {
-          await auditReschedule(this.changeId, { approve })
+          await auditReschedule(this.changeId, { approved: approve })
         }
         uni.showToast({ title: approve ? '已同意，档期已变更' : '已拒绝该申请', icon: 'none' })
         setTimeout(() => this.goBack(), 600)
