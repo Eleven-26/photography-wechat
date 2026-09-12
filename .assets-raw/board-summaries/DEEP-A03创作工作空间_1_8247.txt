@@ -1,0 +1,22 @@
+[F] A03创作工作空间 375x812 @(3259,6532) bg=#FFFFFF
+  [R] Rectangle 44 375x812 @(0,0) bg=#F2F3F5
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 创建工作空间 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="创建工作空间" fs=17 color=#151617
+  [F] Container 375xhug @(0,104)
+    [F] Margin fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+    [F] Background+Border+Shadow fillxhug @(auto,auto) bg=#FFFFFF r=16 stroke=#151617
+      [F] Label fillxhug @(auto,auto)
+      [F] Input fillx17 @(auto,auto)
+    [F] Container fillxhug @(auto,auto)
+      [T] 空间类型 fillxhug @(auto,auto) bg=#151617 TEXT="空间类型" fs=15 color=#151617
+    [F] Container fillxhug @(auto,auto)
+      [F] Background+Shadow fillxfill_container @(auto,auto) bg=#171717 r=16
+      [F] Background+Shadow fillxfill_container @(auto,auto) bg=#FFFFFF r=16
+    [R] Rectangle fillx223.6 @(auto,auto)
+    [F] Button:margin fillx72 @(auto,auto)
+      [F] Button fillx52 @(auto,auto) bg=#171819 r=999
+  [I] Iphone 375x44 @(0,0)

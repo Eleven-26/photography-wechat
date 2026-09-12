@@ -1,0 +1,66 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": { "^App(.+)": "@/components/App$1.vue" }
+  },
+  "pages": [
+    { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" } },
+    { "path": "pages/order/list", "style": { "navigationBarTitleText": "订单列表", "navigationStyle": "custom" } },
+    { "path": "pages/order/detail", "style": { "navigationBarTitleText": "订单详情", "navigationStyle": "custom" } },
+    { "path": "pages/schedule/confirm", "style": { "navigationBarTitleText": "档期确认", "navigationStyle": "custom" } },
+    { "path": "pages/pay/verify", "style": { "navigationBarTitleText": "收款核验", "navigationStyle": "custom" } },
+    { "path": "pages/refund/review", "style": { "navigationBarTitleText": "退款申请", "navigationStyle": "custom" } },
+    { "path": "pages/reschedule/review", "style": { "navigationBarTitleText": "改期申请", "navigationStyle": "custom" } },
+    { "path": "pages/select/result", "style": { "navigationBarTitleText": "选片结果", "navigationStyle": "custom" } },
+    { "path": "pages/upload/materials", "style": { "navigationBarTitleText": "上传素材", "navigationStyle": "custom" } },
+    { "path": "pages/upload/retouch", "style": { "navigationBarTitleText": "精修图上传", "navigationStyle": "custom" } },
+    { "path": "pages/retouch/task", "style": { "navigationBarTitleText": "修图任务", "navigationStyle": "custom" } },
+    { "path": "pages/delivery/final", "style": { "navigationBarTitleText": "最终成片", "navigationStyle": "custom" } },
+    { "path": "pages/order/complete", "style": { "navigationBarTitleText": "订单完成", "navigationStyle": "custom" } },
+    { "path": "pages/order/entry", "style": { "navigationBarTitleText": "录入订单", "navigationStyle": "custom" } },
+    { "path": "pages/work/index", "style": { "navigationBarTitleText": "工作台", "navigationStyle": "custom" } },
+    { "path": "pages/notify/index", "style": { "navigationBarTitleText": "通知", "navigationStyle": "custom" } },
+    { "path": "pages/auth/register", "style": { "navigationBarTitleText": "注册", "navigationStyle": "custom" } },
+    { "path": "pages/auth/workspace", "style": { "navigationBarTitleText": "创建工作空间", "navigationStyle": "custom" } },
+    { "path": "pages/auth/mode", "style": { "navigationBarTitleText": "选择工作模式", "navigationStyle": "custom" } },
+    { "path": "pages/lead/list", "style": { "navigationBarTitleText": "线索", "navigationStyle": "custom" } },
+    { "path": "pages/lead/detail", "style": { "navigationBarTitleText": "线索详情", "navigationStyle": "custom" } },
+    { "path": "pages/lead/ai-brief", "style": { "navigationBarTitleText": "AI 简报", "navigationStyle": "custom" } },
+    { "path": "pages/lead/ask", "style": { "navigationBarTitleText": "一键追问", "navigationStyle": "custom" } },
+    { "path": "pages/quote/create", "style": { "navigationBarTitleText": "编辑报价", "navigationStyle": "custom" } },
+    { "path": "pages/schedule/index", "style": { "navigationBarTitleText": "日程", "navigationStyle": "custom" } },
+    { "path": "pages/schedule/manage", "style": { "navigationBarTitleText": "档期管理", "navigationStyle": "custom" } },
+    { "path": "pages/schedule/reschedule", "style": { "navigationBarTitleText": "发起改期", "navigationStyle": "custom" } },
+    { "path": "pages/customer/list", "style": { "navigationBarTitleText": "客户", "navigationStyle": "custom" } },
+    { "path": "pages/customer/create", "style": { "navigationBarTitleText": "添加客户", "navigationStyle": "custom" } },
+    { "path": "pages/customer/detail", "style": { "navigationBarTitleText": "客户档案", "navigationStyle": "custom" } },
+    { "path": "pages/me/index", "style": { "navigationBarTitleText": "我的", "navigationStyle": "custom" } },
+    { "path": "pages/me/profile", "style": { "navigationBarTitleText": "个人资料", "navigationStyle": "custom" } },
+    { "path": "pages/me/booking-home", "style": { "navigationBarTitleText": "我的预约主页", "navigationStyle": "custom" } },
+    { "path": "pages/me/preview", "style": { "navigationBarTitleText": "客户视角预览", "navigationStyle": "custom" } },
+    { "path": "pages/me/packages", "style": { "navigationBarTitleText": "套餐管理", "navigationStyle": "custom" } },
+    { "path": "pages/me/package-edit", "style": { "navigationBarTitleText": "编辑套餐", "navigationStyle": "custom" } },
+    { "path": "pages/me/works", "style": { "navigationBarTitleText": "作品集", "navigationStyle": "custom" } },
+    { "path": "pages/me/works-upload", "style": { "navigationBarTitleText": "上传作品", "navigationStyle": "custom" } },
+    { "path": "pages/me/works-edit", "style": { "navigationBarTitleText": "编辑作品", "navigationStyle": "custom" } },
+    { "path": "pages/me/order-settings", "style": { "navigationBarTitleText": "接单设置", "navigationStyle": "custom" } },
+    { "path": "pages/me/pay-settings", "style": { "navigationBarTitleText": "收款设置", "navigationStyle": "custom" } },
+    { "path": "pages/me/notify-settings", "style": { "navigationBarTitleText": "通知设置", "navigationStyle": "custom" } },
+    { "path": "pages/me/account", "style": { "navigationBarTitleText": "账号与安全", "navigationStyle": "custom" } },
+    { "path": "pages/me/phone", "style": { "navigationBarTitleText": "修改手机号", "navigationStyle": "custom" } },
+    { "path": "pages/me/devices", "style": { "navigationBarTitleText": "登录设备", "navigationStyle": "custom" } },
+    { "path": "pages/me/help", "style": { "navigationBarTitleText": "帮助与关于", "navigationStyle": "custom" } },
+    { "path": "pages/me/feedback", "style": { "navigationBarTitleText": "意见反馈", "navigationStyle": "custom" } },
+    { "path": "pages/me/faq", "style": { "navigationBarTitleText": "常见问题", "navigationStyle": "custom" } },
+    { "path": "pages/me/agreement", "style": { "navigationBarTitleText": "用户协议与隐私政策", "navigationStyle": "custom" } }
+    /* 「反馈整理」已下线：用户确认 UI 无此页，画布上同名画板疑为废弃草稿，不得凭空实现。
+    { "path": "pages/feedback/organize", "style": { "navigationBarTitleText": "反馈整理", "navigationStyle": "custom" } }
+    */
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "SLOT 摄影师端",
+    "navigationBarBackgroundColor": "#F2F3F5",
+    "backgroundColor": "#F2F3F5"
+  }
+}

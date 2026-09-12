@@ -1,0 +1,61 @@
+[F] ME09-接单设置 375x812 @(2309,19290) bg=#FFFFFF
+  [R] Rectangle 44 375x811 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,729)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 接单设置 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="接单设置" fs=17 color=#1A1A1A
+    [F] Button:margin
+  [F] Container 375xhug @(0,114)
+    [F] Background fillxhug @(auto,auto) bg=#FFFFFF r=16
+      [F] Container fillxhug @(auto,auto)
+        [F] Container fillxhug @(auto,auto)
+          [T] 接收新预约 fillxhug @(auto,auto) bg=#000000 TEXT="接收新预约" fs=15 color=#000000
+        [F] Container fillxhug @(auto,auto)
+          [T] 关闭后客户无法在预约主页下单 已有订单不受影响 fillxhug @(auto,auto) bg=#8E8E93 TEXT="关闭后客户无法在预约主页下单
+已有订单不受影响" fs=12 color=#8E8E93
+      [F] Background 46x27 @(auto,auto) bg=#34C759 r=999
+        [R] Background 21x21 @(auto,auto) bg=#FFFFFF
+    [F] Margin fillxhug @(auto,auto)
+      [F] Container fillx21 @(auto,auto)
+        [F] Container hug_contentsxhug @(0,0)
+          [T] 新单确认方式 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="新单确认方式" fs=15 color=#1A1A1A
+        [F] Margin 243xhug @(96,3)
+          [F] Container hug_contentsxhug @(auto,auto)
+            [T] 决定客户下单后流程 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="决定客户下单后流程" fs=12 color=#9A9AA0
+    [F] Background fillxhug @(auto,auto) bg=#FFFFFF r=16
+      [F] Background fillxhug @(auto,auto) bg=#F1F1F3 r=12
+        [F] Background fillxfill_container @(auto,auto) bg=#1A1A1A r=10
+          [T] 手动确认 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="手动确认" fs=13 color=#FFFFFF
+        [F] Container fillxfill_container @(auto,auto) r=10
+          [T] 自动确认 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="自动确认" fs=13 color=#8E8E93
+      [F] Container fillxhug @(auto,auto)
+        [T] 客户下单后你收到提醒，确认后才占用档期——适合需要先 沟通需求的拍摄。 fillxhug @(auto,auto) bg=#86868B TEXT="客户下单后你收到提醒，确认后才占用档期——适合需要先
+沟通需求的拍摄。" fs=12 color=#86868B
+    [F] Margin fillxhug @(auto,auto)
+      [F] Container fillx21 @(auto,auto)
+        [F] Container hug_contentsxhug @(0,0)
+          [T] 档期规则 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="档期规则" fs=15 color=#1A1A1A
+        [F] Margin 275xhug @(64,3)
+          [F] Container hug_contentsxhug @(auto,auto)
+            [T] 与日程档期联动 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="与日程档期联动" fs=12 color=#9A9AA0
+    [F] Background fillxhug @(auto,auto) bg=#FFFFFF r=16
+      [F] Container fillxhug @(auto,auto)
+        [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+          [F] SVG 17x17 @(auto,auto)
+            [V] Vector 12.8x12.8 @(2.1,2.8) stroke=#1A1A1A
+            [V] Vector 12.8x5.7 @(2.1,1.4) stroke=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 每周可约时段 / 关闭日期 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="每周可约时段 / 关闭日期" fs=14.600000381469727 color=#1A1A1A
+          [F] Container fillxhug @(auto,auto)
+            [T] 统一在日程 Tab 管理 fillxhug @(auto,auto) bg=#8E8E93 TEXT="统一在日程 Tab 管理" fs=10.699999809265137 color=#8E8E93
+        [F] SVG 16x16 @(auto,auto)
+          [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] Margin fillx70 @(auto,auto)
+      [F] Background fillx48 @(auto,auto) bg=#1A1A1A r=999
+        [T] 保存 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="保存" fs=15 color=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,778)

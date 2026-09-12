@@ -1,0 +1,137 @@
+[F] ME03-我的预约主页 375x971 @(3259,16905) bg=#FFFFFF
+  [R] Rectangle 44 375x970 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,888)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 我的预约主页 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="我的预约主页" fs=17 color=#1A1A1A
+    [F] Button:margin
+  [F] Background 343xhug @(16,114) bg=#161616 r=16
+    [F] Container fillxhug @(auto,auto)
+      [R] Background 7x7 @(auto,auto) bg=#FFD60A
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 主页已就绪 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="主页已就绪" fs=15 color=#FFFFFF
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 客户可直接下单 hug_contentsxhug @(auto,auto) bg=#8D8D93 TEXT="客户可直接下单" fs=11 color=#8D8D93
+    [F] Container fillxhug @(auto,auto)
+      [T] 客户在微信里打开链接：看作品 → 选套餐 → 挑档期 → 线 下付款 → 系统记档 fillxhug @(auto,auto) bg=#B9B9BF TEXT="客户在微信里打开链接：看作品 → 选套餐 → 挑档期 → 线
+下付款 → 系统记档" fs=11.800000190734863 color=#B9B9BF
+    [F] Background fillxhug @(auto,auto) bg=#272727 r=8
+      [F] SVG 13x13 @(auto,auto)
+        [V] Vector 6.0x6.7 @(5.4,1.1) stroke=#8D8D93
+        [V] Vector 6.0x6.7 @(1.6,5.2) stroke=#8D8D93
+      [F] Container fillxhug @(auto,auto)
+        [T] slot.app/lusheng-photography fillxhug @(auto,auto) bg=#C9C9CF TEXT="slot.app/lusheng-photography" fs=11.300000190734863 color=#C9C9CF
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 复制 hug_contentsxhug @(auto,auto) bg=#FFD60A TEXT="复制" fs=11 color=#FFD60A
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 150x38 @(auto,auto) bg=#FFD60A r=999
+        [F] SVG 13x13 @(auto,auto)
+          [V] Vector 3.2x3.2 @(8.1,1.1) stroke=#161616
+          [V] Vector 3.2x3.2 @(1.6,4.9) stroke=#161616
+          [V] Vector 3.2x3.2 @(8.1,8.7) stroke=#161616
+          [V] Vector 3.2x5.4 @(4.9,3.8) stroke=#161616
+        [T] 分享到微信 hug_contentsxhug @(auto,auto) bg=#161616 TEXT="分享到微信" fs=13 color=#161616
+      [F] Border 152x38 @(auto,auto) r=999 stroke=#3D3D3D
+        [T] 客户视角预览 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="客户视角预览" fs=13 color=#FFFFFF
+  [F] Container 343x21 @(16,335)
+    [F] Container hug_contentsxhug @(0,0)
+      [T] 主页内容 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="主页内容" fs=15 color=#1A1A1A
+    [F] Margin 275.0xhug @(68.0,3)
+      [F] Container hug_contentsxhug @(auto,auto)
+  [F] Background 343xhug @(16,366) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 12.8x12.8 @(2.1,2.1) stroke=#1A1A1A
+          [V] Vector 12.8x9.2 @(2.1,5.7) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 套餐报价 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="套餐报价" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 客户在主页选择并下单 fillxhug @(auto,auto) bg=#666666 TEXT="客户在主页选择并下单" fs=11 color=#666666
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 4 个 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="4 个" fs=12 color=#8E8E93
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 12.8x12.8 @(2.1,2.1) stroke=#1A1A1A
+          [V] Vector 2.8x2.8 @(4.2,4.2) stroke=#1A1A1A
+          [V] Vector 11.3x7.8 @(3.5,7.1) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 作品展示 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="作品展示" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 主页顶部轮播 fillxhug @(auto,auto) bg=#666666 TEXT="主页顶部轮播" fs=11 color=#666666
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 86 张 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="86 张" fs=11.800000190734863 color=#8E8E93
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 12.8x12.8 @(2.1,2.8) stroke=#1A1A1A
+          [V] Vector 12.8x5.7 @(2.1,1.4) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 可约档期 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="可约档期" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 去日程 Tab 管理 fillxhug @(auto,auto) bg=#666666 TEXT="去日程 Tab 管理" fs=10.5 color=#666666
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Margin 343xhug @(16,563)
+    [F] Container fillx21 @(auto,auto)
+      [F] Container hug_contentsxhug @(0,0)
+        [T] 收款方式 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="收款方式" fs=16 color=#1A1A1A
+      [F] Margin 275xhug @(64,3)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 客户下单后按此转账 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="客户下单后按此转账" fs=12 color=#9A9AA0
+  [F] Background 343xhug @(16,613) bg=#FFFFFF r=16
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 14.2x9.9 @(1.4,3.5) stroke=#1A1A1A
+          [V] Vector 14.2x0 @(1.4,7.1) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 收款设置 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="收款设置" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 银行卡 · 微信收款码 · 支付宝收款码 fillxhug @(auto,auto) bg=#8E8E93 TEXT="银行卡 · 微信收款码 · 支付宝收款码" fs=10.5 color=#8E8E93
+      [F] Background hug_contentsxhug @(auto,auto) bg=#DFF5E9 r=999
+        [T] 已设 hug_contentsxhug @(auto,auto) bg=#00A860 TEXT="已设" fs=11 color=#00A860
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Margin 343xhug @(16,678)
+    [F] Container fillxhug @(auto,auto)
+      [T] 最近分享 fillxhug @(auto,auto) bg=#1A1A1A TEXT="最近分享" fs=16 color=#1A1A1A
+  [F] Background 343xhug @(16,733) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 5.0x5.0 @(2.1,2.1) stroke=#1A1A1A
+          [V] Vector 5.0x5.0 @(9.9,2.1) stroke=#1A1A1A
+          [V] Vector 5.0x5.0 @(2.1,9.9) stroke=#1A1A1A
+          [V] Vector 2.1x2.1 @(9.9,9.9) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 保存主页二维码 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="保存主页二维码" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 打印放店里 · 3 天前 fillxhug @(auto,auto) bg=#8E8E93 TEXT="打印放店里 · 3 天前" fs=10.5 color=#8E8E93
+      [F] Background hug_contentsxhug @(auto,auto) bg=#F1F1F3 r=999
+        [T] 二维码 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="二维码" fs=11 color=#8E8E93
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 4.2x4.2 @(10.6,1.4) stroke=#1A1A1A
+          [V] Vector 4.2x4.2 @(2.1,6.4) stroke=#1A1A1A
+          [V] Vector 4.2x4.2 @(10.6,11.3) stroke=#1A1A1A
+          [V] Vector 4.2x7.1 @(6.4,5.0) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 发给微信好友「王浩」 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="发给微信好友「王浩」" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 昨天 16:20 fillxhug @(auto,auto) bg=#8E8E93 TEXT="昨天 16:20" fs=10.5 color=#8E8E93
+      [F] Background hug_contentsxhug @(auto,auto) bg=#F1F1F3 r=999
+        [T] 微信 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="微信" fs=11 color=#8E8E93
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,937)

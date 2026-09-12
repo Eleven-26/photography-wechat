@@ -1,0 +1,106 @@
+[F] L03 AI 简报 375x1369 @(4230,7608) bg=#FFFFFF
+  [V] Rectangle 44 375x1543 @(0,0) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,1286)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] AI 简报 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="AI 简报" fs=17 color=#151617
+    [F] Button:margin
+  [G] Group 57 343x164 @(16,114)
+    [R] Rectangle 85 343x164 @(16,114) bg=#121212
+    [F] Background hug_contentsxhug @(285,130) bg=#333333 r=999
+      [T] 2分钟前 hug_contentsxhug @(auto,auto) bg=#FFDA08 TEXT="2分钟前" fs=11 color=#FFDA08
+    [T] AI 已整理 简报 99x21 @(32,130) bg=#FFFFFF TEXT="AI 已整理 简报" fs=15 color=#FFFFFF
+    [T] 从对话中识别 12 项关键信息 · 3 项待追问 228x17 @(32,161) bg=#666666 TEXT="从对话中识别 12 项关键信息 · 3 项待追问" fs=12 color=#666666
+    [G] Group 56 308x4 @(32,194)
+      [R] Rectangle 86 22x4 @(32,194) bg=#FFDA08
+      [R] Rectangle 92 22x4 @(188,194) bg=#FFDA08
+      [R] Rectangle 87 22x4 @(58,194) bg=#FFDA08
+      [R] Rectangle 93 22x4 @(214,194) bg=#FFDA08
+      [R] Rectangle 88 22x4 @(84,194) bg=#FFDA08
+      [R] Rectangle 94 22x4 @(240,194) bg=#FFDA08
+      [R] Rectangle 89 22x4 @(110,194) bg=#FFDA08
+      [R] Rectangle 95 22x4 @(266,194) bg=#333333
+      [R] Rectangle 90 22x4 @(136,194) bg=#FFDA08
+      [R] Rectangle 96 22x4 @(292,194) bg=#333333
+      [R] Rectangle 91 22x4 @(162,194) bg=#FFDA08
+      [R] Rectangle 97 22x4 @(318,194) bg=#333333
+    [R] Rectangle 98 150x44 @(32,218) bg=#FFDA08
+    [T] 继续追问 3 项 94x21 @(59,230) bg=#000000 TEXT="继续追问 3 项" fs=15 color=#000000
+    [R] Rectangle 99 150x44 @(192,218) bg=#333333
+    [T] 产看已确认 9 项 109x21 @(212,230) bg=#FFFFFF TEXT="产看已确认 9 项" fs=15 color=#FFFFFF
+  [T] 待追问 · 按影响排序 339x20 @(18,298) bg=#151617 TEXT="待追问 · 按影响排序" fs=15 color=#151617
+  [G] Group 61 343x232 @(16,328)
+    [R] Rectangle 100 343x232 @(16,328) bg=#FFFFFF
+    [G] Group 59 130x44 @(70,496)
+      [R] Rectangle 103 130x44 @(70,496) bg=#FFFFFF stroke=#C8C8C8
+      [T] 编辑问题 60x21 @(105,508) bg=#666666 TEXT="编辑问题" fs=15 color=#666666
+    [G] Group 60 130x44 @(213,496)
+      [R] Rectangle 98 130x44 @(213,496) bg=#121212
+      [T] 发送给客户 75x21 @(244,508) bg=#FFFFFF TEXT="发送给客户" fs=15 color=#FFFFFF
+    [G] Group 58 28x28 @(32,344)
+      [E] Ellipse 14 28x28 @(32,344) bg=#FEF3C7
+      [T] 1 9x20 @(42,348) bg=#B66E00 TEXT="1" fs=15 color=#B66E00
+    [T] 具体日期 60x20 @(70,344) bg=#000000 TEXT="具体日期" fs=15 color=#000000
+    [R] Rectangle 101 49x16 @(136,346) bg=#FEF3C7
+    [T] 影响报价 40x10 @(141,349) bg=#B66E00 TEXT="影响报价" fs=10 color=#B66E00
+    [T] 客户说"周末"但未指定哪天，档期锁定依赖此项 251x10 @(69,374) bg=#666666 TEXT="客户说"周末"但未指定哪天，档期锁定依赖此项" fs=12 color=#666666
+    [R] Rectangle 102 273x87 @(70,399) bg=#F2F3F5
+    [T] 您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。 247x40 @(81,429) bg=#333333 TEXT="您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。" fs=14 color=#333333
+    [T] AI 已生成问题 69x10 @(94,409) bg=#999999 TEXT="AI 已生成问题" fs=11 color=#999999
+    [STAR] Star 2 10x10 @(80,409) stroke=#B5B5B5
+  [G] Group 62 343x232 @(16,570)
+    [R] Rectangle 100 343x232 @(16,570) bg=#FFFFFF
+    [G] Group 59 130x44 @(70,738)
+      [R] Rectangle 103 130x44 @(70,738) bg=#FFFFFF stroke=#C8C8C8
+      [T] 编辑问题 60x21 @(105,750) bg=#666666 TEXT="编辑问题" fs=15 color=#666666
+    [G] Group 60 130x44 @(213,738)
+      [R] Rectangle 98 130x44 @(213,738) bg=#121212
+      [T] 发送给客户 75x21 @(244,750) bg=#FFFFFF TEXT="发送给客户" fs=15 color=#FFFFFF
+    [G] Group 58 28x28 @(32,586)
+      [E] Ellipse 14 28x28 @(32,586) bg=#FEF3C7
+      [T] 2 9x20 @(42,590) bg=#B66E00 TEXT="2" fs=15 color=#B66E00
+    [T] 儿童作息 60x20 @(70,586) bg=#000000 TEXT="儿童作息" fs=15 color=#000000
+    [R] Rectangle 101 49x16 @(136,588) bg=#DBEAFE
+    [T] 影响排期 40x10 @(141,591) bg=#2D69EC TEXT="影响排期" fs=10 color=#2D69EC
+    [T] 5岁儿童午休时间影响当天拍摄时段安排 212x10 @(69,616) bg=#666666 TEXT="5岁儿童午休时间影响当天拍摄时段安排" fs=12 color=#666666
+    [R] Rectangle 102 273x87 @(70,641) bg=#F2F3F5
+    [T] 孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。 247x40 @(81,671) bg=#333333 TEXT="孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。" fs=14 color=#333333
+    [T] AI 已生成问题 69x10 @(94,651) bg=#999999 TEXT="AI 已生成问题" fs=11 color=#999999
+    [STAR] Star 2 10x10 @(80,651) stroke=#B5B5B5
+  [G] Group 63 343x232 @(16,812)
+    [R] Rectangle 100 343x232 @(16,812) bg=#FFFFFF
+    [G] Group 59 130x44 @(70,980)
+      [R] Rectangle 103 130x44 @(70,980) bg=#FFFFFF stroke=#C8C8C8
+      [T] 编辑问题 60x21 @(105,992) bg=#666666 TEXT="编辑问题" fs=15 color=#666666
+    [G] Group 60 130x44 @(213,980)
+      [R] Rectangle 98 130x44 @(213,980) bg=#121212
+      [T] 发送给客户 75x21 @(244,992) bg=#FFFFFF TEXT="发送给客户" fs=15 color=#FFFFFF
+    [G] Group 58 28x28 @(32,828)
+      [E] Ellipse 14 28x28 @(32,828) bg=#FEF3C7
+      [T] 3 9x20 @(42,832) bg=#B66E00 TEXT="3" fs=15 color=#B66E00
+    [T] 妆造需求 60x20 @(70,828) bg=#000000 TEXT="妆造需求" fs=15 color=#000000
+    [R] Rectangle 101 49x16 @(136,830) bg=#FEF3C7
+    [T] 影响报价 40x10 @(141,833) bg=#B66E00 TEXT="影响报价" fs=10 color=#B66E00
+    [T] 是否需要化妆造型服务，直接影响套餐加项 228x10 @(69,858) bg=#666666 TEXT="是否需要化妆造型服务，直接影响套餐加项" fs=12 color=#666666
+    [R] Rectangle 102 273x87 @(70,883) bg=#F2F3F5
+    [T] 需要为大人或孩子安排化妆造型吗？可单加也可含在套餐内。 247x40 @(81,913) bg=#333333 TEXT="需要为大人或孩子安排化妆造型吗？可单加也可含在套餐内。" fs=14 color=#333333
+    [T] AI 已生成问题 69x10 @(94,893) bg=#999999 TEXT="AI 已生成问题" fs=11 color=#999999
+    [STAR] Star 2 10x10 @(80,893) stroke=#B5B5B5
+  [R] Rectangle 104 343x50 @(16,1064) bg=#FFFFFF
+  [T] 已确认信息 75x20 @(32,1079) bg=#151617 TEXT="已确认信息" fs=15 color=#151617
+  [T] 9项 20x20 @(305,1079) bg=#666666 TEXT="9项" fs=12 color=#666666
+  [G] 小箭头 16x16 @(327,1081)
+    [R] Rectangle 106 16x16 @(327,1081) bg=#D9D9D9
+    [V] Rectangle 105 6x6 @(329,1089.0) stroke=#666666
+  [R] Rectangle 107 343x70 @(16,1124) bg=#DCFCE7
+  [F] 安全 24x24 @(32,1146)
+    [V] Vector 16.5x20 @(3.8,2.0) bg=#2F855A
+  [T] 未检测到高风险项 112x20 @(69,1139) bg=#2F855A TEXT="未检测到高风险项" fs=14 color=#2F855A
+  [T] 预算与套餐价格匹配，需求描述清晰 311x17 @(69,1161) bg=#2FAF5E TEXT="预算与套餐价格匹配，需求描述清晰" fs=12 color=#2FAF5E
+  [F] Button 343x52 @(16,1214) bg=#171819 r=999
+    [T] 一键全部追问 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="一键全部追问" fs=15 color=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,1335)

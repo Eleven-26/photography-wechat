@@ -1,0 +1,23 @@
+[FRAME] A04选择工作模式 375x812 @(3734,6532) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x812 @(0,0) bg=#F2F3F5
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 选择模式 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="选择模式" fs=17 color=#151617
+  [FRAME] Container 375xhug_contents @(0,104)
+    [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Background+Border+Shadow fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16 stroke=#FFDA08
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Background+Shadow fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Background+Shadow fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [RECTANGLE] Rectangle fill_containerx80 @(auto,auto)
+    [FRAME] Button:margin fill_containerx72 @(auto,auto)
+      [FRAME] Button fill_containerx52 @(auto,auto) bg=#171819 r=999
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF

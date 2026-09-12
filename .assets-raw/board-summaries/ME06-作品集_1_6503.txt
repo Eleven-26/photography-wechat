@@ -1,0 +1,70 @@
+[FRAME] ME06-作品集 375x948 @(5143,16905) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x947 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,865)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 作品集 hug_contentsxhug_contents @(auto,auto) bg=#1A1A1A TEXT="作品集" fs=17 color=#1A1A1A
+    [FRAME] Button:margin
+  [FRAME] Background 343xhug_contents @(16,114) bg=#FFFFFF r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Margin:align-stretch hug_contentsxfill_container @(auto,auto)
+      [FRAME] Margin 1xfill_container @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Margin:align-stretch hug_contentsxfill_container @(auto,auto)
+      [FRAME] Margin 1xfill_container @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,198)
+    [FRAME] Container fill_containerx21 @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [FRAME] Margin 275.0010070800781xhug_contents @(63.999000549316406,3)
+  [FRAME] Container 343xhug_contents @(16,248)
+    [FRAME] Background 110x110 @(auto,auto) r=12
+      [RECTANGLE] Rectangle 237 109.99999237060547x110 @(0,0)
+      [FRAME] Background hug_contentsxhug_contents @(77,5) bg=#FFD60A r=8
+    [FRAME] Background 110x110 @(auto,auto) r=12
+      [RECTANGLE] Rectangle 237 109.99999237060547x110 @(0,0)
+      [FRAME] Background hug_contentsxhug_contents @(77.01000213623047,5) bg=#FFD60A r=8
+    [FRAME] Background 110x110 @(auto,auto) r=12
+      [RECTANGLE] Rectangle 237 109.99999237060547x110 @(0,0)
+      [FRAME] Background hug_contentsxhug_contents @(77,5) bg=#FFD60A r=8
+    [FRAME] Background 110x110 @(auto,auto) r=12
+      [RECTANGLE] Rectangle 237 109.99999237060547x110 @(0,0) bg=#E4E4E4
+      [FRAME] Background hug_contentsxhug_contents @(77,5) bg=#FFD60A r=8
+  [FRAME] Container 343x343 @(16,432)
+    [GROUP] Mask group 110.33333587646484x110.33333587646484 @(0,0.005859375)
+      [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(0,0.005859375)
+      [RECTANGLE] image 171x304 @(-26,-36)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(116.33333587646484,0.00533294677734375)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(232.6666717529297,0.00533294677734375)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(0,116.34933471679688)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(116.33333587646484,116.34933471679688)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(232.6666717529297,116.34933471679688)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(0,232.69332885742188)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(116.33333587646484,232.69332885742188)
+    [RECTANGLE] Gradient 110.33333587646484x110.33333587646484 @(232.6666717529297,232.69332885742188)
+  [FRAME] Margin 343x70 @(16,775)
+    [FRAME] Background fill_containerx52 @(auto,auto) bg=#1A1A1A r=999
+      [FRAME] SVG 14x14 @(auto,auto)
+      [TEXT] 上传作品 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="上传作品" fs=15 color=#FFFFFF
+  [FRAME] Margin 343xhug_contents @(18,378)
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#1A1A1A r=999 stroke=#1A1A1A
+      [TEXT] 全部 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="全部" fs=13 color=#FFFFFF
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 写真 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="写真" fs=13 color=#6D6D72
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 全家福 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="全家福" fs=13 color=#6D6D72
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 跟拍 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="跟拍" fs=13 color=#6D6D72
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 证件照 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="证件照" fs=13 color=#6D6D72
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,914) bg=#FFFFFF

@@ -1,0 +1,53 @@
+[FRAME] W01 工作台 375x929 @(2309,7608) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x1033 @(0,0) bg=#22252A
+  [RECTANGLE] image 23 392.0000305175781x697 @(616,378.0000305175781)
+  [VECTOR] Rectangle 49 375x765 @(0,164) bg=#F2F3F5
+  [FRAME] Header 343xhug_contents @(16,44)
+    [FRAME] Container 84xhug_contents @(auto,auto)
+      [TEXT] 08 90xhug_contents @(auto,auto) bg=#FFFFFF TEXT="08" fs=80 color=#FFFFFF
+    [FRAME] Container 142xhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Heading 1 fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Container hug_contentsx44 @(auto,auto)
+      [FRAME] Container hug_contentsx44 @(auto,auto)
+  [FRAME] Section 343x228 @(16,184)
+    [FRAME] Container fill_containerx32 @(auto,auto)
+      [TEXT] Heading 2 → 今日拍摄 75.10527801513672x23 @(2,-0.10000000149011612) bg=#141414 TEXT="今日拍摄" fs=19 color=#141414
+      [FRAME] Container hug_contentsxhug_contents @(320.7699890136719,4)
+    [FRAME] Container 359x196 @(auto,auto)
+      [FRAME] Group - 今日拍摄任务 fill_containerx232 @(auto,auto)
+  [GROUP] Group 43 37x4 @(169,422)
+    [RECTANGLE] Rectangle 47 16x4 @(169,422) bg=#121212
+    [RECTANGLE] Rectangle 48 16x4 @(190,422) bg=#D6D7D8
+  [FRAME] Container 343x32 @(16,446)
+    [TEXT] Heading 2 → 现在需要处理 112.16178131103516x23 @(2,-0.10000000149011612) bg=#141414 TEXT="现在需要处理" fs=18 color=#141414
+    [FRAME] Container hug_contentsxhug_contents @(320.7699890136719,4)
+      [TEXT] 2项 hug_contentsxhug_contents @(auto,auto) bg=#7A7D82 TEXT="2项" fs=13 color=#7A7D82
+  [GROUP] Group 44 375x167 @(0,478)
+    [FRAME] Article 343x82 @(16,562) stroke=#141414
+      [FRAME] Background 46x46 @(auto,auto) bg=#E9EAEB r=23
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Button hug_contentsx52 @(auto,auto) bg=#FFFFFF r=999 stroke=#141414
+    [FRAME] Article 343x82 @(16,479)
+      [FRAME] Background 46x46 @(auto,auto) bg=#FFDA08 r=23
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Button hug_contentsx52 @(auto,auto) bg=#24272C r=999
+    [RECTANGLE] Rectangle 50 375x1 @(0,478) bg=#EAEAEA
+    [RECTANGLE] Rectangle 51 375x1 @(0,644) bg=#EAEAEA
+  [GROUP] Group 45 375x161 @(0,665)
+    [FRAME] Container 343x32 @(16,665)
+      [TEXT] Heading 2 → 现在需要处理 112.16178131103516x23 @(2,-0.10000000149011612) bg=#141414 TEXT="其他待办" fs=18 color=#141414
+      [FRAME] Container hug_contentsxhug_contents @(320.7699890136719,4)
+    [RECTANGLE] Rectangle 50 375x1 @(0,697) bg=#EAEAEA
+    [RECTANGLE] Rectangle 51
+    [FRAME] Button 343x64 @(17,698)
+      [FRAME] Container 269xhug_contents @(auto,auto)
+      [FRAME] Background 36xhug_contents @(auto,auto) bg=#FFDA08 r=999
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Button 343x64 @(17,762) stroke=#EAEAEA
+      [FRAME] Container 313xhug_contents @(auto,auto)
+      [FRAME] SVG 20x20 @(auto,auto)
+  [INSTANCE] 底部导航 375x83 @(0,846)
+  [INSTANCE] Iphone 375x34 @(0,895) bg=#FFFFFF
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF

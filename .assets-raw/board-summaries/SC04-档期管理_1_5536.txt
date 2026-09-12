@@ -1,0 +1,83 @@
+[FRAME] SC04-档期管理 375x827 @(4209,14114) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x826 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,744)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 发起改期 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="发起改期" fs=17 color=#151617
+    [FRAME] Button:margin
+  [GROUP] Group 125 380x66 @(16,242)
+    [RECTANGLE] Rectangle 209 44x66 @(16,242) bg=#FFFFFF
+    [RECTANGLE] Rectangle 210 44x66 @(64,242) bg=#121212
+    [RECTANGLE] Rectangle 211 44x66 @(112,242) bg=#FFFFFF
+    [RECTANGLE] Rectangle 212 44x66 @(160,242) bg=#FFFFFF
+    [RECTANGLE] Rectangle 213 44x66 @(208,242) bg=#FFFFFF
+    [RECTANGLE] Rectangle 214 44x66 @(256,242) bg=#FFFFFF
+    [RECTANGLE] Rectangle 215 44x66 @(304,242) bg=#FFFFFF
+    [RECTANGLE] Rectangle 216 44x66 @(352,242) bg=#FFFFFF
+    [ELLIPSE] Ellipse 31 6x6 @(131,294) bg=#76D596
+    [ELLIPSE] Ellipse 36 6x6 @(35,294) bg=#D4D4D4
+    [ELLIPSE] Ellipse 33 6x6 @(275,294) bg=#76D596
+    [ELLIPSE] Ellipse 34 6x6 @(323,294) bg=#76D596
+    [ELLIPSE] Ellipse 35 6x6 @(371,294) bg=#76D596
+    [ELLIPSE] Ellipse 32 6x6 @(227,294) bg=#FFDA08
+    [ELLIPSE] Ellipse 30 6x6 @(179,294) bg=#FF8181
+    [TEXT] 7 9x20 @(33,271) bg=#151617 TEXT="7" fs=14 color=#151617
+    [TEXT] 今 14x20 @(79,271) bg=#FFFFFF TEXT="今" fs=14 color=#FFFFFF
+    [TEXT] 9 9x20 @(129,271) bg=#151617 TEXT="9" fs=14 color=#151617
+    [TEXT] 10 17x20 @(173,271) bg=#1E1E1E TEXT="10" fs=14 color=#1E1E1E
+    [TEXT] 11 17x20 @(221,271) bg=#151617 TEXT="11" fs=14 color=#151617
+    [TEXT] 12 17x20 @(269,271) bg=#151617 TEXT="12" fs=14 color=#151617
+    [TEXT] 13 17x20 @(317,271) bg=#151617 TEXT="13" fs=14 color=#151617
+    [TEXT] 14 17x20 @(365,271) bg=#151617 TEXT="14" fs=14 color=#151617
+    [TEXT] 一 40x15 @(18,249) bg=#999999 TEXT="一" fs=11 color=#999999
+    [TEXT] 二 40x15 @(66,249) bg=#CCCCCC TEXT="二" fs=11 color=#CCCCCC
+    [TEXT] 三 40x15 @(114,249) bg=#999999 TEXT="三" fs=11 color=#999999
+    [TEXT] 四 40x15 @(162,249) bg=#999999 TEXT="四" fs=11 color=#999999
+    [TEXT] 五 40x15 @(210,249) bg=#999999 TEXT="五" fs=11 color=#999999
+    [TEXT] 六 40x15 @(258,249) bg=#999999 TEXT="六" fs=11 color=#999999
+    [TEXT] 日 40x15 @(306,249) bg=#999999 TEXT="日" fs=11 color=#999999
+    [TEXT] 一 40x15 @(354,249) bg=#999999 TEXT="一" fs=11 color=#999999
+  [TEXT] 选新日期 60x20 @(16,212) bg=#151617 TEXT="选新日期" fs=15 color=#151617
+  [TEXT] 左右滑动跨周 72x20 @(287,212) bg=#999999 TEXT="左右滑动跨周" fs=12 color=#999999
+  [TEXT] 选新时段 60x20 @(18,328) bg=#151617 TEXT="选新时段" fs=15 color=#151617
+  [TEXT] 改期原因 60x20 @(18,540) bg=#151617 TEXT="改期原因" fs=15 color=#151617
+  [FRAME] Background+Border+Shadow 343x78 @(16,114) bg=#FFFFFF r=16
+    [FRAME] Container 309xhug_contents @(17,16)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+    [FRAME] Margin 309xhug_contents @(17,43)
+      [FRAME] Container fill_containerx18 @(auto,auto)
+      [TEXT] 越秀公园 · 2.5h hug_contentsxhug_contents @(auto,auto) bg=#666666 TEXT="越秀公园 · 2.5h" fs=12 color=#666666
+  [RECTANGLE] Rectangle 207 343x162 @(16,358) bg=#FFFFFF
+  [FRAME] Border 96x34 @(28,374) bg=#FEE2E2 r=999
+    [TEXT] 09:00-11:00 72x17 @(12,8.5) bg=#D94B4B TEXT="09:00-11:00" fs=12 color=#D94B4B
+    [GROUP] Group 124 32x16 @(64,-8)
+      [RECTANGLE] Rectangle 208 32x16 @(64,-8) bg=#D94B4B
+      [TEXT] 订单 20x14 @(70,-7) bg=#FFFFFF TEXT="订单" fs=10 color=#FFFFFF
+  [FRAME] Background+Border hug_contentsx34 @(138,374) bg=#DCFCE7 r=999 stroke=#DCFCE7
+    [TEXT] 11:00-14:00 hug_contentsxhug_contents @(auto,auto) bg=#20845C TEXT="11:00-14:00" fs=12 color=#20845C
+  [FRAME] Border hug_contentsx34 @(248,374) bg=#DCFCE7 r=999
+    [TEXT] 14:00-16:00 hug_contentsxhug_contents @(auto,auto) bg=#20845C TEXT="14:00-16:00" fs=12 color=#20845C
+  [FRAME] Border hug_contentsx34 @(28,416) bg=#F2F3F5 r=999 stroke=#D4D4D4
+    [TEXT] 16:00-18:00 hug_contentsxhug_contents @(auto,auto) bg=#333333 TEXT="16:00-18:00" fs=12 color=#333333
+  [GROUP] Group 128 319x48 @(28,460)
+    [RECTANGLE] Rectangle 218 319x48 @(28,460) bg=#F2F3F5
+    [FRAME] SVG 13x13 @(40,477)
+      [VECTOR] Vector 10.833333969116211x10.833333969116211 @(1.083333134651184,1.083333134651184) bg=#666666
+    [FRAME] Paragraph 276xhug_contents @(61,474)
+      [TEXT] 8/10 周一 14:00-16:00 空闲 · 与其他订单无冲突 276xhug_contents @(auto,auto) bg=#666666 TEXT="8/10 周一 14:00-16:00 空闲 · 与其他订单无冲突" fs=12 color=#666666
+  [FRAME] Container 343x92 @(16,570)
+    [FRAME] Background+Border hug_contentsx36 @(0,0) bg=#FFFFFF r=999 stroke=#F7F8F8
+      [TEXT] 时间冲突 hug_contentsxhug_contents @(auto,auto) bg=#333333 TEXT="时间冲突" fs=14 color=#333333
+    [FRAME] Border hug_contentsx36 @(98,0) bg=#FFFFFF r=999
+      [TEXT] 天气原因 hug_contentsxhug_contents @(auto,auto) bg=#333333 TEXT="天气原因" fs=14 color=#333333
+    [FRAME] Border hug_contentsx36 @(196,0) bg=#FFFFFF r=999
+      [TEXT] 场地与场地问题 hug_contentsxhug_contents @(auto,auto) bg=#333333 TEXT="场地与场地问题" fs=14 color=#333333
+    [FRAME] Border hug_contentsx36 @(0,44) bg=#00B972 r=999
+      [TEXT] 与客户协商 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="与客户协商" fs=14 color=#FFFFFF
+  [FRAME] Button 343x52 @(16,672) bg=#171819 r=999
+    [TEXT] 发送客户确认 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="发送客户确认" fs=15 color=#FFFFFF
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,793) bg=#FFFFFF

@@ -1,0 +1,78 @@
+[F] ME12-帮主与关于 375x812 @(4209,19290) bg=#FFFFFF
+  [R] Rectangle 44 375x811 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,729)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 帮助与关于 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="帮助与关于" fs=17 color=#1A1A1A
+    [F] Button:margin
+  [F] Margin 343xhug @(16,104)
+    [F] Container fillxhug @(auto,auto)
+      [T] 帮助 fillxhug @(auto,auto) bg=#1A1A1A TEXT="帮助" fs=15 color=#1A1A1A
+  [F] Background 343xhug @(16,159) bg=#FFFFFF r=16
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 14.2x14.2 @(1.4,1.4) stroke=#1A1A1A
+          [V] Vector 4.2x5.8 @(6.4,4.2) stroke=#1A1A1A
+          [E] Ellipse 43 1.5x1.5 @(7.8,11.5) bg=#191919
+      [F] Container fillxhug @(auto,auto)
+        [T] 常见问题 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="常见问题" fs=14 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 下单 / 档期 / 收款 / 交付 fillxhug @(auto,auto) bg=#8E8E93 TEXT="下单 / 档期 / 收款 / 交付" fs=10 color=#8E8E93
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Margin 343xhug @(16,224)
+    [F] Container fillxhug @(auto,auto)
+      [T] 联系 fillxhug @(auto,auto) bg=#1A1A1A TEXT="联系" fs=15 color=#1A1A1A
+  [F] Background 343xhug @(16,279) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 12.8x12.8 @(2.1,2.8) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 客服电话 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="客服电话" fs=14 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 工作日 9:00-19:00 fillxhug @(auto,auto) bg=#8E8E93 TEXT="工作日 9:00-19:00" fs=10.100000381469727 color=#8E8E93
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 6.4x0 @(8.5,14.2) stroke=#1A1A1A
+          [V] Vector 12.1x12.1 @(2.1,2.0) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 意见反馈 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="意见反馈" fs=14 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 把问题告诉我们 fillxhug @(auto,auto) bg=#8E8E93 TEXT="把问题告诉我们" fs=11 color=#8E8E93
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Margin 343xhug @(16,410)
+    [F] Container fillxhug @(auto,auto)
+      [T] 关于 fillxhug @(auto,auto) bg=#1A1A1A TEXT="关于" fs=15 color=#1A1A1A
+  [F] Background 343xhug @(16,465) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 用户协议 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="用户协议" fs=14 color=#1A1A1A
+      [F] SVG:margin fillx16 @(auto,auto)
+        [F] SVG 16x16 @(auto,auto)
+          [F] Frame 16xfill_container @(auto,auto)
+            [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 隐私政策 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="隐私政策" fs=14 color=#1A1A1A
+      [F] SVG:margin fillx16 @(auto,auto)
+        [F] SVG 16x16 @(auto,auto)
+          [F] Frame 16xfill_container @(auto,auto)
+            [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 版本 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="版本" fs=14 color=#1A1A1A
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] V2.0.0 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="V2.0.0" fs=13 color=#6D6D72
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,778)

@@ -1,0 +1,87 @@
+[F] ME06-作品集 375x948 @(5143,16905) bg=#FFFFFF
+  [R] Rectangle 44 375x947 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,865)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 作品集 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="作品集" fs=17 color=#1A1A1A
+    [F] Button:margin
+  [F] Background 343xhug @(16,114) bg=#FFFFFF r=16
+    [F] Container fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+        [T] 86 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="86" fs=22 color=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 总作品 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="总作品" fs=11 color=#8E8E93
+    [F] Margin:align-stretch hug_contentsxfill_container @(auto,auto)
+      [F] Margin 1xfill_container @(auto,auto)
+        [R] Vertical Divider 1xfill_container @(auto,auto) bg=#F0F0F2
+    [F] Container fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+        [T] 12 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="12" fs=22 color=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 精选 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="精选" fs=11 color=#8E8E93
+    [F] Margin:align-stretch hug_contentsxfill_container @(auto,auto)
+      [F] Margin 1xfill_container @(auto,auto)
+        [R] Vertical Divider 1xfill_container @(auto,auto) bg=#F0F0F2
+    [F] Container fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+        [T] 4 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="4" fs=22 color=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 分类 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="分类" fs=11 color=#8E8E93
+  [F] Margin 343xhug @(16,198)
+    [F] Container fillx21 @(auto,auto)
+      [F] Container hug_contentsxhug @(0,0)
+        [T] 精选作品 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="精选作品" fs=15 color=#1A1A1A
+      [F] Margin 275.0xhug @(64.0,3)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 展示在主页顶部 · 12 张 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="展示在主页顶部 · 12 张" fs=11.600000381469727 color=#9A9AA0
+  [F] Container 343xhug @(16,248)
+    [F] Background 110x110 @(auto,auto) bg=#000000 r=12
+      [R] Rectangle 237 110.0x110 @(0,0) bg=#000000
+      [F] Background hug_contentsxhug @(77,5) bg=#FFD60A r=8
+        [T] 精选 hug_contentsxhug @(auto,auto) bg=#161616 TEXT="精选" fs=9 color=#161616
+    [F] Background 110x110 @(auto,auto) bg=#000000 r=12
+      [R] Rectangle 237 110.0x110 @(0,0) bg=#000000
+      [F] Background hug_contentsxhug @(77.0,5) bg=#FFD60A r=8
+        [T] 精选 hug_contentsxhug @(auto,auto) bg=#161616 TEXT="精选" fs=9 color=#161616
+    [F] Background 110x110 @(auto,auto) bg=#000000 r=12
+      [R] Rectangle 237 110.0x110 @(0,0) bg=#000000
+      [F] Background hug_contentsxhug @(77,5) bg=#FFD60A r=8
+        [T] 精选 hug_contentsxhug @(auto,auto) bg=#161616 TEXT="精选" fs=9 color=#161616
+    [F] Background 110x110 @(auto,auto) bg=#000000 r=12
+      [R] Rectangle 237 110.0x110 @(0,0) bg=#E4E4E4
+      [F] Background hug_contentsxhug @(77,5) bg=#FFD60A r=8
+        [T] 精选 hug_contentsxhug @(auto,auto) bg=#161616 TEXT="精选" fs=9 color=#161616
+  [F] Container 343x343 @(16,432)
+    [G] Mask group 110.3x110.3 @(0,0.0)
+      [R] Gradient 110.3x110.3 @(0,0.0) bg=#000000
+      [R] image 171x304 @(-26,-36) bg=#000000
+    [R] Gradient 110.3x110.3 @(116.3,0.0) bg=#000000
+    [R] Gradient 110.3x110.3 @(232.7,0.0) bg=#000000
+    [R] Gradient 110.3x110.3 @(0,116.3) bg=#000000
+    [R] Gradient 110.3x110.3 @(116.3,116.3) bg=#000000
+    [R] Gradient 110.3x110.3 @(232.7,116.3) bg=#000000
+    [R] Gradient 110.3x110.3 @(0,232.7) bg=#000000
+    [R] Gradient 110.3x110.3 @(116.3,232.7) bg=#000000
+    [R] Gradient 110.3x110.3 @(232.7,232.7) bg=#000000
+  [F] Margin 343x70 @(16,775)
+    [F] Background fillx52 @(auto,auto) bg=#1A1A1A r=999
+      [F] SVG 14x14 @(auto,auto)
+        [V] Vector 8.2x8.2 @(2.9,2.9) stroke=#FFFFFF
+      [T] 上传作品 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="上传作品" fs=15 color=#FFFFFF
+  [F] Margin 343xhug @(18,378)
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#1A1A1A r=999 stroke=#1A1A1A
+      [T] 全部 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="全部" fs=13 color=#FFFFFF
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 写真 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="写真" fs=13 color=#6D6D72
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 全家福 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="全家福" fs=13 color=#6D6D72
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 跟拍 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="跟拍" fs=13 color=#6D6D72
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 证件照 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="证件照" fs=13 color=#6D6D72
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,914)

@@ -1,0 +1,133 @@
+[F] L05-2 报价 375x1353 @(5676,7608) bg=#FFFFFF
+  [V] Rectangle 44 375x1430 @(0,2) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,1270)
+  [G] Group 69 343x160 @(16,114)
+    [R] Rectangle 109 343x160 @(16,114) bg=#171819
+    [F] Background hug_contentsxhug @(311,130) bg=#333333 r=999
+      [T] V1 hug_contentsxhug @(auto,auto) bg=#FFDA08 TEXT="V1" fs=11 color=#FFDA08
+    [T] 家庭纪念 · 周末户外定制 192x18 @(32,134) bg=#FFFFFF TEXT="家庭纪念 · 周末户外定制" fs=18 color=#FFFFFF
+    [F] 编辑 16x16 @(230,135)
+      [V] Vector 12.5x12.5 @(1.8,1.8) bg=#FFFFFF
+    [T] ¥2,680 101x32 @(32,166) bg=#FFFFFF TEXT="¥2,680" fs=32 color=#FFFFFF
+    [R] Rectangle 110 80x30 @(147,168) bg=#2C2E36 stroke=#393D41
+    [T] 修改总价 54x14 @(160,176) bg=#FFFFFF TEXT="修改总价" fs=14 color=#FFFFFF
+    [R] Rectangle 111 311x40 @(32,214) bg=#2C2E36
+    [F] Background 16x16 @(44,226) bg=#83DDA2 r=24
+      [F] SVG 16x16 @(auto,auto)
+    [T] 在客户预算范围内（¥2,000-3,000） 215x14 @(66,227) bg=#83DDA2 TEXT="在客户预算范围内（¥2,000-3,000）" fs=14 color=#83DDA2
+  [R] Rectangle 112 343x66 @(16,284) bg=#FFFFFF
+  [T] AI 已按客户简报预填以下报价 188x14 @(83,299) bg=#333333 TEXT="AI 已按客户简报预填以下报价" fs=15 color=#333333
+  [T] 黄色标记项来自已确认信息，点开任意一行即可调整 259x14 @(83,321) bg=#999999 TEXT="黄色标记项来自已确认信息，点开任意一行即可调整" fs=12 color=#999999
+  [R] Rectangle 113 36x36 @(32,298) bg=#E5F6ED
+  [STAR] Star 2 16x16 @(42,308) stroke=#20845C
+  [G] Group 88 343x155 @(16,595)
+    [R] Rectangle 114 343x155 @(16,595) bg=#FFFFFF
+    [R] Rectangle 119 32x32 @(32,677) bg=#F2F3F5 stroke=#E6E6E6
+    [R] Rectangle 120 32x32 @(117,677) bg=#F2F3F5 stroke=#E6E6E6
+    [T] 套餐含 20 张 · 超出按 ¥60/张 135x14 @(78,633) bg=#999999 TEXT="套餐含 20 张 · 超出按 ¥60/张" fs=11 color=#999999
+    [T] 拍摄时长 58x15 @(76,614) bg=#333333 TEXT="拍摄时长" fs=15 color=#333333
+    [T] 2.5 21x15 @(280,621) bg=#333333 TEXT="2.5" fs=15 color=#333333
+    [T] 2.5 21x15 @(80,686) bg=#333333 TEXT="2.5" fs=15 color=#333333
+    [T] 小时 22x11 @(303,624) bg=#999999 TEXT="小时" fs=11 color=#999999
+    [T] 小时 22x11 @(159,689) bg=#999999 TEXT="小时" fs=11 color=#999999
+    [G] 小箭头 16x16 @(327,621)
+      [R] Rectangle 106 16x16 @(327,621) bg=#D9D9D9
+      [V] Rectangle 105 6x6 @(335.0,623) stroke=#666666
+    [G] Group 73 36x36 @(32,611)
+      [R] Rectangle 115 36x36 @(32,611) bg=#F3F3F5
+      [V] Vector 14x14 @(43,622) stroke=#7F7F7F
+    [F] Frame 1171274900 hug_contentsxhug @(142,614) bg=#E5F6ED r=2
+      [T] AI 预填 hug_contentsxhug @(auto,auto) bg=#20845C TEXT="AI 预填" fs=10 color=#20845C
+    [R] Rectangle 116 343x1 @(16,661) bg=#EFEFEF
+    [T] 当前 2.5 小时为基础套餐含时，不产生加时费 224x15 @(32,721) bg=#999999 TEXT="当前 2.5 小时为基础套餐含时，不产生加时费" fs=12 color=#999999
+    [R] Rectangle 121 12x2 @(42,692) bg=#666666
+    [G] Group 71 12x12 @(127,687)
+      [R] Rectangle 122 12x2 @(127,692) bg=#666666
+      [R] Rectangle 123 12x2 @(132,699) bg=#666666
+  [R] Rectangle 114 343x243 @(16,760) bg=#FFFFFF
+  [R] Rectangle 133 311x44 @(32,943) bg=#F2F3F5
+  [F] 编辑 16x16 @(313,957)
+    [V] Vector 12.5x12.5 @(1.8,1.8) bg=#666666
+  [R] Rectangle 117 150x56 @(32,845) bg=#FFFFFF stroke=#EFAC00
+  [R] Rectangle 118 150x56 @(193,845) bg=#FFFFFF stroke=#E6E6E6
+  [T] 合作影棚 54x15 @(204,855) bg=#333333 TEXT="合作影棚" fs=14 color=#333333
+  [T] 外拍 28x15 @(42,855) bg=#333333 TEXT="外拍" fs=14 color=#333333
+  [T] 场地费 200 元 72x15 @(204,874) bg=#999999 TEXT="场地费 200 元" fs=12 color=#999999
+  [T] 场地费 0 元 59x15 @(42,874) bg=#999999 TEXT="场地费 0 元" fs=12 color=#999999
+  [T] AI提取 33x12 @(44,959) bg=#999999 TEXT="AI提取" fs=12 color=#999999
+  [R] Rectangle 134 1x10 @(87,960) bg=#CCCCCC
+  [T] 越秀公园 54x14 @(98,958) bg=#333333 TEXT="越秀公园" fs=14 color=#333333
+  [T] 客户消息中提到"越秀公园" 122x14 @(78,798) bg=#999999 TEXT="客户消息中提到"越秀公园"" fs=11 color=#999999
+  [T] 拍摄地点/场地费 107x15 @(78,779) bg=#333333 TEXT="拍摄地点/场地费" fs=15 color=#333333
+  [T] 拍摄地址 58x15 @(34,917) bg=#333333 TEXT="拍摄地址" fs=15 color=#333333
+  [T] 越秀公园 58x15 @(267,787) bg=#333333 TEXT="越秀公园" fs=15 color=#333333
+  [G] 小箭头 16x16 @(327,787)
+    [R] Rectangle 106 16x16 @(327,787) bg=#D9D9D9
+    [V] Rectangle 105 6x6 @(335.0,789) stroke=#666666
+  [G] Group 73 36x36 @(32,776)
+    [R] Rectangle 115 36x36 @(32,776) bg=#F3F3F5
+    [V] Vector 14x16.1 @(42.9,786.2) bg=#7F7F7F
+  [F] Frame 1171274900 hug_contentsxhug @(190,779) bg=#E5F6ED r=2
+    [T] AI 提取 hug_contentsxhug @(auto,auto) bg=#20845C TEXT="AI 提取" fs=10 color=#20845C
+  [R] Rectangle 116 343x1 @(16,828) bg=#EFEFEF
+  [R] Rectangle 114 343x213 @(16,370) bg=#FFFFFF
+  [T] 按"家庭纪念·2大1小"从 2 个套餐中匹配 180x14 @(78,408) bg=#999999 TEXT="按"家庭纪念·2大1小"从 2 个套餐中匹配" fs=11 color=#999999
+  [T] 基础套餐 58x15 @(78,389) bg=#333333 TEXT="基础套餐" fs=15 color=#333333
+  [T] ¥2,680 46x15 @(279,397) bg=#333333 TEXT="¥2,680" fs=15 color=#333333
+  [G] 小箭头 16x16 @(327,397)
+    [R] Rectangle 106 16x16 @(327,397) bg=#D9D9D9
+    [V] Rectangle 105 6x6 @(335.0,399) stroke=#666666
+  [G] Group 74 36x36 @(32,386)
+    [R] Rectangle 115 36x36 @(32,386) bg=#F3F3F5
+    [V] Vector 14x16.3 @(43,395.8) bg=#808080
+  [F] Frame 1171274900 hug_contentsxhug @(141,389) bg=#DBEAFE r=2
+    [T] 来自套餐库 hug_contentsxhug @(auto,auto) bg=#2D69EC TEXT="来自套餐库" fs=10 color=#2D69EC
+  [R] Rectangle 116 343x1 @(16,438) bg=#EFEFEF
+  [G] Group 85 150x56 @(193,455)
+    [R] Rectangle 118 150x56 @(193,455) bg=#FFFFFF stroke=#E6E6E6
+    [T] 家庭轻奢 54x15 @(204,465) bg=#333333 TEXT="家庭轻奢" fs=14 color=#333333
+    [T] ￥3，880 引用五次 100x15 @(204,484) bg=#999999 TEXT="￥3，880  引用五次" fs=12 color=#999999
+  [G] Group 84 150x56 @(32,455)
+    [R] Rectangle 117 150x56 @(32,455) bg=#FFFFFF stroke=#EFAC00
+    [T] 基础套餐 54x15 @(42,465) bg=#333333 TEXT="基础套餐" fs=14 color=#333333
+    [T] ￥2，680 引用12次 105x15 @(42,484) bg=#999999 TEXT="￥2，680   引用12次" fs=12 color=#999999
+  [R] Rectangle 129 311x40 @(32,527) bg=#FFFFFF stroke=#E6E6E6
+  [T] 库里没有合适的，自定义填价 173x14 @(103,540) bg=#333333 TEXT="库里没有合适的，自定义填价" fs=14 color=#333333
+  [G] Group 71 12x12 @(86,541)
+    [R] Rectangle 122 12x2 @(86,546) bg=#666666
+    [R] Rectangle 123 12x2 @(91,553) bg=#666666
+  [R] Rectangle 130 343x171 @(16,1013) bg=#FFFFFF
+  [R] Rectangle 135 343x1 @(16,1081) bg=#EFEFEF
+  [T] 勾选即计入报价 73x14 @(78,1049) bg=#999999 TEXT="勾选即计入报价" fs=11 color=#999999
+  [T] 添加可加项目 86x15 @(78,1030) bg=#333333 TEXT="添加可加项目" fs=15 color=#333333
+  [T] 妆造服务（客户尚未确认） 160x14 @(62,1101) bg=#333333 TEXT="妆造服务（客户尚未确认）" fs=14 color=#333333
+  [T] +¥200 39x14 @(304,1101) bg=#333333 TEXT="+¥200" fs=14 color=#333333
+  [T] 加急交付 7天→3天 113x14 @(62,1147) bg=#333333 TEXT="加急交付 7天→3天" fs=14 color=#333333
+  [T] +¥100 39x14 @(304,1147) bg=#333333 TEXT="+¥100" fs=14 color=#333333
+  [G] Group 73 36x36 @(32,1029)
+    [R] Rectangle 115 36x36 @(32,1029) bg=#F3F3F5
+    [G] Group 87 14x14 @(43,1040)
+      [R] Rectangle 131 14x2 @(43,1046) bg=#7F7F7F
+      [R] Rectangle 132 14x2 @(49,1054) bg=#7F7F7F
+  [T] 装造 30x15 @(295,1039) bg=#333333 TEXT="装造" fs=15 color=#333333
+  [G] 小箭头 16x16 @(327,1039)
+    [R] Rectangle 106 16x16 @(327,1039) bg=#D9D9D9
+    [V] Rectangle 105 6x6 @(335.0,1041) stroke=#666666
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 编辑报价 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="编辑报价" fs=17 color=#151617
+    [F] Button:margin
+  [F] Container 375xhug @(0,1194)
+    [F] Button 167.5x52 @(auto,auto) bg=#FFFFFF r=999 stroke=#151617
+      [T] 保存草稿 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="保存草稿" fs=15 color=#151617
+    [F] Button 165.5x52 @(auto,auto) bg=#171819 r=999
+      [T] 发送报价 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="发送报价" fs=15 color=#FFFFFF
+  [R] Rectangle 125 20x20 @(33,1144) bg=#F2F3F5 stroke=#B7B7B7
+  [G] Group 89 20x20 @(32,1098)
+    [R] Rectangle 124 20x20 @(32,1098) bg=#171717
+    [V] Vector 7 9x6.5 @(38,1105) stroke=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,1319)

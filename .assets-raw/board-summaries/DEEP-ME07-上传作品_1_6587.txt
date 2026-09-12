@@ -1,0 +1,112 @@
+[F] ME07-上传作品 375x1257 @(5618,16905) bg=#FFFFFF
+  [R] Rectangle 44 375x1256 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,1174)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 上传作品 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="上传作品" fs=17 color=#1A1A1A
+    [F] Button:margin
+  [F] Margin 343xhug @(16,104)
+    [F] Container fillx21 @(auto,auto)
+      [F] Container hug_contentsxhug @(0,0)
+        [T] 选择图片 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="选择图片" fs=15 color=#1A1A1A
+      [F] Margin 275.0xhug @(64.0,3)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 已选 6 张 · 首张为封面 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="已选 6 张 · 首张为封面" fs=11.600000381469727 color=#9A9AA0
+  [F] Container 343x343 @(16,154)
+    [F] Background 110x110 @(0,1.7) bg=#000000 r=12
+      [R] Rectangle 237 110.0x110 @(0,0) bg=#000000
+      [F] Background hug_contentsxhug @(77.3,5) bg=#1A1A1A r=4
+        [T] 封面 hug_contentsxhug @(auto,auto) bg=#FFD60A TEXT="封面" fs=9 color=#FFD60A
+    [R] Rectangle 237 110.0x110 @(116.5,0) bg=#000000
+    [R] Rectangle 238 110.0x110 @(232.7,0) bg=#000000
+    [F] Background 110x110 @(0,116.5) bg=#000000 r=12
+      [R] Rectangle 237 110.0x110 @(0,0) bg=#000000
+    [R] Rectangle 239 110.0x110 @(116.5,116.5) bg=#000000
+    [R] Rectangle 240 110.0x110 @(232.7,116.5) bg=#000000
+    [F] Background+Border 110.3x110.3 @(0,232.7) bg=#FFFFFF r=10 stroke=#DFDFE3
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#B9B9BE
+  [F] Background 343xhug @(16,551) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 标题 hug_contentsxhug @(auto,auto) bg=#86868B TEXT="标题" fs=14 color=#86868B
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 点击输入 · 如「越秀公园 · 秋日」 hug_contentsxhug @(auto,auto) bg=#B9B9BE TEXT="点击输入 · 如「越秀公园 · 秋日」" fs=14 color=#B9B9BE
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 拍摄日期 hug_contentsxhug @(auto,auto) bg=#86868B TEXT="拍摄日期" fs=14 color=#86868B
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 2026/08/20 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="2026/08/20" fs=14 color=#1A1A1A
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 关联套餐 hug_contentsxhug @(auto,auto) bg=#86868B TEXT="关联套餐" fs=14 color=#86868B
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 选填 · 展示在该套餐详情页 hug_contentsxhug @(auto,auto) bg=#B9B9BE TEXT="选填 · 展示在该套餐详情页" fs=14 color=#B9B9BE
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [T] 作品信息 169.5x21 @(18,518) bg=#1A1A1A TEXT="作品信息" fs=15 color=#1A1A1A
+  [F] Margin 343xhug @(17,771)
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#1A1A1A r=999 stroke=#1A1A1A
+      [T] 写真 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="写真" fs=13 color=#FFFFFF
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 全家福 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="全家福" fs=13 color=#6D6D72
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 跟拍 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="跟拍" fs=13 color=#6D6D72
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 证件照 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="证件照" fs=13 color=#6D6D72
+    [F] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [T] 其他 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="其他" fs=13 color=#6D6D72
+  [F] Margin 343xhug @(16,815)
+    [F] Container fillx21 @(auto,auto)
+      [F] Container hug_contentsxhug @(0,0)
+        [T] 客户授权 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="客户授权" fs=15 color=#1A1A1A
+      [F] Margin 275xhug @(64,3)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 公开前必须获得 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="公开前必须获得" fs=12 color=#9A9AA0
+  [F] Margin 343xhug @(16,718)
+    [F] Container fillx21 @(auto,auto)
+      [F] Container hug_contentsxhug @(0,0)
+        [T] 分类 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="分类" fs=16 color=#1A1A1A
+      [F] Margin 275xhug @(64,3)
+        [F] Container hug_contentsxhug @(auto,auto)
+  [F] Background 343xhug @(16,865) bg=#FFFFFF r=16
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#FFF6D6 r=17
+        [F] SVG 15x15 @(auto,auto)
+          [V] Vector 11.2x11.2 @(1.9,1.9) stroke=#B8860B
+          [V] Vector 1.9x4.4 @(7.5,4.4) stroke=#B8860B
+      [F] Container fillxhug @(auto,auto)
+        [T] 待授权 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="待授权" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 发布后向客户陈雨发送授权请求 · 同意前 仅自己可见 fillxhug @(auto,auto) bg=#8E8E93 TEXT="发布后向客户陈雨发送授权请求 · 同意前
+仅自己可见" fs=11 color=#8E8E93
+      [F] Background hug_contentsxhug @(auto,auto) bg=#FFF6D6 r=999
+        [T] 待授权 hug_contentsxhug @(auto,auto) bg=#B8860B TEXT="待授权" fs=11 color=#B8860B
+  [F] Margin 343xhug @(16,955)
+    [F] Background fillxhug @(auto,auto) bg=#FFFFFF r=16
+      [F] Background fillxhug @(auto,auto) bg=#F1F1F3 r=12
+        [F] Container fillxfill_container @(auto,auto) r=10
+          [T] 精选展示 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="精选展示" fs=13 color=#8E8E93
+        [F] Container fillxfill_container @(auto,auto) r=10
+          [T] 公开 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="公开" fs=13 color=#8E8E93
+        [F] Background fillxfill_container @(auto,auto) bg=#1A1A1A r=10
+          [T] 未公开 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="未公开" fs=13 color=#FFFFFF
+      [F] Container fillxhug @(auto,auto)
+        [T] 未获授权前仅可未公开保存 · 客户同意后可改为公开或精选 展示 fillxhug @(auto,auto) bg=#86868B TEXT="未获授权前仅可未公开保存 · 客户同意后可改为公开或精选
+展示" fs=12 color=#86868B
+  [F] Container 375xhug @(0,1098)
+    [F] Button 167.5x52 @(auto,auto) bg=#FFFFFF r=999 stroke=#151617
+      [T] 存草稿 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="存草稿" fs=15 color=#151617
+    [F] Button 165.5x52 @(auto,auto) bg=#171819 r=999
+      [T] 发布 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="发布" fs=15 color=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,1223)

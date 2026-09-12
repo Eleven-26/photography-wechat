@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 白色描边勾（圆头圆角），用于深色/彩色圆底内的选中态。
+     尺寸口径（2026-09-10 按 UI 稿 P_D16-录入订单-选择套餐 放大实测校正）：
+     稿内黑圆 ⌀22px，白勾宽 ≈12px（占圆 55%）、笔画 ≈2.5px（占圆 11.4%）。
+     本文件 viewBox 20×20、勾宽 11 单位（占画布 55%）+ stroke-width 2.4 →
+     以 AppIcon size=20 渲染时，勾宽 11px、笔画 2.4px，与稿比例一致。
+     注：Ardot 导出工具不可用期间手工绘制；形状风格（圆头圆角描边勾）与稿一致。 -->
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+  <path d="M4.5 10.6 L8.4 14.4 L15.5 6.4"
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>

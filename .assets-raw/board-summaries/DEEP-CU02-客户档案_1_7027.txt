@@ -1,0 +1,50 @@
+[F] CU02-客户档案 375x832 @(2784,15559) bg=#FFFFFF
+  [R] Rectangle 44 375x827 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,749)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 客户档案 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="客户档案" fs=17 color=#151617
+    [F] Button:margin
+  [G] Group 153 343x72 @(16,114)
+    [R] 矩形 copy 5 343x72 @(16,114) bg=#FFFFFF
+    [G] Group 156 32x32 @(311,134)
+      [E] Ellipse 41 32x32 @(311,134) bg=#171717
+      [F] Frame 16x16 @(319,142)
+    [G] Group 155 40x40 @(32,130)
+      [R] 矩形 copy 5 40x40 @(32,130) bg=#699EFF
+      [T] 阿里山的姑娘 14x20 @(45,140) bg=#FFFFFF TEXT="姜" fs=14 color=#FFFFFF
+    [T] 阿里山的姑娘 42x20 @(82,131) bg=#333333 TEXT="姜浩然" fs=14 color=#333333
+    [T] 阿里山的姑娘 153x15 @(82,153) bg=#666666 TEXT="累计 ¥2,680 · 1 单 · 最近 8/8" fs=11 color=#666666
+  [R] Rectangle 234 343x60 @(16,196) bg=#121212
+  [T] 阿里山的姑娘 175x20 @(52,207) bg=#FFFFFF TEXT="待跟进 · 拍摄后 3 天未选片" fs=14 color=#FFFFFF
+  [T] 阿里山的姑娘 99x15 @(52,229) bg=#CCCCCC TEXT="来自今日待跟进提醒" fs=11 color=#CCCCCC
+  [E] Ellipse 42 8x8 @(32,222) bg=#FFDA08
+  [R] Rectangle 235 80x28 @(263,212) bg=#FFDA08
+  [T] 阿里山的姑娘 55x15 @(275,219) bg=#121212 TEXT="发选片链接" fs=11 color=#121212
+  [T] 全部订单 60x20 @(16,276) bg=#151617 TEXT="全部订单" fs=15 color=#151617
+  [T] 客户资料 60x20 @(16,400) bg=#151617 TEXT="客户资料" fs=15 color=#151617
+  [G] Group 157 343x74 @(16,306)
+    [R] Rectangle 236 343x74 @(16,306) bg=#FFFFFF
+    [T] 阿里山的姑娘 33x15 @(310,323) bg=#B66E00 TEXT="进行中" fs=11 color=#B66E00
+    [E] Ellipse 40 6x6 @(300,327) bg=#B66E00
+    [T] 家庭纪念写真 90x18 @(32,322) bg=#171819 TEXT="家庭纪念写真" fs=15 color=#171819
+    [T] ￥2680 51x18 @(292,346) bg=#171819 TEXT="￥2680" fs=15 color=#171819
+    [T] 婚礼跟拍 · 8/10 · 24张精修 241x18 @(32,346) bg=#747981 TEXT="婚礼跟拍 · 8/10 · 24张精修" fs=12 color=#747981
+  [F] Background+Border+Shadow 343xhug @(16,430) bg=#FFFFFF r=20
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container hug_contentsxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+      [G] 小箭头 16x16 @(auto,auto)
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container hug_contentsxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+      [G] 小箭头 16x16 @(auto,auto)
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+      [G] 小箭头
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,798)

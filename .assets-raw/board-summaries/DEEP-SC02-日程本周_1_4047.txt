@@ -1,0 +1,82 @@
+[F] SC02-日程 本周 375x1001 @(2784,14114) bg=#FFFFFF
+  [R] Rectangle 44 375x1001 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,917)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 日程 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="日程" fs=17 color=#151617
+    [F] Button:margin
+  [G] Group 49 343x44 @(16,114)
+    [R] Rectangle 64 343x44 @(16,114) bg=#FFFFFF
+    [R] Rectangle 65 112x40 @(18,116) bg=#FFFFFF
+    [T] 今日 26x18 @(61,127) bg=#666666 TEXT="今日" fs=13 color=#666666
+    [G] Group 48 112x40 @(132,116)
+      [R] Rectangle 66 112x40 @(132,116) bg=#121212
+      [T] 本周 26x18 @(175,126) bg=#FFFFFF TEXT="本周" fs=13 color=#FFFFFF
+      [F] Container hug_contentsxhug @(204,126.5)
+    [R] Rectangle 67 112x40 @(245,116) bg=#FFFFFF
+    [T] 可约档期 52x18 @(275,127) bg=#666666 TEXT="可约档期" fs=13 color=#666666
+  [T] 8月5日 - 8月11日 339x20 @(18,178) bg=#151617 TEXT="8月5日 - 8月11日" fs=15 color=#151617
+  [T] 8月8日 周四 · 今日 339x20 @(18,308) bg=#151617 TEXT="8月8日 周四 · 今日" fs=15 color=#151617
+  [G] Group 117 343x80 @(17,208)
+    [R] Rectangle 162 343x80 @(17,208) bg=#FFFFFF
+    [R] Rectangle 163 40x60 @(33,218) bg=#FFFFFF
+    [R] Rectangle 164 40x60 @(78,218) bg=#FFFFFF
+    [R] Rectangle 165 40x60 @(123,218) bg=#FFFFFF
+    [R] Rectangle 166 40x60 @(168,218) bg=#121212
+    [R] Rectangle 167 40x60 @(213,218) bg=#FFFFFF
+    [R] Rectangle 168 40x60 @(258,218) bg=#FFFFFF
+    [R] Rectangle 169 40x60 @(303,218) bg=#FFFFFF
+    [T] 5 8x18 @(49,245) bg=#151617 TEXT="5" fs=13 color=#151617
+    [T] 6 8x18 @(94,245) bg=#151617 TEXT="6" fs=13 color=#151617
+    [T] 7 8x18 @(139,245) bg=#151617 TEXT="7" fs=13 color=#151617
+    [T] 8 8x18 @(184,245) bg=#FFFFFF TEXT="8" fs=13 color=#FFFFFF
+    [T] 9 8x18 @(229,245) bg=#151617 TEXT="9" fs=13 color=#151617
+    [T] 10 16x18 @(270,245) bg=#151617 TEXT="10" fs=13 color=#151617
+    [T] 11 16x18 @(315,245) bg=#151617 TEXT="11" fs=13 color=#151617
+    [T] 一 40x15 @(33,224) bg=#999999 TEXT="一" fs=11 color=#999999
+    [T] 二 40x15 @(78,224) bg=#999999 TEXT="二" fs=11 color=#999999
+    [T] 三 40x15 @(123,224) bg=#999999 TEXT="三" fs=11 color=#999999
+    [T] 四 40x15 @(168,224) bg=#999999 TEXT="四" fs=11 color=#999999
+    [T] 五 40x15 @(213,224) bg=#999999 TEXT="五" fs=11 color=#999999
+    [T] 六 40x15 @(258,224) bg=#999999 TEXT="六" fs=11 color=#999999
+    [T] 日 40x15 @(303,224) bg=#999999 TEXT="日" fs=11 color=#999999
+    [E] Ellipse 25 4x4 @(51,267) bg=#C3C3C3
+    [E] Ellipse 27 4x4 @(276,267) bg=#20845C
+    [E] Ellipse 28 4x4 @(186,267) bg=#FFFFFF
+    [E] Ellipse 26 4x4 @(96,267) bg=#C2C2C2
+    [E] Ellipse 29 4x4 @(231,267) bg=#B66E00
+  [F] Background+Border+Shadow 343x114 @(16,338) bg=#FFFFFF r=16
+    [F] Container 309xhug @(17,16)
+      [F] Container hug_contentsxhug @(auto,auto)
+      [F] Background hug_contentsxhug @(auto,auto) bg=#FFF3D6 r=999
+    [F] Margin 309xhug @(17,50)
+      [F] Container fillx18 @(auto,auto)
+    [F] Container 309x20 @(17,78)
+      [T] 越秀公园 · 2.5h hug_contentsxhug @(auto,auto) bg=#666666 TEXT="越秀公园 · 2.5h" fs=13 color=#666666
+  [F] Background+Border+Shadow 343x114 @(16,462) bg=#FFFFFF r=16
+    [F] Container 309xhug @(17,16)
+      [F] Container hug_contentsxhug @(auto,auto)
+      [F] Background hug_contentsxhug @(auto,auto) bg=#E6E7EB r=999
+    [F] Margin 309xhug @(17,50)
+      [F] Container fillx18 @(auto,auto)
+    [F] Container 309x20 @(17,78)
+      [T] 越秀公园 · 2.5h hug_contentsxhug @(auto,auto) bg=#666666 TEXT="越秀公园 · 2.5h" fs=13 color=#666666
+  [F] Background+Border+Shadow 343x70 @(16,586) bg=#FFFFFF r=16
+    [F] Container 311x21 @(16,14)
+      [T] 16:00 - 18:00 空闲 311x18 @(0,1) bg=#333333 TEXT="16:00 - 18:00 空闲" fs=13 color=#333333
+    [F] Container 311x21 @(16,35)
+      [T] 可临时接单或处理后期 311x18 @(0,1) bg=#666666 TEXT="可临时接单或处理后期" fs=13 color=#666666
+    [F] Background hug_contentsxhug @(287,24) bg=#E5F6ED r=999
+      [T] 可约 hug_contentsxhug @(auto,auto) bg=#20845C TEXT="可约" fs=11 color=#20845C
+  [F] Section 343xhug @(16,676)
+    [F] Container fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+    [F] Background+Border+Shadow fillxhug @(auto,auto) bg=#FFFFFF r=16
+      [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container fillxhug @(auto,auto)
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,966)

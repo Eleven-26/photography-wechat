@@ -1,0 +1,74 @@
+[FRAME] ME07-上传作品 375x1257 @(5618,16905) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x1256 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,1174)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 上传作品 hug_contentsxhug_contents @(auto,auto) bg=#1A1A1A TEXT="上传作品" fs=17 color=#1A1A1A
+    [FRAME] Button:margin
+  [FRAME] Margin 343xhug_contents @(16,104)
+    [FRAME] Container fill_containerx21 @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [FRAME] Margin 275.0039978027344xhug_contents @(63.99599838256836,3)
+  [FRAME] Container 343x343 @(16,154)
+    [FRAME] Background 110x110 @(0,1.6699981689453125) r=12
+      [RECTANGLE] Rectangle 237 109.99999237060547x110 @(0,0)
+      [FRAME] Background hug_contentsxhug_contents @(77.33333587646484,5) bg=#1A1A1A r=4
+    [RECTANGLE] Rectangle 237 109.99999237060547x110 @(116.5,0)
+    [RECTANGLE] Rectangle 238 109.99999237060547x110 @(232.66650390625,0)
+    [FRAME] Background 110x110 @(0,116.509765625) r=12
+      [RECTANGLE] Rectangle 237 109.99999237060547x110 @(0,0)
+    [RECTANGLE] Rectangle 239 109.99999237060547x110 @(116.5,116.509765625)
+    [RECTANGLE] Rectangle 240 109.99999237060547x110 @(232.66650390625,116.509765625)
+    [FRAME] Background+Border 110.33333587646484x110.33333587646484 @(0,232.68800354003906) bg=#FFFFFF r=10 stroke=#DFDFE3
+      [FRAME] SVG 20x20 @(auto,auto)
+  [FRAME] Background 343xhug_contents @(16,551) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [TEXT] 作品信息 169.5x21 @(18,518) bg=#1A1A1A TEXT="作品信息" fs=15 color=#1A1A1A
+  [FRAME] Margin 343xhug_contents @(17,771)
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#1A1A1A r=999 stroke=#1A1A1A
+      [TEXT] 写真 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="写真" fs=13 color=#FFFFFF
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 全家福 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="全家福" fs=13 color=#6D6D72
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 跟拍 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="跟拍" fs=13 color=#6D6D72
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 证件照 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="证件照" fs=13 color=#6D6D72
+    [FRAME] Background+Border hug_contentsx34 @(auto,auto) bg=#FFFFFF r=999 stroke=#E9E9EC
+      [TEXT] 其他 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="其他" fs=13 color=#6D6D72
+  [FRAME] Margin 343xhug_contents @(16,815)
+    [FRAME] Container fill_containerx21 @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [FRAME] Margin 275xhug_contents @(64,3)
+  [FRAME] Margin 343xhug_contents @(16,718)
+    [FRAME] Container fill_containerx21 @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [FRAME] Margin 275xhug_contents @(64,3)
+  [FRAME] Background 343xhug_contents @(16,865) bg=#FFFFFF r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 34x34 @(auto,auto) bg=#FFF6D6 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#FFF6D6 r=999
+  [FRAME] Margin 343xhug_contents @(16,955)
+    [FRAME] Background fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16
+      [FRAME] Background fill_containerxhug_contents @(auto,auto) bg=#F1F1F3 r=12
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+  [FRAME] Container 375xhug_contents @(0,1098)
+    [FRAME] Button 167.5x52 @(auto,auto) bg=#FFFFFF r=999 stroke=#151617
+      [TEXT] 存草稿 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="存草稿" fs=15 color=#151617
+    [FRAME] Button 165.5x52 @(auto,auto) bg=#171819 r=999
+      [TEXT] 发布 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="发布" fs=15 color=#FFFFFF
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,1223) bg=#FFFFFF

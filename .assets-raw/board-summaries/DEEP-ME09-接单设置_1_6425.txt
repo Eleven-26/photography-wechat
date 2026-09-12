@@ -1,0 +1,81 @@
+[F] ME09-接单设置 375x1193 @(2784,19290) bg=#FFFFFF
+  [R] Rectangle 44 375x1126 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,1110)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 收款设置 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="收款设置" fs=17 color=#1A1A1A
+    [F] Button:margin
+  [F] Background 343x64 @(16,114) bg=#E6E7EB r=12
+    [F] SVG:margin 14x15 @(14,14)
+      [F] SVG 14x14 @(auto,auto)
+        [V] Vector 11.7x9.2 @(1.2,1.9) stroke=#8E8E93
+        [V] Vector 11.7x0 @(1.2,5.8) stroke=#8E8E93
+    [F] Container hug_contentsxhug @(36,12)
+      [T] 资金不经平台。客户在 H5 下单后按以下方式线下转
+账，你在订单中确认到账（登记）。 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="资金不经平台。客户在 H5 下单后按以下方式线下转
+账，你在订单中确认到账（登记）。" fs=12 color=#6D6D72
+  [F] Margin 343xhug @(16,178)
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 银行卡 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="银行卡" fs=15 color=#1A1A1A
+      [F] Margin fillxhug @(auto,auto)
+        [F] Background hug_contentsxhug @(auto,auto) bg=#DFF5E9 r=999
+          [T] 已启用 hug_contentsxhug @(auto,auto) bg=#00A860 TEXT="已启用" fs=12 color=#00A860
+  [F] Background 343xhug @(16,233) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 开户行 hug_contentsxhug @(auto,auto) bg=#86868B TEXT="开户行" fs=14 color=#86868B
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 招商银行 广州分行 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="招商银行 广州分行" fs=14 color=#1A1A1A
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 卡号 hug_contentsxhug @(auto,auto) bg=#86868B TEXT="卡号" fs=14 color=#86868B
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 6217 8301 **** 2874 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="6217 8301 **** 2874" fs=14 color=#1A1A1A
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 户名 hug_contentsxhug @(auto,auto) bg=#86868B TEXT="户名" fs=14 color=#86868B
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 路明 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="路明" fs=14 color=#1A1A1A
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Margin 343xhug @(16,398)
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 微信收款码 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="微信收款码" fs=16 color=#1A1A1A
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [F] Background hug_contentsxhug @(auto,auto) bg=#DFF5E9 r=999
+            [T] 已启用 hug_contentsxhug @(auto,auto) bg=#00A860 TEXT="已启用" fs=12 color=#00A860
+  [F] Margin 343xhug @(16,670)
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 支付宝收款码 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="支付宝收款码" fs=16 color=#1A1A1A
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [F] Background hug_contentsxhug @(auto,auto) bg=#DFF5E9 r=999
+            [T] 已启用 hug_contentsxhug @(auto,auto) bg=#00A860 TEXT="已启用" fs=12 color=#00A860
+  [F] Background 343xhug @(16,453) bg=#FFFFFF r=16
+    [R] image 12 159x159 @(auto,auto) bg=#000000
+    [F] Container fillxhug @(auto,auto)
+      [T] 点击更换 · 客户扫码转账后无需凭证，你确认到账 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="点击更换 · 客户扫码转账后无需凭证，你确认到账" fs=12 color=#8E8E93
+  [F] Background 343xhug @(16,725) bg=#FFFFFF r=16
+    [R] image 12 159x159 @(auto,auto) bg=#000000
+    [F] Container fillxhug @(auto,auto)
+      [T] 点击更换 · 客户扫码转账后无需凭证，你确认到账 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="点击更换 · 客户扫码转账后无需凭证，你确认到账" fs=12 color=#8E8E93
+  [F] Margin 343xhug @(16,942)
+    [F] Background fillxhug @(auto,auto) bg=#E6E7EB r=12
+      [T] 确认规则：微信 / 支付宝转账无需上传凭证，你确认到账后
+在订单里点确认；银行卡转账由客户上传凭证，系统识别金
+额与流水供你比对。 hug_contentsxhug @(auto,auto) bg=#6D6D72 TEXT="确认规则：微信 / 支付宝转账无需上传凭证，你确认到账后
+在订单里点确认；银行卡转账由客户上传凭证，系统识别金
+额与流水供你比对。" fs=12 color=#6D6D72
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,1159)

@@ -1,0 +1,132 @@
+[F] SC03-日程 可约档期 375x911 @(3259,14114) bg=#FFFFFF
+  [R] Rectangle 44 375x910 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,828)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 日程 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="日程" fs=17 color=#151617
+    [F] Button:margin
+  [G] Group 49 343x44 @(16,114)
+    [R] Rectangle 64 343x44 @(16,114) bg=#FFFFFF
+    [R] Rectangle 65 112x40 @(18,116) bg=#FFFFFF
+    [T] 今日 26x18 @(61,127) bg=#666666 TEXT="今日" fs=13 color=#666666
+    [G] Group 48 112x40 @(132,116)
+      [R] Rectangle 66 112x40 @(132,116) bg=#FFFFFF
+      [T] 本周 26x18 @(175,126) bg=#666666 TEXT="本周" fs=13 color=#666666
+      [F] Container hug_contentsxhug @(204,126.5)
+    [R] Rectangle 67 112x40 @(245,116) bg=#121212
+    [T] 可约档期 52x18 @(275,127) bg=#FFFFFF TEXT="可约档期" fs=13 color=#FFFFFF
+  [G] Group 123 343x384 @(16,178)
+    [R] Rectangle 170 343x384 @(16,178) bg=#FFFFFF
+    [R] Rectangle 177 40x40 @(32,299) bg=#FFFFFF
+    [R] Rectangle 184 40x40 @(32,344) bg=#FEF3C7
+    [R] Rectangle 191 40x40 @(32,389) bg=#DCFCE7
+    [R] Rectangle 198 40x40 @(32,434) bg=#FEE2E2
+    [R] Rectangle 205 40x40 @(32,479) bg=#DCFCE7
+    [R] Rectangle 178 40x40 @(77,299) bg=#FFFFFF
+    [R] Rectangle 185 40x40 @(77,344) bg=#DCFCE7
+    [R] Rectangle 192 40x40 @(77,389) bg=#FEF3C7 stroke=#121212
+    [R] Rectangle 199 40x40 @(77,434) bg=#FFFFFF
+    [R] Rectangle 206 40x40 @(77,479) bg=#FFFFFF
+    [R] Rectangle 179 40x40 @(122,299) bg=#FEE2E2
+    [R] Rectangle 186 40x40 @(122,344) bg=#FFFFFF
+    [R] Rectangle 193 40x40 @(122,389) bg=#FFFFFF
+    [R] Rectangle 200 40x40 @(122,434) bg=#FFFFFF
+    [R] Rectangle 180 40x40 @(167,299) bg=#FFFFFF
+    [R] Rectangle 187 40x40 @(167,344) bg=#EBECEF
+    [R] Rectangle 194 40x40 @(167,389) bg=#FFFFFF
+    [R] Rectangle 201 40x40 @(167,434) bg=#FFFFFF
+    [R] Rectangle 181 40x40 @(212,299) bg=#FEE2E2
+    [R] Rectangle 188 40x40 @(212,344) bg=#FFFFFF
+    [R] Rectangle 195 40x40 @(212,389) bg=#FFFFFF
+    [R] Rectangle 202 40x40 @(212,434) bg=#FFFFFF
+    [R] Rectangle 182 40x40 @(257,299) bg=#FFFFFF
+    [R] Rectangle 189 40x40 @(257,344) bg=#FFFFFF
+    [R] Rectangle 196 40x40 @(257,389) bg=#FFFFFF
+    [R] Rectangle 203 40x40 @(257,434) bg=#FFFFFF
+    [R] Rectangle 176 40x40 @(302,254) bg=#FEE2E2
+    [T] 一 40x17 @(31,227) bg=#999999 TEXT="一" fs=12 color=#999999
+    [T] 二 40x17 @(76,227) bg=#999999 TEXT="二" fs=12 color=#999999
+    [T] 三 40x17 @(121,227) bg=#999999 TEXT="三" fs=12 color=#999999
+    [T] 四 40x17 @(166,227) bg=#999999 TEXT="四" fs=12 color=#999999
+    [T] 五 40x17 @(211,227) bg=#999999 TEXT="五" fs=12 color=#999999
+    [T] 六 40x17 @(256,227) bg=#999999 TEXT="六" fs=12 color=#999999
+    [T] 日 40x17 @(301,227) bg=#999999 TEXT="日" fs=12 color=#999999
+    [R] Rectangle 183 40x40 @(302,299) bg=#FFFFFF
+    [R] Rectangle 190 40x40 @(302,344) bg=#FFFFFF
+    [R] Rectangle 197 40x40 @(302,389) bg=#FFFFFF
+    [R] Rectangle 204 40x40 @(302,434) bg=#FFFFFF
+    [T] 1 8x18 @(318,265) bg=#D94B4B TEXT="1" fs=13 color=#D94B4B
+    [T] 2 8x18 @(48,310) bg=#151617 TEXT="2" fs=13 color=#151617
+    [T] 9 8x18 @(48,355) bg=#B66E00 TEXT="9" fs=13 color=#B66E00
+    [T] 16 16x18 @(44,400) bg=#20845C TEXT="16" fs=13 color=#20845C
+    [T] 23 16x18 @(44,445) bg=#D94B4B TEXT="23" fs=13 color=#D94B4B
+    [T] 30 16x18 @(44,490) bg=#20845C TEXT="30" fs=13 color=#20845C
+    [T] 3 8x18 @(93,310) bg=#151617 TEXT="3" fs=13 color=#151617
+    [T] 10 16x18 @(89,355) bg=#20845C TEXT="10" fs=13 color=#20845C
+    [T] 17 16x18 @(89,400) bg=#B66E00 TEXT="17" fs=13 color=#B66E00
+    [T] 24 16x18 @(89,445) bg=#151617 TEXT="24" fs=13 color=#151617
+    [T] 31 16x18 @(89,490) bg=#151617 TEXT="31" fs=13 color=#151617
+    [T] 4 8x18 @(138,310) bg=#D94B4B TEXT="4" fs=13 color=#D94B4B
+    [T] 11 16x18 @(134,355) bg=#151617 TEXT="11" fs=13 color=#151617
+    [T] 18 16x18 @(134,400) bg=#151617 TEXT="18" fs=13 color=#151617
+    [T] 25 16x18 @(134,445) bg=#151617 TEXT="25" fs=13 color=#151617
+    [T] 5 8x18 @(183,310) bg=#151617 TEXT="5" fs=13 color=#151617
+    [T] 12 16x18 @(179,355) bg=#151617 TEXT="12" fs=13 color=#151617
+    [T] 19 16x18 @(179,400) bg=#151617 TEXT="19" fs=13 color=#151617
+    [T] 26 16x18 @(179,445) bg=#151617 TEXT="26" fs=13 color=#151617
+    [T] 6 8x18 @(228,310) bg=#D94B4B TEXT="6" fs=13 color=#D94B4B
+    [T] 13 16x18 @(224,355) bg=#151617 TEXT="13" fs=13 color=#151617
+    [T] 20 16x18 @(224,400) bg=#151617 TEXT="20" fs=13 color=#151617
+    [T] 27 16x18 @(224,445) bg=#151617 TEXT="27" fs=13 color=#151617
+    [T] 7 8x18 @(273,310) bg=#151617 TEXT="7" fs=13 color=#151617
+    [T] 14 16x18 @(269,355) bg=#151617 TEXT="14" fs=13 color=#151617
+    [T] 21 16x18 @(269,400) bg=#151617 TEXT="21" fs=13 color=#151617
+    [T] 28 16x18 @(269,445) bg=#151617 TEXT="28" fs=13 color=#151617
+    [T] 8 8x18 @(318,310) bg=#151617 TEXT="8" fs=13 color=#151617
+    [T] 15 16x18 @(314,355) bg=#151617 TEXT="15" fs=13 color=#151617
+    [T] 22 16x18 @(314,400) bg=#151617 TEXT="22" fs=13 color=#151617
+    [T] 29 16x18 @(314,445) bg=#151617 TEXT="29" fs=13 color=#151617
+    [F] Container 311xhug @(32,194)
+      [F] SVG 20x20 @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+      [F] SVG 20x20 @(auto,auto)
+    [G] Group 118 37x17 @(35,529)
+      [E] Ellipse 30 8x8 @(35,534) bg=#76D596
+      [T] 可约 24x17 @(48,529) bg=#000000 TEXT="可约" fs=12 color=#000000
+    [G] Group 119 61x17 @(82,529)
+      [E] Ellipse 30 8x8 @(82,534) bg=#FFDA08
+      [T] 部分可约 48x17 @(95,529) bg=#000000 TEXT="部分可约" fs=12 color=#000000
+    [G] Group 120 67x17 @(153,529)
+      [E] Ellipse 30 8x8 @(153,534) bg=#FF8181
+      [T] 已占/关闭 54x17 @(166,529) bg=#000000 TEXT="已占/关闭" fs=12 color=#000000
+    [G] Group 121 37x17 @(230,529)
+      [E] Ellipse 30 8x8 @(230,534) bg=#D4D4D4
+      [T] 今日 24x17 @(243,529) bg=#000000 TEXT="今日" fs=12 color=#000000
+    [G] Group 122 37x17 @(277,529)
+      [E] Ellipse 30 8x8 @(277,534) bg=#FFFFFF stroke=#121212
+      [T] 选中 24x17 @(290,529) bg=#000000 TEXT="选中" fs=12 color=#000000
+  [F] Background+Border+Shadow 343xhug @(16,740) bg=#FFFFFF r=16
+    [F] Container fillxhug @(auto,auto)
+      [F] SVG 20x20 @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+      [F] SVG 16x16 @(auto,auto)
+  [T] 8月17日 周二 92x20 @(18,584) bg=#151617 TEXT="8月17日 周二" fs=15 color=#151617
+  [F] Background hug_contentsxhug @(297,582) bg=#FFF3D6 r=999
+    [T] 部分可约 hug_contentsxhug @(auto,auto) bg=#B66E00 TEXT="部分可约" fs=11 color=#B66E00
+  [R] Rectangle 207 343x108 @(16,612) bg=#FFFFFF
+  [F] Border 96x34 @(28,628) bg=#FEE2E2 r=999
+    [T] 09:00-11:00 72x17 @(12,8.5) bg=#D94B4B TEXT="09:00-11:00" fs=12 color=#D94B4B
+    [G] Group 124 32x16 @(64,-8)
+      [R] Rectangle 208 32x16 @(64,-8) bg=#D94B4B
+      [T] 订单 20x14 @(70,-7) bg=#FFFFFF TEXT="订单" fs=10 color=#FFFFFF
+  [F] Background+Border hug_contentsx34 @(138,628) bg=#DCFCE7 r=999 stroke=#DCFCE7
+    [T] 11:00-14:00 hug_contentsxhug @(auto,auto) bg=#20845C TEXT="11:00-14:00" fs=12 color=#20845C
+  [F] Border hug_contentsx34 @(248,628) bg=#DCFCE7 r=999
+    [T] 14:00-16:00 hug_contentsxhug @(auto,auto) bg=#20845C TEXT="14:00-16:00" fs=12 color=#20845C
+  [F] Border hug_contentsx34 @(28,670) bg=#F7F8FA r=999 stroke=#DBDBDB
+    [T] 16:00-18:00 hug_contentsxhug @(auto,auto) bg=#333333 TEXT="16:00-18:00" fs=12 color=#333333
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,877)

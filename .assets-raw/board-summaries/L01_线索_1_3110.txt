@@ -1,0 +1,35 @@
+[FRAME] L01 线索 375x812 @(3259,7608) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x996 @(0,1) bg=#F2F3F5
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 线索 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="线索" fs=17 color=#151617
+    [FRAME] Button:margin
+  [GROUP] Group 49 343x44 @(16,114)
+    [RECTANGLE] Rectangle 64 343x44 @(16,114) bg=#FFFFFF
+    [RECTANGLE] Rectangle 65 112x40 @(18,116) bg=#121212
+    [TEXT] 待处理 39x18 @(55,127) bg=#FFFFFF TEXT="待处理" fs=13 color=#FFFFFF
+    [GROUP] Group 48 112x40 @(132,116)
+      [RECTANGLE] Rectangle 66 112x40 @(132,116) bg=#FFFFFF
+      [TEXT] 全部 26x18 @(166,126) bg=#666666 TEXT="全部" fs=13 color=#666666
+      [TEXT] 18 15x17 @(194,127) bg=#9CA3AF TEXT="18" fs=12 color=#9CA3AF
+    [RECTANGLE] Rectangle 67 112x40 @(245,116) bg=#FFFFFF
+    [TEXT] 已报价 39x18 @(280.5,127) bg=#666666 TEXT="已报价" fs=13 color=#666666
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [FRAME] Background+Border+Shadow 343xhug_contents @(16,178) bg=#FFFFFF r=20 stroke=#151617
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#151617
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#151617
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#151617
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [INSTANCE] 底部导航 375x83 @(0,729)
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,778) bg=#FFFFFF

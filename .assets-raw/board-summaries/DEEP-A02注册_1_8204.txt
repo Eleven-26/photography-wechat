@@ -1,0 +1,39 @@
+[F] A02注册 375x812 @(2784,6532) bg=#FFFFFF
+  [R] Rectangle 44 375x812 @(0,0) bg=#F2F3F5
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 注册 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="注册" fs=17 color=#151617
+  [F] Button 343x52 @(16,591) bg=#171819 r=999
+    [T] 注册 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="注册" fs=15 color=#FFFFFF
+  [F] Container 343xhug @(16,659)
+    [T] 已有账号？登录 hug_contentsxhug @(auto,auto) bg=#747981 TEXT="已有账号？登录" fs=13 color=#747981
+  [F] Margin 327xhug @(21,124)
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 64x64 @(auto,auto) bg=#FFDA08
+      [F] Container fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+  [F] Input 293x17 @(60,316)
+    [F] Container 293xhug @(0,0)
+  [G] Group 40 327x49 @(24,330)
+    [R] Rectangle 45 327x49 @(24,330) bg=#FFFFFF
+    [T] 请输入手机号 84x20 @(112,345) bg=#757575 TEXT="请输入手机号" fs=14 color=#757575
+    [T] +86 26x20 @(39,345) bg=#333333 TEXT="+86" fs=14 color=#333333
+    [R] Rectangle 46 1x11 @(96,349) bg=#22252A
+  [G] Group 42 327x49 @(24,468)
+    [R] Rectangle 45 327x49 @(24,468) bg=#FFFFFF
+    [T] 设置登录密码 84x20 @(112,483) bg=#757575 TEXT="设置登录密码" fs=14 color=#757575
+    [T] +86 26x20 @(39,483) bg=#333333 TEXT="+86" fs=14 color=#333333
+    [R] Rectangle 46 1x11 @(96,487) bg=#22252A
+  [G] Group 41 327x49 @(24,399)
+    [R] Rectangle 45 327x49 @(24,399) bg=#FFFFFF
+    [R] Rectangle 46 1x11 @(96,418) bg=#22252A
+    [T] 请输验证码 70x20 @(112,414) bg=#757575 TEXT="请输验证码" fs=14 color=#757575
+    [T] 获取验证码 70x20 @(261,414) bg=#00B972 TEXT="获取验证码" fs=14 color=#00B972
+    [T] 验证码 42x20 @(39,414) bg=#333333 TEXT="验证码" fs=14 color=#333333
+  [F] Container 343xhug @(16,527)
+    [R] Border 20x20 @(auto,auto) stroke=#E8E8E3
+    [F] Container hug_contentsxhug @(auto,auto)
+      [T] 我已阅读并同意《服务协议》和《隐私政策》 hug_contentsxhug @(auto,auto) bg=#171717 TEXT="我已阅读并同意《服务协议》和《隐私政策》" fs=11 color=#171717
+  [I] Iphone 375x44 @(0,0)

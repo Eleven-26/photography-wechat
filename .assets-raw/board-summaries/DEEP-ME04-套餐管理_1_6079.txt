@@ -1,0 +1,95 @@
+[F] ME04-套餐管理 375x812 @(3734,16905) bg=#FFFFFF
+  [R] Rectangle 44 375x811 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,729)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 套餐管理 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="套餐管理" fs=17 color=#1A1A1A
+    [F] Button:margin
+  [F] Container 375xhug @(0,114)
+    [F] Background fillxhug @(auto,auto) bg=#FFFFFF r=16
+      [F] Container hug_contentsxhug @(auto,auto)
+        [F] Container fillxhug @(auto,auto)
+          [T] 已上架 · 客户可见 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="已上架 · 客户可见" fs=12 color=#8E8E93
+        [F] Paragraph fillx26 @(auto,auto)
+          [T] 4 14x31 @(0,0) bg=#1A1A1A TEXT="4" fs=22 color=#1A1A1A
+          [T] / 5 个 40x18 @(12.2,8) bg=#8E8E93 TEXT=" / 5 个" fs=12.899999618530273 color=#8E8E93
+      [F] Margin fillxhug @(auto,auto)
+        [T] 下架套餐客户不可见 不影响已成交订单 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="下架套餐客户不可见
+不影响已成交订单" fs=12 color=#9A9AA0
+    [F] Margin fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+        [T] 全部套餐 fillxhug @(auto,auto) bg=#1A1A1A TEXT="全部套餐" fs=15 color=#1A1A1A
+    [F] Background fillxhug @(auto,auto) bg=#FFFFFF r=16
+      [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+        [F] Background 38x38 @(auto,auto) bg=#3E5C76 r=10
+          [T] 写真 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="写真" fs=10 color=#FFFFFF
+        [F] Container fillxhug @(auto,auto)
+          [F] Container fillxhug @(auto,auto)
+            [T] 亲自写真 · 基础 fillxhug @(auto,auto) bg=#000000 TEXT="亲自写真 · 基础" fs=14 color=#000000
+          [F] Container fillxhug @(auto,auto)
+            [T] 2人·约2h·精修30张 fillxhug @(auto,auto) bg=#8E8E93 TEXT="2人·约2h·精修30张" fs=11 color=#8E8E93
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] ¥2,680 hug_contentsxhug @(auto,auto) bg=#000000 TEXT="¥2,680" fs=12.399999618530273 color=#000000
+        [F] Background 46x27 @(auto,auto) bg=#34C759 r=999
+          [R] Background 21x21 @(auto,auto) bg=#FFFFFF
+      [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+        [F] Background 38x38 @(auto,auto) bg=#7C6BA8 r=10
+          [T] 写真 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="写真" fs=10 color=#FFFFFF
+        [F] Container fillxhug @(auto,auto)
+          [F] Container fillxhug @(auto,auto)
+            [T] 亲自写真 · 轻奢 fillxhug @(auto,auto) bg=#000000 TEXT="亲自写真 · 轻奢" fs=14 color=#000000
+          [F] Container fillxhug @(auto,auto)
+            [T] 2人·约2h·精修30张·含相册 fillxhug @(auto,auto) bg=#8E8E93 TEXT="2人·约2h·精修30张·含相册" fs=11 color=#8E8E93
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] ¥3,980 hug_contentsxhug @(auto,auto) bg=#000000 TEXT="¥3,980" fs=12.399999618530273 color=#000000
+        [F] Background 46x27 @(auto,auto) bg=#34C759 r=999
+          [R] Background 21x21 @(auto,auto) bg=#FFFFFF
+      [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+        [F] Background 38x38 @(auto,auto) bg=#B0654A r=10
+          [T] 家庭 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="家庭" fs=10 color=#FFFFFF
+        [F] Container fillxhug @(auto,auto)
+          [F] Container fillxhug @(auto,auto)
+            [T] 家庭纪实 fillxhug @(auto,auto) bg=#000000 TEXT="家庭纪实" fs=14 color=#000000
+          [F] Container fillxhug @(auto,auto)
+            [T] 不限人数·约3h·精修40张 fillxhug @(auto,auto) bg=#8E8E93 TEXT="不限人数·约3h·精修40张" fs=11 color=#8E8E93
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] ¥4,580 hug_contentsxhug @(auto,auto) bg=#000000 TEXT="¥4,580" fs=12.399999618530273 color=#000000
+        [F] Background 46x27 @(auto,auto) bg=#34C759 r=999
+          [R] Background 21x21 @(auto,auto) bg=#FFFFFF
+      [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+        [F] Background 38x38 @(auto,auto) bg=#6E8A5B r=10
+          [T] 个人 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="个人" fs=10 color=#FFFFFF
+        [F] Container fillxhug @(auto,auto)
+          [F] Container fillxhug @(auto,auto)
+            [T] 个人写真 fillxhug @(auto,auto) bg=#000000 TEXT="个人写真" fs=14 color=#000000
+          [F] Container fillxhug @(auto,auto)
+            [T] 1人·约1.5h·精修20张 fillxhug @(auto,auto) bg=#8E8E93 TEXT="1人·约1.5h·精修20张" fs=11 color=#8E8E93
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] ¥1,580 hug_contentsxhug @(auto,auto) bg=#000000 TEXT="¥1,580" fs=12.399999618530273 color=#000000
+        [F] Background 46x27 @(auto,auto) bg=#34C759 r=999
+          [R] Background 21x21 @(auto,auto) bg=#FFFFFF
+      [F] Container fillxhug @(auto,auto)
+        [F] Background 38x38 @(auto,auto) bg=#9AA0A6 r=10
+          [T] 品牌 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="品牌" fs=10 color=#FFFFFF
+        [F] Container fillxhug @(auto,auto)
+          [F] Container fillx21 @(auto,auto)
+            [T] 品牌内容定制 84x20 @(0,1.5) bg=#000000 TEXT="品牌内容定制" fs=14 color=#000000
+            [F] Background hug_contentsxhug @(90,0) bg=#F1F1F3 r=999
+              [T] 草稿 hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="草稿" fs=11 color=#8E8E93
+          [F] Container fillxhug @(auto,auto)
+            [T] 需求沟通后定价 fillxhug @(auto,auto) bg=#8E8E93 TEXT="需求沟通后定价" fs=11 color=#8E8E93
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] — hug_contentsxhug @(auto,auto) bg=#8E8E93 TEXT="—" fs=13 color=#8E8E93
+        [F] Background 46x27 @(auto,auto) bg=#DFDFE3 r=999
+          [R] Background 21x21 @(auto,auto) bg=#FFFFFF
+    [F] Margin fillx70 @(auto,auto)
+      [F] Background fillx52 @(auto,auto) bg=#1A1A1A r=999
+        [F] SVG 14x14 @(auto,auto)
+          [V] Vector 8.2x8.2 @(2.9,2.9) stroke=#FFFFFF
+        [T] 新建套餐 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="新建套餐" fs=15 color=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,778)

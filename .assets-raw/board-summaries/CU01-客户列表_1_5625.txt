@@ -1,0 +1,97 @@
+[FRAME] CU01-客户列表 375x832 @(2309,15559) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x827 @(0,1) bg=#F2F3F5
+  [GROUP] Group 149 343x60 @(16,354)
+    [RECTANGLE] 矩形 copy 5 343x60 @(16,354) bg=#FFFFFF stroke=#979797
+    [RECTANGLE] 矩形 copy 5 40x40 @(26,364) bg=#F89595 stroke=#979797
+    [TEXT] 阿里山的姑娘 14x20 @(39,374) bg=#FFFFFF TEXT="李" fs=14 color=#FFFFFF
+    [TEXT] 阿里山的姑娘 28x20 @(72,365) bg=#333333 TEXT="李芳" fs=14 color=#333333
+    [TEXT] 阿里山的姑娘 191x15 @(72,387) bg=#666666 TEXT="商务形象照 · 3 单 · ¥12,800 · 样片…" fs=11 color=#666666
+    [TEXT] 阿里山的姑娘 30x15 @(313,387) bg=#999999 TEXT="8/6拍" fs=11 color=#999999
+    [TEXT] 阿里山的姑娘 33x15 @(310,368) bg=#B66E00 TEXT="进行中" fs=11 color=#B66E00
+    [ELLIPSE] Ellipse 40 6x6 @(300,372) bg=#B66E00
+  [GROUP] Group 150 343x60 @(16,416)
+    [RECTANGLE] 矩形 copy 5 343x60 @(16,416) bg=#FFFFFF stroke=#979797
+    [RECTANGLE] 矩形 copy 5 40x40 @(26,426) bg=#08A4FF stroke=#979797
+    [TEXT] 阿里山的姑娘 14x20 @(39,436) bg=#FFFFFF TEXT="林" fs=14 color=#FFFFFF
+    [TEXT] 阿里山的姑娘 42x20 @(72,427) bg=#333333 TEXT="林七月" fs=14 color=#333333
+    [TEXT] 阿里山的姑娘 138x15 @(72,449) bg=#666666 TEXT="亲子写真 · 4 单 · 报价 2 天" fs=11 color=#666666
+    [TEXT] 阿里山的姑娘 33x15 @(310,430) bg=#121212 TEXT="询价中" fs=11 color=#121212
+    [ELLIPSE] Ellipse 40 6x6 @(300,434) bg=#121212
+  [GROUP] Group 151 343x60 @(16,478)
+    [RECTANGLE] 矩形 copy 5 343x60 @(16,478) bg=#FFFFFF stroke=#979797
+    [RECTANGLE] 矩形 copy 5 40x40 @(26,488) bg=#EFA803 stroke=#979797
+    [TEXT] 阿里山的姑娘 14x20 @(39,498) bg=#FFFFFF TEXT="孟" fs=14 color=#FFFFFF
+    [TEXT] 阿里山的姑娘 28x20 @(72,489) bg=#333333 TEXT="孟川" fs=14 color=#333333
+    [TEXT] 阿里山的姑娘 191x15 @(72,511) bg=#666666 TEXT="商务形象照 · 3 单 · ¥12,800 · 样片…" fs=11 color=#666666
+    [TEXT] 阿里山的姑娘 33x15 @(310,492) bg=#00B972 TEXT="待跟进" fs=11 color=#00B972
+    [ELLIPSE] Ellipse 40 6x6 @(300,496) bg=#00B972
+  [GROUP] Group 152 343x60 @(16,540)
+    [RECTANGLE] 矩形 copy 5 343x60 @(16,540) bg=#FFFFFF stroke=#979797
+    [RECTANGLE] 矩形 copy 5 40x40 @(26,550) bg=#00CB8E stroke=#979797
+    [TEXT] 阿里山的姑娘 14x20 @(39,560) bg=#FFFFFF TEXT="王" fs=14 color=#FFFFFF
+    [TEXT] 阿里山的姑娘 28x20 @(72,551) bg=#333333 TEXT="王林" fs=14 color=#333333
+    [TEXT] 阿里山的姑娘 79x15 @(72,573) bg=#666666 TEXT="婚礼跟拍 · 2 单" fs=11 color=#666666
+    [TEXT] 阿里山的姑娘 30x15 @(313,573) bg=#999999 TEXT="8/6拍" fs=11 color=#999999
+    [TEXT] 阿里山的姑娘 33x15 @(310,554) bg=#666666 TEXT="已完成" fs=11 color=#666666
+  [GROUP] Group 153 343x60 @(16,602)
+    [RECTANGLE] 矩形 copy 5 343x60 @(16,602) bg=#FFFFFF stroke=#979797
+    [RECTANGLE] 矩形 copy 5 40x40 @(26,612) bg=#699EFF stroke=#979797
+    [TEXT] 阿里山的姑娘 14x20 @(39,622) bg=#FFFFFF TEXT="姜" fs=14 color=#FFFFFF
+    [TEXT] 阿里山的姑娘 42x20 @(72,613) bg=#333333 TEXT="姜浩然" fs=14 color=#333333
+    [TEXT] 阿里山的姑娘 68x15 @(72,635) bg=#666666 TEXT="证件照 · 1 单" fs=11 color=#666666
+    [TEXT] 阿里山的姑娘 30x15 @(313,635) bg=#999999 TEXT="8/6拍" fs=11 color=#999999
+    [TEXT] 阿里山的姑娘 33x15 @(310,616) bg=#666666 TEXT="已完成" fs=11 color=#666666
+  [GROUP] Group 154 343x60 @(16,664)
+    [RECTANGLE] 矩形 copy 5 343x60 @(16,664) bg=#FFFFFF stroke=#979797
+    [RECTANGLE] 矩形 copy 5 40x40 @(26,674) bg=#FF6ABE stroke=#979797
+    [TEXT] 阿里山的姑娘 14x20 @(39,684) bg=#FFFFFF TEXT="许" fs=14 color=#FFFFFF
+    [TEXT] 阿里山的姑娘 28x20 @(72,675) bg=#333333 TEXT="许青" fs=14 color=#333333
+    [TEXT] 阿里山的姑娘 68x15 @(72,697) bg=#666666 TEXT="全家福 · 1 单" fs=11 color=#666666
+    [TEXT] 阿里山的姑娘 30x15 @(313,697) bg=#999999 TEXT="8/6拍" fs=11 color=#999999
+    [TEXT] 阿里山的姑娘 33x15 @(310,678) bg=#666666 TEXT="已完成" fs=11 color=#666666
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 客户 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="客户" fs=17 color=#151617
+    [FRAME] Button:margin
+  [GROUP] Group 143 44x44 @(315,104)
+    [RECTANGLE] Rectangle 224 44x44 @(315,104) bg=#171717
+    [GROUP] Group 142 14x14 @(330,119)
+      [RECTANGLE] Rectangle 225 14x2 @(330,125) bg=#FFFFFF
+      [RECTANGLE] Rectangle 226 14x2 @(336,133) bg=#FFFFFF
+  [GROUP] Group 144 284x44 @(15,104)
+    [RECTANGLE] Rectangle 223 284x44 @(15,104) bg=#FFFFFF
+    [GROUP] 分组 14x14 @(31,119)
+      [RECTANGLE] 矩形 14x14 @(31,119) bg=#000000
+      [BOOLEAN_OPERATION] 形状 13.99937915802002x14 @(31,119) bg=#CCCCCC
+    [TEXT] 搜姓名/手机号 85x18 @(55,117) bg=#999999 TEXT="搜姓名/手机号" fs=13 color=#999999
+  [RECTANGLE] Rectangle 227 344x112 @(15,168) bg=#121212
+  [GROUP] Mask group 344x112 @(15,168)
+    [RECTANGLE] Rectangle 228 344x112 @(15,168) bg=#121212
+    [GROUP] Group 145 185x52 @(31,212)
+      [RECTANGLE] Rectangle 228 185x52 @(31,212) bg=#252526
+      [TEXT] 陈雨 28x14 @(43,222) bg=#FFFFFF TEXT="陈雨" fs=14 color=#FFFFFF
+      [TEXT] 11:00拍摄 · 越秀公园 109x14 @(43,239) bg=#FFFFFF TEXT="11:00拍摄 · 越秀公园" fs=11 color=#FFFFFF
+      [RECTANGLE] Rectangle 229 44x26 @(160,225) bg=#121212
+      [TEXT] 电话 22x14 @(171,231) bg=#FFFFFF TEXT="电话" fs=11 color=#FFFFFF
+    [GROUP] Group 146 167x52 @(226,212)
+      [RECTANGLE] Rectangle 228 167x52 @(226,212) bg=#252526
+      [TEXT] 李婷婷 42x14 @(238,222) bg=#FFFFFF TEXT="李婷婷" fs=14 color=#FFFFFF
+      [TEXT] 拍摄后 3 天未选片 91x14 @(238,239) bg=#FFFFFF TEXT="拍摄后 3 天未选片" fs=11 color=#FFFFFF
+      [GROUP] Group 147 44x26 @(337,225)
+  [ELLIPSE] Ellipse 39 8x8 @(31,189) bg=#FFDA08
+  [TEXT] 今日待跟进 65x18 @(47,184) bg=#FFFFFF TEXT="今日待跟进" fs=13 color=#FFFFFF
+  [TEXT] 3位 16x14 @(327,186) bg=#FFFFFF TEXT="3位" fs=10 color=#FFFFFF
+  [GROUP] Group 148 342x34 @(16,300)
+    [FRAME] Background hug_contentsxhug_contents @(16,300) bg=#171819 r=999
+      [TEXT] 全部 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="全部" fs=14 color=#FFFFFF
+    [FRAME] Background hug_contentsxhug_contents @(90,300) bg=#FFFFFF r=999
+      [TEXT] 最近合作 hug_contentsxhug_contents @(auto,auto) bg=#666666 TEXT="最近合作" fs=14 color=#666666
+    [FRAME] Background hug_contentsxhug_contents @(192,300) bg=#FFFFFF r=999
+      [TEXT] 待跟进 hug_contentsxhug_contents @(auto,auto) bg=#666666 TEXT="待跟进" fs=14 color=#666666
+    [FRAME] Background hug_contentsxhug_contents @(280,300) bg=#FFFFFF r=999
+      [TEXT] 已完成 hug_contentsxhug_contents @(auto,auto) bg=#666666 TEXT="已完成" fs=14 color=#666666
+  [INSTANCE] 底部导航 375x83 @(0,749)
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,798) bg=#FFFFFF

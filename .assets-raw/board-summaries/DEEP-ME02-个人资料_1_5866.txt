@@ -1,0 +1,71 @@
+[F] ME02-个人资料 375x812 @(2784,16905) bg=#FFFFFF
+  [R] Rectangle 44 375x811 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,729)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 个人资料 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="个人资料" fs=17 color=#151617
+    [F] Button:margin
+  [F] Background 343x90 @(16,114) bg=#FFFFFF r=16
+    [G] Mask group 52x52 @(auto,auto)
+      [F] Background 52x52 @(16,19) bg=#161616 r=26
+      [R] image 22 52x52 @(16,19) bg=#000000
+    [F] Container fillx58 @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+        [T] 路先生摄影 fillxhug @(auto,auto) bg=#000000 TEXT="路先生摄影" fs=15 color=#000000
+      [F] Container fillxhug @(auto,auto)
+        [T] 头像 / 店名 / 简介展示在预约主页，客户第一眼看到的就是这里 fillxhug @(auto,auto) bg=#666666 TEXT="头像 / 店名 / 简介展示在预约主页，客户第一眼看到的就是这里" fs=10.5 color=#666666
+    [F] SVG 16x16 @(auto,auto)
+      [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [T] 资料 343x21 @(16,225) bg=#1A1A1A TEXT="资料" fs=15 color=#1A1A1A
+  [F] Background 343xhug @(16,256) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 店名 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="店名" fs=14 color=#666666
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 路先生摄影 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="路先生摄影" fs=13 color=#1A1A1A
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 简介 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="简介" fs=14 color=#666666
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 独立摄影师 · 专注亲子 / 家庭 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="独立摄影师 · 专注亲子 / 家庭 " fs=13 color=#666666
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 微信号 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="微信号" fs=14 color=#666666
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] lusheng_0823 · 展示在主页 · 选填 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="lusheng_0823 · 展示在主页 · 选填" fs=13 color=#666666
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Margin 343xhug @(16,421)
+    [F] Container fillx21 @(auto,auto)
+      [F] Container hug_contentsxhug @(0,0)
+        [T] 档期 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="档期" fs=15 color=#1A1A1A
+      [F] Margin 307xhug @(32,3)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 客户可预约的时间来自日程档期 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="客户可预约的时间来自日程档期" fs=12 color=#9A9AA0
+  [F] Background 343xhug @(16,471) bg=#FFFFFF r=16
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 12.8x12.8 @(2.1,2.8) stroke=#1A1A1A
+          [V] Vector 12.8x5.7 @(2.1,1.4) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 档期与可约时段 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="档期与可约时段" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] 在日程 Tab 统一管理 fillxhug @(auto,auto) bg=#666666 TEXT="在日程 Tab 统一管理" fs=10.699999809265137 color=#666666
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Button 343x52 @(16,556) bg=#171819 r=999
+    [T] 保存 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="保存" fs=15 color=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,778)

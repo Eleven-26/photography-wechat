@@ -1,0 +1,22 @@
+[FRAME] A03创作工作空间 375x812 @(3259,6532) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x812 @(0,0) bg=#F2F3F5
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 创建工作空间 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="创建工作空间" fs=17 color=#151617
+  [FRAME] Container 375xhug_contents @(0,104)
+    [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Background+Border+Shadow fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16 stroke=#151617
+      [FRAME] Label fill_containerxhug_contents @(auto,auto)
+      [FRAME] Input fill_containerx17 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 空间类型 fill_containerxhug_contents @(auto,auto) bg=#151617 TEXT="空间类型" fs=15 color=#151617
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background+Shadow fill_containerxfill_container @(auto,auto) bg=#171717 r=16
+      [FRAME] Background+Shadow fill_containerxfill_container @(auto,auto) bg=#FFFFFF r=16
+    [RECTANGLE] Rectangle fill_containerx223.55999755859375 @(auto,auto)
+    [FRAME] Button:margin fill_containerx72 @(auto,auto)
+      [FRAME] Button fill_containerx52 @(auto,auto) bg=#171819 r=999
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF

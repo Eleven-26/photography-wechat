@@ -1,0 +1,81 @@
+[F] SC04-档期管理 375x985 @(3734,14114) bg=#FFFFFF
+  [R] Rectangle 44 375x984 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,902)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 档期管理 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="档期管理" fs=17 color=#151617
+    [F] Button:margin
+  [G] Group 125 380x66 @(16,114)
+    [R] Rectangle 209 44x66 @(16,114) bg=#FFFFFF
+    [R] Rectangle 210 44x66 @(64,114) bg=#121212
+    [R] Rectangle 211 44x66 @(112,114) bg=#FFFFFF
+    [R] Rectangle 212 44x66 @(160,114) bg=#FFFFFF
+    [R] Rectangle 213 44x66 @(208,114) bg=#FFFFFF
+    [R] Rectangle 214 44x66 @(256,114) bg=#FFFFFF
+    [R] Rectangle 215 44x66 @(304,114) bg=#FFFFFF
+    [R] Rectangle 216 44x66 @(352,114) bg=#FFFFFF
+    [E] Ellipse 31 6x6 @(131,166) bg=#76D596
+    [E] Ellipse 36 6x6 @(35,166) bg=#D4D4D4
+    [E] Ellipse 33 6x6 @(275,166) bg=#76D596
+    [E] Ellipse 34 6x6 @(323,166) bg=#76D596
+    [E] Ellipse 35 6x6 @(371,166) bg=#76D596
+    [E] Ellipse 32 6x6 @(227,166) bg=#FFDA08
+    [E] Ellipse 30 6x6 @(179,166) bg=#FF8181
+    [T] 7 9x20 @(33,143) bg=#151617 TEXT="7" fs=14 color=#151617
+    [T] 今 14x20 @(79,143) bg=#FFFFFF TEXT="今" fs=14 color=#FFFFFF
+    [T] 9 9x20 @(129,143) bg=#151617 TEXT="9" fs=14 color=#151617
+    [T] 10 17x20 @(173,143) bg=#1E1E1E TEXT="10" fs=14 color=#1E1E1E
+    [T] 11 17x20 @(221,143) bg=#151617 TEXT="11" fs=14 color=#151617
+    [T] 12 17x20 @(269,143) bg=#151617 TEXT="12" fs=14 color=#151617
+    [T] 13 17x20 @(317,143) bg=#151617 TEXT="13" fs=14 color=#151617
+    [T] 14 17x20 @(365,143) bg=#151617 TEXT="14" fs=14 color=#151617
+    [T] 一 40x15 @(18,121) bg=#999999 TEXT="一" fs=11 color=#999999
+    [T] 二 40x15 @(66,121) bg=#CCCCCC TEXT="二" fs=11 color=#CCCCCC
+    [T] 三 40x15 @(114,121) bg=#999999 TEXT="三" fs=11 color=#999999
+    [T] 四 40x15 @(162,121) bg=#999999 TEXT="四" fs=11 color=#999999
+    [T] 五 40x15 @(210,121) bg=#999999 TEXT="五" fs=11 color=#999999
+    [T] 六 40x15 @(258,121) bg=#999999 TEXT="六" fs=11 color=#999999
+    [T] 日 40x15 @(306,121) bg=#999999 TEXT="日" fs=11 color=#999999
+    [T] 一 40x15 @(354,121) bg=#999999 TEXT="一" fs=11 color=#999999
+  [T] 时段开关 60x20 @(16,200) bg=#151617 TEXT="时段开关" fs=15 color=#151617
+  [T] 8月8日 · 周日 · 时段模板 4 个时段 190x20 @(169,200) bg=#999999 TEXT="8月8日 · 周日 · 时段模板 4 个时段" fs=12 color=#999999
+  [F] Background+Border+Shadow 343xhug @(16,230) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container hug_contentsxhug @(auto,auto)
+      [G] Group 126 50x28 @(auto,auto)
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container hug_contentsxhug @(auto,auto)
+      [G] Group 126 50x28 @(auto,auto)
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container hug_contentsxhug @(auto,auto)
+      [G] Group 126 50x28 @(auto,auto)
+    [F] Container fillxhug @(auto,auto) stroke=#151617
+      [F] Container hug_contentsxhug @(auto,auto)
+      [G] Group 126 50x28 @(auto,auto)
+    [F] Container fillxhug @(auto,auto)
+      [G] Group 127 311x44 @(auto,auto)
+  [F] Background+Border+Shadow 343x143 @(18,668) bg=#FFFFFF r=16
+    [F] Container 309xhug @(17,16)
+      [F] Container hug_contentsxhug @(auto,auto)
+      [F] Background hug_contentsxhug @(auto,auto) bg=#DCFCE7 r=999
+    [F] Margin 309xhug @(17,50)
+      [F] Container fillx18 @(auto,auto)
+      [T] 越秀公园 · 2.5h hug_contentsxhug @(auto,auto) bg=#666666 TEXT="越秀公园 · 2.5h" fs=13 color=#666666
+    [F] Container 309x20 @(17,78)
+    [G] Group 59 148x44 @(16,83)
+      [R] Rectangle 103 148x44 @(16,83) bg=#FFFFFF stroke=#C8C8C8
+      [T] 发起改期 68.3x21 @(55.8,95) bg=#666666 TEXT="发起改期" fs=15 color=#666666
+    [G] Group 60 148x44 @(179,83)
+      [R] Rectangle 98 148x44 @(179,83) bg=#121212
+      [T] 联系客户 68.3x21 @(222.3,95) bg=#FFFFFF TEXT="联系客户" fs=15 color=#FFFFFF
+  [T] 占用时段订单 90x20 @(18,642) bg=#151617 TEXT="占用时段订单" fs=15 color=#151617
+  [F] Section 343x61 @(16,821) bg=#E6E7EB r=14
+    [F] SVG 13x13 @(16,15)
+      [V] Vector 10.8x10.8 @(1.1,1.1) bg=#666666
+    [F] Paragraph 291xhug @(37,12)
+      [T] 手动关闭只影响还没被订单占用的时段 · 已占时段由订单控制 fillxhug @(auto,auto) bg=#666666 TEXT="手动关闭只影响还没被订单占用的时段 · 已占时段由订单控制" fs=12 color=#666666
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,951)

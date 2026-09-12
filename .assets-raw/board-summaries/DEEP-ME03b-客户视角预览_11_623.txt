@@ -1,0 +1,197 @@
+[F] ME03b-客户视角预览 375x2036 @(10245,1927) bg=#FFFFFF
+  [R] Rectangle 36 375x2116 @(0,0) bg=#17181C
+  [G] Mask group 375x360 @(0,1)
+    [R] Rectangle 38 375x360 @(0,1) bg=#D9D9D9
+    [R] studio-space 1 687x458 @(-287,-17) bg=#000000
+    [R] Gradient 375x360 @(0,1) bg=#000000
+    [R] Gradient
+  [F] Detail 375x44 @(0,44)
+    [F] Back hug_contentsxhug @(10,0) r=12
+      [F] Icon 24x24 @(auto,auto)
+        [G] Arrow - Left 2 15.5x8.5 @(16.2,4.2)
+          [V] Stroke 1 15.5x8.5 @(16.2,4.2) bg=#FFFFFF
+    [F] Favourite hug_contentsxhug @(321,0) r=12
+      [G] 分享 24x24 @(auto,auto)
+        [R] Rectangle 37 24x24 @(10,10) bg=#353535
+        [V] Vector 20x18.6 @(12,13) bg=#FFFFFF
+  [F] Container 335xhug @(20,246)
+    [F] Container fillxhug @(auto,auto)
+      [T] 路先生摄影 fillxhug @(auto,auto) bg=#FFFFFF TEXT="路先生摄影" fs=32 color=#FFFFFF
+    [F] Container fillxhug @(auto,auto)
+      [T] 专注亲子 / 家庭 · 用光影记录值得珍藏的瞬间 fillxhug @(auto,auto) bg=#FFFFFF TEXT="专注亲子 / 家庭 · 用光影记录值得珍藏的瞬间" fs=14 color=#FFFFFF
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxfill_container @(auto,auto)
+        [F] SVG 14x14 @(auto,auto)
+          [V] Vector 13.3x12.7 @(0.3,0.3) bg=#D9A735
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 4.9 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="4.9" fs=13 color=#FFFFFF
+      [F] Container hug_contentsxfill_container @(auto,auto)
+        [T] 326次服务 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="326次服务" fs=13 color=#FFFFFF
+      [F] Container hug_contentsxfill_container @(auto,auto)
+        [T] 8年经验 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="8年经验" fs=13 color=#FFFFFF
+  [F] Background 375xhug @(0,360) bg=#17181C
+    [F] Background+Border fillxhug @(auto,auto) bg=#1D1E22 r=16 stroke=#2B2C30
+      [F] Container fillxfill_container @(auto,auto)
+        [F] Container fillxhug @(auto,auto)
+          [T] 100+ hug_contentsxhug @(auto,auto) bg=#F7F8F8 TEXT="100+" fs=20 color=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 原创作品 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="原创作品" fs=12 color=#85878D
+      [R] Vertical Divider 1xfill_container @(auto,auto) bg=#2B2C30
+      [F] Container fillxfill_container @(auto,auto)
+        [F] Container fillxhug @(auto,auto)
+          [T] 326 hug_contentsxhug @(auto,auto) bg=#F7F8F8 TEXT="326" fs=20 color=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 服务客户 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="服务客户" fs=12 color=#85878D
+      [R] Vertical Divider 1xfill_container @(auto,auto) bg=#2B2C30
+      [F] Container fillxfill_container @(auto,auto)
+        [F] Container fillxhug @(auto,auto)
+          [T] 98% hug_contentsxhug @(auto,auto) bg=#F7F8F8 TEXT="98%" fs=20 color=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 好评率 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="好评率" fs=12 color=#85878D
+  [F] Container 375xhug @(0,442)
+    [F] Container hug_contentsxhug @(auto,auto)
+      [T] 精选服务 hug_contentsxhug @(auto,auto) bg=#B8BABF TEXT="精选服务" fs=14 color=#B8BABF
+  [F] Container 375x215 @(0,493)
+    [F] Background+Border+Shadow 200x215 @(16,0) bg=#1D1E22 r=12 stroke=#2B2C30
+      [F] Background fillx120 @(auto,auto)
+        [R] street-couple 1 220x146 @(auto,auto) bg=#000000
+      [F] Container fillxhug @(auto,auto)
+        [F] Container fillxhug @(auto,auto)
+          [T] 家庭纪念写真 fillxhug @(auto,auto) bg=#F7F8F8 TEXT="家庭纪念写真" fs=14 color=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 2.5h · 20张精修 fillxhug @(auto,auto) bg=#85878D TEXT="2.5h · 20张精修" fs=12 color=#85878D
+        [F] Container fillxhug @(auto,auto)
+          [T] ¥2,680 fillxhug @(auto,auto) bg=#F7F8F8 TEXT="¥2,680" fs=18 color=#F7F8F8
+    [F] Background+Border+Shadow 200x215 @(232,0) bg=#1D1E22 r=12 stroke=#2B2C30
+      [F] Background fillx120 @(auto,auto)
+        [R] street-couple 1 220x146 @(auto,auto) bg=#000000
+      [F] Container fillxhug @(auto,auto)
+        [F] Container fillxhug @(auto,auto)
+          [T] 个人写真 fillxhug @(auto,auto) bg=#F7F8F8 TEXT="个人写真" fs=14 color=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 1.5h · 20张精修 fillxhug @(auto,auto) bg=#85878D TEXT="1.5h · 20张精修" fs=12 color=#85878D
+        [F] Container fillxhug @(auto,auto)
+          [T] ¥1,580 fillxhug @(auto,auto) bg=#F7F8F8 TEXT="¥1,580" fs=18 color=#F7F8F8
+  [F] Container 375xhug @(0,708)
+    [F] Container hug_contentsxhug @(auto,auto)
+      [T] 精选作品 hug_contentsxhug @(auto,auto) bg=#B8BABF TEXT="精选作品" fs=14 color=#B8BABF
+    [F] Container hug_contentsxhug @(auto,auto)
+      [T] 查看全部 › hug_contentsxhug @(auto,auto) bg=#85878D TEXT="查看全部 ›" fs=12 color=#85878D
+  [F] Container 375xhug @(0,1443)
+    [F] Container hug_contentsxhug @(auto,auto)
+      [T] 服务流程 hug_contentsxhug @(auto,auto) bg=#B8BABF TEXT="服务流程" fs=14 color=#B8BABF
+  [F] Container 375xhug @(0,1642)
+    [F] Container hug_contentsxhug @(auto,auto)
+      [T] 常见问题 hug_contentsxhug @(auto,auto) bg=#B8BABF TEXT="常见问题" fs=14 color=#B8BABF
+  [F] Background+Border 343xhug @(16,1492) bg=#1D1E22 r=12 stroke=#2B2C30
+    [F] Container fillxhug @(auto,auto)
+      [F] Container 60xhug @(auto,auto)
+        [F] SVG 22x22 @(auto,auto)
+          [V] Vector 19.8x16.5 @(1.1,2.7) bg=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 浏览作品 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="浏览作品" fs=11 color=#85878D
+      [F] SVG 14x14 @(auto,auto)
+        [V] Vector 9.3x9.1 @(2.3,2.5) bg=#85878D
+      [F] Container 60xhug @(auto,auto)
+        [F] SVG 22x22 @(auto,auto)
+          [V] Vector 18.3x18.3 @(1.8,1.8) bg=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 选择套餐 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="选择套餐" fs=11 color=#85878D
+      [F] SVG 14x14 @(auto,auto)
+        [V] Vector 9.3x9.1 @(2.3,2.5) bg=#85878D
+      [F] Container 60xhug @(auto,auto)
+        [F] SVG 22x22 @(auto,auto)
+          [V] Vector 18.3x18.3 @(1.8,0.9) bg=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 预约档期 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="预约档期" fs=11 color=#85878D
+      [F] SVG 14x14 @(auto,auto)
+        [V] Vector 9.3x9.1 @(2.3,2.5) bg=#85878D
+      [F] Container 60xhug @(auto,auto)
+        [F] SVG 22x22 @(auto,auto)
+          [V] Vector 18.3x16.5 @(1.8,2.7) bg=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 拍摄 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="拍摄" fs=11 color=#85878D
+    [F] Container fillxhug @(auto,auto)
+      [F] Container 60xhug @(auto,auto)
+        [F] SVG 22x22 @(auto,auto)
+          [V] Vector 16.5x16.5 @(2.7,2.7) bg=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 在线选片 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="在线选片" fs=11 color=#85878D
+      [F] SVG 14x14 @(auto,auto)
+        [V] Vector 9.3x9.1 @(2.3,2.5) bg=#85878D
+      [F] Container 60xhug @(auto,auto)
+        [F] SVG 22x22 @(auto,auto)
+          [V] Vector 17.6x17.6 @(2.3,2.3) bg=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 精修交付 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="精修交付" fs=11 color=#85878D
+      [F] SVG 14x14 @(auto,auto)
+        [V] Vector 9.3x9.1 @(2.3,2.5) bg=#85878D
+      [F] Container 60xhug @(auto,auto)
+        [F] SVG 22x22 @(auto,auto)
+          [V] Vector 18.3x16.5 @(1.8,2.7) bg=#F7F8F8
+        [F] Container fillxhug @(auto,auto)
+          [T] 下载成片 hug_contentsxhug @(auto,auto) bg=#85878D TEXT="下载成片" fs=11 color=#85878D
+  [F] Background+Border 343xhug @(16,1693) bg=#1D1E22 r=12 stroke=#2B2C30
+    [G] Group 37 309x41 @(auto,auto)
+      [T] 拍摄需要提前多久预约？ 309x20 @(16,16) bg=#F7F8F8 TEXT="拍摄需要提前多久预约？" fs=14 color=#F7F8F8
+      [T] 建议提前3-5天预约，周末档期较紧张，建议尽早预约。 309x17 @(16,40) bg=#85878D TEXT="建议提前3-5天预约，周末档期较紧张，建议尽早预约。" fs=12 color=#85878D
+    [G] Group 38 309x41 @(auto,auto)
+      [T] 如果下雨怎么办？ 309x20 @(16,73) bg=#F7F8F8 TEXT="如果下雨怎么办？" fs=14 color=#F7F8F8
+      [T] 72 小时外免费改期；72 小时内需支付 20% 调度费。 309x17 @(16,97) bg=#85878D TEXT="72 小时外免费改期；72 小时内需支付 20% 调度费。" fs=12 color=#85878D
+    [G] Group 39 309x58 @(auto,auto)
+      [T] 照片多久能拿到？ 309x20 @(16,130) bg=#F7F8F8 TEXT="照片多久能拿到？" fs=14 color=#F7F8F8
+      [T] 拍摄后7个工作日内完成精修并交付，高清下载有效期30天。 309x34 @(16,154) bg=#85878D TEXT="拍摄后7个工作日内完成精修并交付，高清下载有效期30天。" fs=12 color=#85878D
+  [G] Group 36 342x684 @(16,759)
+    [G] Group 30 165x220 @(16,759)
+      [G] Mask group 165x220 @(16,759)
+        [R] Rectangle 39 165x220 @(16,759) bg=#D9D9D9
+        [R] studio-portrait 1 194x258 @(1,753) bg=#000000
+      [F] Overlay 24x24 @(28,943) bg=#17181C r=12
+        [F] SVG 13x13 @(auto,auto)
+          [V] Vector 10.8x10.0 @(1.1,1.6) bg=#FFFFFF
+    [G] Group 32 165x220 @(16,991)
+      [G] Mask group 165x220 @(16,991)
+        [R] Rectangle 39 165x220 @(16,991) bg=#D9D9D9
+        [R] studio-portrait 1 194x258 @(1,985) bg=#000000
+        [R] Product 4 220x301.1 @(-3,940.2) bg=#000000
+      [F] Overlay 24x24 @(28,1175) bg=#17181C r=12
+        [F] SVG 13x13 @(auto,auto)
+          [V] Vector 10.8x10.0 @(1.1,1.6) bg=#FFFFFF
+    [G] Group 34 165x220 @(16,1223)
+      [G] Mask group 165x220 @(16,1223)
+        [R] Rectangle 39 165x220 @(16,1223) bg=#D9D9D9
+        [R] studio-portrait 1 194x258 @(1,1217) bg=#000000
+        [R] Product 1 207x257.2 @(1,1213.0) bg=#000000
+      [F] Overlay 24x24 @(28,1407) bg=#17181C r=12
+        [F] SVG 13x13 @(auto,auto)
+          [V] Vector 10.8x10.0 @(1.1,1.6) bg=#FFFFFF
+    [G] Group 31 165x220 @(193,759)
+      [G] Mask group 165x220 @(193,759)
+        [R] Rectangle 39 165x220 @(193,759) bg=#D9D9D9
+        [R] studio-portrait 1 194x258 @(178,753) bg=#000000
+        [R] Product 3 177x281.1 @(187,742.1) bg=#000000
+      [F] Overlay 24x24 @(205,943) bg=#17181C r=12
+        [F] SVG 13x13 @(auto,auto)
+          [V] Vector 10.8x10.0 @(1.1,1.6) bg=#FFFFFF
+    [G] Group 33 165x220 @(193,991)
+      [G] Mask group 165x220 @(193,991)
+        [R] Rectangle 39 165x220 @(193,991) bg=#D9D9D9
+        [R] studio-portrait 1 194x258 @(178,985) bg=#000000
+        [R] image 3 171x256.5 @(364,981) bg=#000000
+      [F] Overlay 24x24 @(205,1175) bg=#17181C r=12
+        [F] SVG 13x13 @(auto,auto)
+          [V] Vector 10.8x10.0 @(1.1,1.6) bg=#FFFFFF
+    [G] Group 35 165x220 @(193,1223)
+      [G] Mask group 165x220 @(193,1223)
+        [R] Rectangle 39 165x220 @(193,1223) bg=#D9D9D9
+        [R] studio-portrait 1 194x258 @(178,1217) bg=#000000
+        [R] Product 4 171x232.3 @(194,1223) bg=#000000
+      [F] Overlay 24x24 @(205,1407) bg=#17181C r=12
+        [F] SVG 13x13 @(auto,auto)
+          [V] Vector 10.8x10.0 @(1.1,1.6) bg=#FFFFFF
+  [F] Background+HorizontalBorder+OverlayBlur 375xhug @(0,1919) bg=#17181C stroke=#2B2C30
+    [F] Button fillx56 @(auto,auto) bg=#F7F8F8 r=999
+      [T] 定制需求 hug_contentsxhug @(auto,auto) bg=#17181C TEXT="定制需求" fs=16 color=#17181C
+  [I] Iphone 375x44 @(0,0)
+  [F] Iphone 375x34 @(0,2002)
+    [R] Home Indicator 134x5 @(121,21) bg=#000000

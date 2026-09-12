@@ -1,0 +1,77 @@
+[F] L04 一键追问 375x948 @(4726,7608) bg=#FFFFFF
+  [V] Rectangle 44 375x948 @(0,0) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,865)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 一键追问 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="一键追问" fs=17 color=#151617
+    [F] Button:margin
+  [T] 发送前确认 90x20 @(16,114) bg=#151617 TEXT="发送前确认" fs=18 color=#151617
+  [T] 3 条问题将一次性发给客户，发送前可直接修改，取消勾选则不发送该条 343x40 @(16,144) bg=#666666 TEXT="3 条问题将一次性发给客户，发送前可直接修改，取消勾选则不发送该条" fs=12 color=#666666
+  [G] Group 66 343x172 @(16,204)
+    [R] Rectangle 100 343x172 @(16,204) bg=#FFFFFF
+    [G] Group 58 28x28 @(32,220)
+      [E] Ellipse 14 28x28 @(32,220) bg=#FEF3C7
+      [T] 1 9x20 @(42,224) bg=#B66E00 TEXT="1" fs=15 color=#B66E00
+    [T] 具体日期 60x20 @(70,224) bg=#000000 TEXT="具体日期" fs=15 color=#000000
+    [G] Group 64 49x16 @(136,226)
+      [R] Rectangle 101 49x16 @(136,226) bg=#FEF3C7
+      [T] 影响报价 40x10 @(141,229) bg=#B66E00 TEXT="影响报价" fs=10 color=#B66E00
+    [R] Rectangle 102 311x72 @(32,258) bg=#F2F3F5
+    [T] 您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。 279x40 @(48,274) bg=#333333 TEXT="您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。" fs=14 color=#333333
+    [T] AI 生成 · 点击文本可直接修改 148x10 @(52,346) bg=#999999 TEXT="AI 生成 · 点击文本可直接修改" fs=11 color=#999999
+    [T] 换一条 36x10 @(305,346) bg=#333333 TEXT="换一条" fs=12 color=#333333
+    [F] Frame 14x14 @(289,344)
+      [V] Vector 11.4x11.4 @(1.7,1.8) bg=#333333
+    [STAR] Star 2 10x10 @(38,346) stroke=#B5B5B5
+    [G] Group 65 20x20 @(323,220)
+      [R] Rectangle 108 20x20 @(323,220) bg=#000000
+      [V] Vector 7 9x6.5 @(329,227) stroke=#FFFFFF
+  [G] Group 67 343x172 @(16,386)
+    [R] Rectangle 100 343x172 @(16,386) bg=#FFFFFF
+    [G] Group 58 28x28 @(32,402)
+      [E] Ellipse 14 28x28 @(32,402) bg=#FEF3C7
+      [T] 2 9x20 @(42,406) bg=#B66E00 TEXT="2" fs=15 color=#B66E00
+    [T] 儿童作息 60x20 @(70,406) bg=#000000 TEXT="儿童作息" fs=15 color=#000000
+    [G] Group 64 49x16 @(136,408)
+      [R] Rectangle 101 49x16 @(136,408) bg=#DBEAFE
+      [T] 影响排期 40x10 @(141,411) bg=#2D69EC TEXT="影响排期" fs=10 color=#2D69EC
+    [R] Rectangle 102 311x72 @(32,440) bg=#F2F3F5
+    [T] 孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。 279x40 @(48,456) bg=#333333 TEXT="孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。" fs=14 color=#333333
+    [T] AI 生成 · 点击文本可直接修改 148x10 @(52,528) bg=#999999 TEXT="AI 生成 · 点击文本可直接修改" fs=11 color=#999999
+    [T] 换一条 36x10 @(305,528) bg=#333333 TEXT="换一条" fs=12 color=#333333
+    [F] Frame 14x14 @(289,526)
+      [V] Vector 11.4x11.4 @(1.7,1.8) bg=#333333
+    [STAR] Star 2 10x10 @(38,528) stroke=#B5B5B5
+    [G] Group 65 20x20 @(323,402)
+      [R] Rectangle 108 20x20 @(323,402) bg=#000000
+      [V] Vector 7 9x6.5 @(329,409) stroke=#FFFFFF
+  [G] Group 68 343x172 @(16,568)
+    [R] Rectangle 100 343x172 @(16,568) bg=#FFFFFF
+    [G] Group 58 28x28 @(32,584)
+      [E] Ellipse 14 28x28 @(32,584) bg=#FEF3C7
+      [T] 3 9x20 @(42,588) bg=#B66E00 TEXT="3" fs=15 color=#B66E00
+    [T] 妆造需求 60x20 @(70,588) bg=#000000 TEXT="妆造需求" fs=15 color=#000000
+    [G] Group 64 49x16 @(136,590)
+      [R] Rectangle 101 49x16 @(136,590) bg=#FEF3C7
+      [T] 影响报价 40x10 @(141,593) bg=#B66E00 TEXT="影响报价" fs=10 color=#B66E00
+    [R] Rectangle 102 311x72 @(32,622) bg=#F2F3F5
+    [T] 需要为大人或孩子安排化妆造型吗？自然妆造 +¥200 可单加。 279x40 @(48,638) bg=#333333 TEXT="需要为大人或孩子安排化妆造型吗？自然妆造 +¥200 可单加。" fs=14 color=#333333
+    [T] AI 生成 · 点击文本可直接修改 148x10 @(52,710) bg=#999999 TEXT="AI 生成 · 点击文本可直接修改" fs=11 color=#999999
+    [T] 换一条 36x10 @(305,710) bg=#333333 TEXT="换一条" fs=12 color=#333333
+    [F] Frame 14x14 @(289,708)
+      [V] Vector 11.4x11.4 @(1.7,1.8) bg=#333333
+    [STAR] Star 2 10x10 @(38,710) stroke=#B5B5B5
+    [G] Group 65 20x20 @(323,584)
+      [R] Rectangle 108 20x20 @(323,584) bg=#F2F3F5 stroke=#B7B7B7
+  [F] Container 375x105 @(1,760)
+    [F] Container 343x19 @(16,10)
+      [T] 已勾选 3 条 · 客户逐题回复后简报自动更新 hug_contentsxhug @(auto,auto) bg=#747981 TEXT="已勾选 3 条 · 客户逐题回复后简报自动更新" fs=12 color=#747981
+    [F] Button 167.5x52 @(16,39) bg=#FFFFFF r=999 stroke=#151617
+      [T] 返回 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="返回" fs=15 color=#151617
+    [F] Button 165.5x52 @(193.5,39) bg=#171819 r=999
+      [T] 一键发送 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="一键发送" fs=15 color=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,914)

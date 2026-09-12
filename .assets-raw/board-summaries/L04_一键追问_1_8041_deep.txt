@@ -1,0 +1,78 @@
+[FRAME] L04 一键追问 375x948 @(4726,7608) bg=#FFFFFF
+  [VECTOR] Rectangle 44 375x948 @(0,0) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,865)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+        [VECTOR] Vector 11.666666030883789x11.666666030883789 @(4.1666669845581055,4.1666669845581055) stroke=#151617
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 一键追问 hug_contentsxhug_contents @(auto,auto) TEXT="一键追问" fs=17 Bold color=#151617
+    [FRAME] Button:margin
+  [TEXT] 发送前确认 90x20 @(16,114) TEXT="发送前确认" fs=18 Bold color=#151617
+  [TEXT] 3 条问题将一次性发给客户，发送前可直接修改，取消勾选则不发送该条 343x40 @(16,144) TEXT="3 条问题将一次性发给客户，发送前可直接修改，取消勾选则不发送该条" fs=12 Bold color=#666666
+  [GROUP] Group 66 343x172 @(16,204)
+    [RECTANGLE] Rectangle 100 343x172 @(16,204) bg=#FFFFFF
+    [GROUP] Group 58 28x28 @(32,220)
+      [ELLIPSE] Ellipse 14 28x28 @(32,220) bg=#FEF3C7
+      [TEXT] 1 9x20 @(42,224) TEXT="1" fs=15 Bold color=#B66E00
+    [TEXT] 具体日期 60x20 @(70,224) TEXT="具体日期" fs=15 Bold color=#000000
+    [GROUP] Group 64 49x16 @(136,226)
+      [RECTANGLE] Rectangle 101 49x16 @(136,226) bg=#FEF3C7
+      [TEXT] 影响报价 40x10 @(141,229) TEXT="影响报价" fs=10 Medium color=#B66E00
+    [RECTANGLE] Rectangle 102 311x72 @(32,258) bg=#F2F3F5
+    [TEXT] 您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。 279x40 @(48,274) TEXT="您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。" fs=14 Medium color=#333333
+    [TEXT] AI 生成 · 点击文本可直接修改 148x10 @(52,346) TEXT="AI 生成 · 点击文本可直接修改" fs=11 Medium color=#999999
+    [TEXT] 换一条 36x10 @(305,346) TEXT="换一条" fs=12 Medium color=#333333
+    [FRAME] Frame 14x14 @(289,344) bg=#FFFFFF
+      [VECTOR] Vector 11.377467155456543x11.377801895141602 @(1.7475390434265137,1.75) bg=#333333
+    [STAR] Star 2 10x10 @(38,346) stroke=#B5B5B5
+    [GROUP] Group 65 20x20 @(323,220)
+      [RECTANGLE] Rectangle 108 20x20 @(323,220) bg=#000000
+      [VECTOR] Vector 7 9x6.5 @(329,227) stroke=#FFFFFF
+  [GROUP] Group 67 343x172 @(16,386)
+    [RECTANGLE] Rectangle 100 343x172 @(16,386) bg=#FFFFFF
+    [GROUP] Group 58 28x28 @(32,402)
+      [ELLIPSE] Ellipse 14 28x28 @(32,402) bg=#FEF3C7
+      [TEXT] 2 9x20 @(42,406) TEXT="2" fs=15 Bold color=#B66E00
+    [TEXT] 儿童作息 60x20 @(70,406) TEXT="儿童作息" fs=15 Bold color=#000000
+    [GROUP] Group 64 49x16 @(136,408)
+      [RECTANGLE] Rectangle 101 49x16 @(136,408) bg=#DBEAFE
+      [TEXT] 影响排期 40x10 @(141,411) TEXT="影响排期" fs=10 Medium color=#2D69EC
+    [RECTANGLE] Rectangle 102 311x72 @(32,440) bg=#F2F3F5
+    [TEXT] 孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。 279x40 @(48,456) TEXT="孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。" fs=14 Medium color=#333333
+    [TEXT] AI 生成 · 点击文本可直接修改 148x10 @(52,528) TEXT="AI 生成 · 点击文本可直接修改" fs=11 Medium color=#999999
+    [TEXT] 换一条 36x10 @(305,528) TEXT="换一条" fs=12 Medium color=#333333
+    [FRAME] Frame 14x14 @(289,526) bg=#FFFFFF
+      [VECTOR] Vector 11.377467155456543x11.377801895141602 @(1.7475390434265137,1.75) bg=#333333
+    [STAR] Star 2 10x10 @(38,528) stroke=#B5B5B5
+    [GROUP] Group 65 20x20 @(323,402)
+      [RECTANGLE] Rectangle 108 20x20 @(323,402) bg=#000000
+      [VECTOR] Vector 7 9x6.5 @(329,409) stroke=#FFFFFF
+  [GROUP] Group 68 343x172 @(16,568)
+    [RECTANGLE] Rectangle 100 343x172 @(16,568) bg=#FFFFFF
+    [GROUP] Group 58 28x28 @(32,584)
+      [ELLIPSE] Ellipse 14 28x28 @(32,584) bg=#FEF3C7
+      [TEXT] 3 9x20 @(42,588) TEXT="3" fs=15 Bold color=#B66E00
+    [TEXT] 妆造需求 60x20 @(70,588) TEXT="妆造需求" fs=15 Bold color=#000000
+    [GROUP] Group 64 49x16 @(136,590)
+      [RECTANGLE] Rectangle 101 49x16 @(136,590) bg=#FEF3C7
+      [TEXT] 影响报价 40x10 @(141,593) TEXT="影响报价" fs=10 Medium color=#B66E00
+    [RECTANGLE] Rectangle 102 311x72 @(32,622) bg=#F2F3F5
+    [TEXT] 需要为大人或孩子安排化妆造型吗？自然妆造 +¥200 可单加。 279x40 @(48,638) TEXT="需要为大人或孩子安排化妆造型吗？自然妆造 +¥200 可单加。" fs=14 Medium color=#333333
+    [TEXT] AI 生成 · 点击文本可直接修改 148x10 @(52,710) TEXT="AI 生成 · 点击文本可直接修改" fs=11 Medium color=#999999
+    [TEXT] 换一条 36x10 @(305,710) TEXT="换一条" fs=12 Medium color=#333333
+    [FRAME] Frame 14x14 @(289,708) bg=#FFFFFF
+      [VECTOR] Vector 11.377467155456543x11.377801895141602 @(1.7475390434265137,1.75) bg=#333333
+    [STAR] Star 2 10x10 @(38,710) stroke=#B5B5B5
+    [GROUP] Group 65 20x20 @(323,584)
+      [RECTANGLE] Rectangle 108 20x20 @(323,584) bg=#F2F3F5 stroke=#B7B7B7
+  [FRAME] Container 375x105 @(1,760)
+    [FRAME] Container 343x19 @(16,10)
+      [TEXT] 已勾选 3 条 · 客户逐题回复后简报自动更新 hug_contentsxhug_contents @(auto,auto) TEXT="已勾选 3 条 · 客户逐题回复后简报自动更新" fs=12 Regular color=#747981
+    [FRAME] Button 167.5x52 @(16,39) bg=#FFFFFF r=999 stroke=#151617
+      [TEXT] 返回 hug_contentsxhug_contents @(auto,auto) TEXT="返回" fs=15 Bold color=#151617
+    [FRAME] Button 165.5x52 @(193.5,39) bg=#171819 r=999
+      [TEXT] 一键发送 hug_contentsxhug_contents @(auto,auto) TEXT="一键发送" fs=15 Bold color=#FFFFFF
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,914) bg=#FFFFFF

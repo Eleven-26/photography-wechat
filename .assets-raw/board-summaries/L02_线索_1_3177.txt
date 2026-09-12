@@ -1,0 +1,52 @@
+[FRAME] L02 线索 375x1128 @(3734,7608) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x1161 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Paragraph 247x25 @(64,17.5)
+      [TEXT] 陈雨 34x24 @(76.5,-0.5) bg=#151617 TEXT="陈雨" fs=17 color=#151617
+      [TEXT] · 家庭写真 58.112064361572266x24 @(116.16999816894531,1) bg=#6B7280 TEXT="· 家庭写真" fs=12 color=#6B7280
+    [FRAME] Button:margin fill_containerx44 @(auto,auto)
+      [FRAME] Button
+  [FRAME] Section 343x80 @(16,114)
+    [FRAME] Background+Border+Shadow fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+  [FRAME] Background+Shadow 343xhug_contents @(16,214) bg=#FFFFFF r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 20x20 @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Button fill_containerx52 @(auto,auto) bg=#121212 r=999
+      [TEXT] 发送作品给客户 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="发送作品给客户" fs=15 color=#FFFFFF
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 从作品集选择作品，生成链接通过 H5 发送 hug_contentsxhug_contents @(auto,auto) bg=#666666 TEXT="从作品集选择作品，生成链接通过 H5 发送" fs=12 color=#666666
+  [TEXT] 需求摘要 339x20 @(18,386) bg=#151617 TEXT="需求摘要" fs=15 color=#151617
+  [FRAME] Background+Border+Shadow 343xhug_contents @(16,416) bg=#FFFFFF r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 家庭纪念写真，2大1小，孩子5岁。希望周末在越 秀公园拍，自然风格。预算2000-3000。 fill_containerxhug_contents @(auto,auto) bg=#151617 TEXT="家庭纪念写真，2大1小，孩子5岁。希望周末在越
+秀公园拍，自然风格。预算2000-3000。" fs=14 color=#151617
+  [FRAME] Section 343xhug_contents @(16,512)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+    [FRAME] Background+Border+Shadow fill_containerx80 @(auto,auto) bg=#FFFFFF r=16
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+  [FRAME] Section 343xhug_contents @(16,646)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+    [FRAME] Background+Border+Shadow fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16
+      [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0EB
+      [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0EB
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+  [FRAME] Container 375x105 @(1,930)
+    [FRAME] Container 343x19 @(16,10)
+      [TEXT] 追问和报价将通过 H5 发送给客户 hug_contentsxhug_contents @(auto,auto) bg=#747981 TEXT="追问和报价将通过 H5 发送给客户" fs=12 color=#747981
+    [FRAME] Button 167.5x52 @(16,39) bg=#FFFFFF r=999 stroke=#151617
+      [TEXT] 追问客户 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="追问客户" fs=15 color=#151617
+    [FRAME] Button 165.5x52 @(193.5,39) bg=#171819 r=999
+      [TEXT] 创建报价 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="创建报价" fs=15 color=#FFFFFF
+  [INSTANCE] 底部导航 375x83 @(0,1045)
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,1094) bg=#FFFFFF

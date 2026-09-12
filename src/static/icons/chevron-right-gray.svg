@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 行尾右箭头（chevron-right）。2026-09-10 按 UI 稿放大实测校正：
+     稿内行尾箭头宽 6px × 高 9px、色 #C7C7CC（原 fill #85878D 偏深；原 6.48×10.6 容器使 :size="16" 渲染成 9.8×16，偏大 63%）。
+     改法：容器改为 16×16（与页面 :size="16" 一致），箭头等比缩放并居中 —— 显示尺寸即 6×9.8，无需改动 72 处页面引用。
+     形状沿用原 V 形（与画板导出 cal-next.svg 同源，非自造）。 -->
+<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"><path fill="#C7C7CC" transform="matrix(0.9257 0 0 0.9257 5 3.09)" d="M4.125 5.3033L0 9.4281L1.1785 10.6066L6.4818 5.3033L1.1785 0L0 1.1785L4.125 5.3033Z"/></svg>

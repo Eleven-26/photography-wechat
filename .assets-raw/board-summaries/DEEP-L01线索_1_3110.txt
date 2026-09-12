@@ -1,0 +1,35 @@
+[F] L01 线索 375x812 @(3259,7608) bg=#FFFFFF
+  [R] Rectangle 44 375x996 @(0,1) bg=#F2F3F5
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+    [F] Container 247xhug @(64,18)
+      [T] 线索 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="线索" fs=17 color=#151617
+    [F] Button:margin
+  [G] Group 49 343x44 @(16,114)
+    [R] Rectangle 64 343x44 @(16,114) bg=#FFFFFF
+    [R] Rectangle 65 112x40 @(18,116) bg=#121212
+    [T] 待处理 39x18 @(55,127) bg=#FFFFFF TEXT="待处理" fs=13 color=#FFFFFF
+    [G] Group 48 112x40 @(132,116)
+      [R] Rectangle 66 112x40 @(132,116) bg=#FFFFFF
+      [T] 全部 26x18 @(166,126) bg=#666666 TEXT="全部" fs=13 color=#666666
+      [T] 18 15x17 @(194,127) bg=#9CA3AF TEXT="18" fs=12 color=#9CA3AF
+    [R] Rectangle 67 112x40 @(245,116) bg=#FFFFFF
+    [T] 已报价 39x18 @(280.5,127) bg=#666666 TEXT="已报价" fs=13 color=#666666
+  [F] Container 240xhug @(0,0.3)
+  [F] Background+Border+Shadow 343xhug @(16,178) bg=#FFFFFF r=20 stroke=#151617
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container fillxhug @(auto,auto)
+      [F] SVG 16x16 @(auto,auto)
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container fillxhug @(auto,auto)
+      [F] SVG 16x16 @(auto,auto)
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#151617
+      [F] Container fillxhug @(auto,auto)
+      [F] SVG 16x16 @(auto,auto)
+    [F] Container fillxhug @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+      [F] SVG 16x16 @(auto,auto)
+  [I] 底部导航 375x83 @(0,729)
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,778)

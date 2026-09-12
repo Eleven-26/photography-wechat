@@ -1,0 +1,58 @@
+[FRAME] W02 通知 375x812 @(2784,7608) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x996 @(0,1) bg=#F2F3F5
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 通知 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="通知" fs=17 color=#151617
+    [FRAME] Button:margin fill_containerx44 @(auto,auto)
+      [FRAME] Button
+  [GROUP] Group 49 343x44 @(16,114)
+    [RECTANGLE] Rectangle 64 343x44 @(16,114) bg=#FFFFFF
+    [RECTANGLE] Rectangle 65 112x40 @(18,116) bg=#121212
+    [TEXT] 全部 26x18 @(61,127) bg=#FFFFFF TEXT="全部" fs=13 color=#FFFFFF
+    [GROUP] Group 48 112x40 @(132,116)
+      [RECTANGLE] Rectangle 66 112x40 @(132,116) bg=#FFFFFF
+      [TEXT] 待处理 39x18 @(163,126) bg=#666666 TEXT="待处理" fs=13 color=#666666
+      [FRAME] Container hug_contentsxhug_contents @(204,126.5)
+    [RECTANGLE] Rectangle 67 112x40 @(245,116) bg=#FFFFFF
+    [TEXT] 已读 26x18 @(286.5,127) bg=#666666 TEXT="已读" fs=13 color=#666666
+  [FRAME] Container 343xhug_contents @(16,178)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 今天 fill_containerxhug_contents @(auto,auto) bg=#151617 TEXT="今天" fs=15 color=#151617
+  [RECTANGLE] Rectangle 68 343x72 @(16,208) bg=#121212
+  [FRAME] Background hug_contentsxhug_contents @(292,224) bg=#FFFFFF r=999
+    [TEXT] 待处理 hug_contentsxhug_contents @(auto,auto) bg=#121212 TEXT="待处理" fs=11 color=#121212
+  [FRAME] Container 240xhug_contents @(82,224)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 陈雨已转账待确认 fill_containerxhug_contents @(auto,auto) bg=#FFFFFF TEXT="陈雨已转账待确认" fs=15 color=#FFFFFF
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] ¥804 · 微信转账 · 无需凭证 · 09:16 fill_containerxhug_contents @(auto,auto) bg=#FFFFFF TEXT="¥804 · 微信转账 · 无需凭证 · 09:16" fs=12 color=#FFFFFF
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [FRAME] Background 40x40 @(32,224) bg=#FFDA08 r=10
+    [FRAME] SVG 20x20 @(auto,auto)
+      [VECTOR] Vector 15x15 @(2.5,2.5) stroke=#141414
+  [FRAME] Background+Border+Shadow 343xhug_contents @(16,300) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#151617
+      [FRAME] Background 32x32 @(auto,auto) bg=#FFFFFF r=8
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#FFE9AF r=999
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#151617
+      [FRAME] Background 32x32 @(auto,auto) bg=#FFFFFF r=8
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#FFE9AF r=999
+  [FRAME] Container 343xhug_contents @(16,460)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 昨天 fill_containerxhug_contents @(auto,auto) bg=#151617 TEXT="昨天" fs=15 color=#151617
+  [FRAME] Background+Border+Shadow 343xhug_contents @(16,490) bg=#FFFFFF r=20
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#151617
+      [FRAME] Background 32x32 @(auto,auto) bg=#F3F3F5 r=8
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#F1F2F2 r=999
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 32x32 @(auto,auto) bg=#F3F3F5 r=8
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#F1F2F2 r=999
+  [INSTANCE] 底部导航 375x83 @(0,729)
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,778) bg=#FFFFFF

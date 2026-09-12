@@ -1,0 +1,69 @@
+[FRAME] ME03-我的预约主页 375x971 @(3259,16905) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x970 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,888)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 我的预约主页 hug_contentsxhug_contents @(auto,auto) bg=#1A1A1A TEXT="我的预约主页" fs=17 color=#1A1A1A
+    [FRAME] Button:margin
+  [FRAME] Background 343xhug_contents @(16,114) bg=#161616 r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [RECTANGLE] Background 7x7 @(auto,auto) bg=#FFD60A
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 客户在微信里打开链接：看作品 → 选套餐 → 挑档期 → 线 下付款 → 系统记档 fill_containerxhug_contents @(auto,auto) bg=#B9B9BF TEXT="客户在微信里打开链接：看作品 → 选套餐 → 挑档期 → 线
+下付款 → 系统记档" fs=11.800000190734863 color=#B9B9BF
+    [FRAME] Background fill_containerxhug_contents @(auto,auto) bg=#272727 r=8
+      [FRAME] SVG 13x13 @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 150x38 @(auto,auto) bg=#FFD60A r=999
+      [FRAME] Border 152x38 @(auto,auto) r=999 stroke=#3D3D3D
+  [FRAME] Container 343x21 @(16,335)
+    [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [TEXT] 主页内容 hug_contentsxhug_contents @(auto,auto) bg=#1A1A1A TEXT="主页内容" fs=15 color=#1A1A1A
+    [FRAME] Margin 274.99798583984375xhug_contents @(68.00199890136719,3)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+  [FRAME] Background 343xhug_contents @(16,366) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,563)
+    [FRAME] Container fill_containerx21 @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [FRAME] Margin 275xhug_contents @(64,3)
+  [FRAME] Background 343xhug_contents @(16,613) bg=#FFFFFF r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#DFF5E9 r=999
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,678)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 最近分享 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="最近分享" fs=16 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,733) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#F1F1F3 r=999
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#F1F1F3 r=999
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,937) bg=#FFFFFF

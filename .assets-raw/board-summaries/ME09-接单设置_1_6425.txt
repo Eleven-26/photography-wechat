@@ -1,0 +1,57 @@
+[FRAME] ME09-接单设置 375x1193 @(2784,19290) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x1126 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,1110)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 收款设置 hug_contentsxhug_contents @(auto,auto) bg=#1A1A1A TEXT="收款设置" fs=17 color=#1A1A1A
+    [FRAME] Button:margin
+  [FRAME] Background 343x64 @(16,114) bg=#E6E7EB r=12
+    [FRAME] SVG:margin 14x15 @(14,14)
+      [FRAME] SVG 14x14 @(auto,auto)
+    [FRAME] Container hug_contentsxhug_contents @(36,12)
+      [TEXT] 资金不经平台。客户在 H5 下单后按以下方式线下转
+账，你在订单中确认到账（登记）。 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="资金不经平台。客户在 H5 下单后按以下方式线下转
+账，你在订单中确认到账（登记）。" fs=12 color=#6D6D72
+  [FRAME] Margin 343xhug_contents @(16,178)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+  [FRAME] Background 343xhug_contents @(16,233) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,398)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,670)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+  [FRAME] Background 343xhug_contents @(16,453) bg=#FFFFFF r=16
+    [RECTANGLE] image 12 159x159 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 点击更换 · 客户扫码转账后无需凭证，你确认到账 hug_contentsxhug_contents @(auto,auto) bg=#8E8E93 TEXT="点击更换 · 客户扫码转账后无需凭证，你确认到账" fs=12 color=#8E8E93
+  [FRAME] Background 343xhug_contents @(16,725) bg=#FFFFFF r=16
+    [RECTANGLE] image 12 159x159 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 点击更换 · 客户扫码转账后无需凭证，你确认到账 hug_contentsxhug_contents @(auto,auto) bg=#8E8E93 TEXT="点击更换 · 客户扫码转账后无需凭证，你确认到账" fs=12 color=#8E8E93
+  [FRAME] Margin 343xhug_contents @(16,942)
+    [FRAME] Background fill_containerxhug_contents @(auto,auto) bg=#E6E7EB r=12
+      [TEXT] 确认规则：微信 / 支付宝转账无需上传凭证，你确认到账后
+在订单里点确认；银行卡转账由客户上传凭证，系统识别金
+额与流水供你比对。 hug_contentsxhug_contents @(auto,auto) bg=#6D6D72 TEXT="确认规则：微信 / 支付宝转账无需上传凭证，你确认到账后
+在订单里点确认；银行卡转账由客户上传凭证，系统识别金
+额与流水供你比对。" fs=12 color=#6D6D72
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,1159) bg=#FFFFFF

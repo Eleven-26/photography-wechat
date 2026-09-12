@@ -1,0 +1,65 @@
+/* ============================================================
+ * tokens.scss —— SLOT 摄影师端设计变量（唯一色彩/规格来源）
+ *
+ * 来源：Ardot 摄影师端画板 + 组件库 13:439 实测（2026-09-06/07 实测记录）
+ * 与客户端差异：浅色体系 —— 底 #F2F3F5、白卡、黑胶囊主按钮 #17181A、按钮高 52
+ * 约定：页面内禁止出现本文件之外的裸色值；设计稿基准宽 375px → 750rpx（1px = 2rpx）
+ * ============================================================ */
+
+/* ---------- 色彩（摄影师端浅色工作台） ---------- */
+$bg-page: #F2F3F5;      // 页面底色（实测）
+$bg-card: #FFFFFF;      // 卡片底（白卡）
+$border-1: #E5E6E8;     // 一级描边（卡片描边/分隔线）
+$border-2: #D9DADE;     // 二级描边（次级按钮描边）
+$gold: #B66E00;         // 金 —— 徽章/强调文字（实测 #B66E00）
+$gold-bright: #FFDA08;  // 亮金 —— 进度/选中底（沿用体系）
+$text-1: #151518;       // 主文字（实测 #151617 就近）
+$text-2: #747881;       // 次级文字（D01 实测 #747881）
+$text-3: #5A5C61;       // 三级文字/区块辅助
+$text-disabled: #B5B7BC; // 禁用/过去日期（浅色推导）
+$tab-active: #121212;   // Tab 选中底（D01 实测）
+$white: #FFFFFF;
+$mask: rgba(0, 0, 0, 0.55);
+$glass-bg: rgba(255, 255, 255, 0.86); // 毛玻璃底栏（浅色）
+$icon-overlay: rgba(23, 24, 28, 0.68); // 图片上操作钮底（沿用）
+
+/* ---------- 主按钮（黑胶囊，实测 #17181A 白字 h52） ---------- */
+$btn-primary: #17181A;
+$btn-primary-text: #FFFFFF;
+$btn-danger: #E37B76;   // 危险/删除（沿用体系）
+
+/* ---------- 状态色（沿用后端枚举语义） ---------- */
+$tip-green: #2F8F4E;    // 成功/已确认（浅底深字）
+$tip-gray: #999999;
+$dot-booked: #E37B76;   // 告警红
+$warn-bg: #FDF3EC;      // 金色警示软底（浅色推导）
+$wechat-green: #0AC160;
+$alipay-blue: #0075FF;
+$tip-lime: #2F8F4E;
+
+/* ---------- 徽章软底（D01 实测实底族） ---------- */
+$badge-gold-bg: #FFF3D6;   // 金徽章底（D01「待拍摄/待定金」实测）
+$badge-gold-text: #B47200; // 金徽章字（D01 实测）
+$badge-green-bg: #E5F6ED;  // 绿徽章底（D01「待交付」实测）
+$badge-green-text: #20845C; // 绿徽章字（D01 实测）
+$badge-gray-bg: #F1F2F2;   // 灰徽章底（D01「精修中」实测）
+$badge-red-bg: rgba(227, 123, 118, 0.12);
+
+/* ---------- 尺寸（与客户端同基准；按钮高 52 为摄影师端口径） ---------- */
+$page-pad: 32rpx;       // 页面左右边距 16px
+$card-pad: 40rpx;       // 卡片内边距 20px
+$radius-card: 32rpx;    // 卡片圆角 16px
+$radius-cell: 24rpx;    // 区块圆角 12px
+$radius-badge: 8rpx;
+$radius-btn: 999rpx;    // 胶囊按钮圆角
+$btn-h: 104rpx;         // 摄影师端主按钮高 52px（第 18 轮口径）
+$btn-height: 104rpx;    // 兼容 AppButton（= $btn-h）
+$btn-width-main: 686rpx; // 主钮 343px 满宽（页边距 16px×2）
+$btn-fs: 32rpx;         // 按钮文字 16px Bold
+$touch-min: 88rpx;      // 触摸目标 >= 44px
+$touch-gap: 16rpx;      // 触摸目标间距 >= 8px
+$footer-safe: 24rpx;    // 底栏内容区上下边距
+$fs-xs: 22rpx;  $fs-sm: 26rpx;  $fs-md: 30rpx;  $fs-lg: 34rpx;  $fs-xl: 40rpx;
+$fs-num-xl: 40rpx;
+$font-family-num: 'DIN Alternate', 'Helvetica Neue', 'PingFang SC', sans-serif;
+$font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;

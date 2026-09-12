@@ -1,0 +1,71 @@
+[F] ME12b-意见反馈 375x812 @(5159,19290) bg=#FFFFFF
+  [R] Rectangle 44 375x811 @(0,1) bg=#F2F3F5
+  [F] Container 240xhug @(0,0.3)
+  [I] 底部导航 375x83 @(0,729)
+  [F] Container 375x60 @(0,44)
+    [F] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [F] SVG 20x20 @(auto,auto)
+        [V] Vector 11.7x11.7 @(4.2,4.2) stroke=#151617
+    [F] Container 247xhug @(64,18)
+      [T] 意见反馈 hug_contentsxhug @(auto,auto) bg=#151617 TEXT="意见反馈" fs=17 color=#151617
+    [F] Button:margin
+  [F] Background 343x90 @(16,114) bg=#FFFFFF r=16
+    [G] Mask group 52x52 @(auto,auto)
+      [F] Background 52x52 @(16,19) bg=#161616 r=26
+      [R] image 22 52x52 @(16,19) bg=#000000
+    [F] Container fillx58 @(auto,auto)
+      [F] Container fillxhug @(auto,auto)
+        [T] 把问题告诉我们 fillxhug @(auto,auto) bg=#000000 TEXT="把问题告诉我们" fs=15 color=#000000
+      [F] Container fillxhug @(auto,auto)
+        [T] 反馈会在 1-2 个工作日内回复到你的微信服务通知 fillxhug @(auto,auto) bg=#666666 TEXT="反馈会在 1-2 个工作日内回复到你的微信服务通知" fs=10.5 color=#666666
+    [F] SVG 16x16 @(auto,auto)
+      [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [T] 反馈 343x21 @(16,225) bg=#1A1A1A TEXT="反馈" fs=15 color=#1A1A1A
+  [F] Background 343xhug @(16,256) bg=#FFFFFF r=16
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 问题类型 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="问题类型" fs=14 color=#666666
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 功能异常 · 请选择 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="功能异常 · 请选择" fs=13 color=#1A1A1A
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] HorizontalBorder fillxhug @(auto,auto) stroke=#F0F0F2
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 问题描述 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="问题描述" fs=14 color=#666666
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 请描述遇到的问题或建议，不少于 10 字 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="请描述遇到的问题或建议，不少于 10 字" fs=13 color=#666666
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+    [F] Container fillxhug @(auto,auto)
+      [F] Container hug_contentsxhug @(auto,auto)
+        [T] 截图 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="截图" fs=14 color=#666666
+      [F] Margin fillxhug @(auto,auto)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 添加截图 · 选填 · 最多 3 张 hug_contentsxhug @(auto,auto) bg=#666666 TEXT="添加截图 · 选填 · 最多 3 张" fs=13 color=#666666
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Margin 343xhug @(16,421)
+    [F] Container fillx21 @(auto,auto)
+      [F] Container hug_contentsxhug @(0,0)
+        [T] 联系方式 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="联系方式" fs=15 color=#1A1A1A
+      [F] Margin 307xhug @(32,3)
+        [F] Container hug_contentsxhug @(auto,auto)
+          [T] 仅用于回访，不会展示给客户 hug_contentsxhug @(auto,auto) bg=#9A9AA0 TEXT="仅用于回访，不会展示给客户" fs=12 color=#9A9AA0
+  [F] Background 343xhug @(16,471) bg=#FFFFFF r=16
+    [F] Container fillxhug @(auto,auto)
+      [F] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+        [F] SVG 17x17 @(auto,auto)
+          [V] Vector 12.8x12.8 @(2.1,2.8) stroke=#1A1A1A
+          [V] Vector 12.8x5.7 @(2.1,1.4) stroke=#1A1A1A
+      [F] Container fillxhug @(auto,auto)
+        [T] 微信号 / 手机号 hug_contentsxhug @(auto,auto) bg=#1A1A1A TEXT="微信号 / 手机号" fs=15 color=#1A1A1A
+        [F] Container fillxhug @(auto,auto)
+          [T] lusheng_0823 · 选填，方便回访 fillxhug @(auto,auto) bg=#666666 TEXT="lusheng_0823 · 选填，方便回访" fs=10.699999809265137 color=#666666
+      [F] SVG 16x16 @(auto,auto)
+        [V] Vector 4x8 @(6,4) stroke=#C7C7CC
+  [F] Button 343x52 @(16,556) bg=#171819 r=999
+    [T] 提交反馈 hug_contentsxhug @(auto,auto) bg=#FFFFFF TEXT="提交反馈" fs=15 color=#FFFFFF
+  [I] Iphone 375x44 @(0,0)
+  [I] Iphone 375x34 @(0,778)

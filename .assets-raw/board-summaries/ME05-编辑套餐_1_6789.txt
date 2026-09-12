@@ -1,0 +1,134 @@
+[FRAME] ME05-编辑套餐 375x1970 @(4668,16905) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x1969 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,1887)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 编辑套餐 hug_contentsxhug_contents @(auto,auto) bg=#1A1A1A TEXT="编辑套餐" fs=17 color=#1A1A1A
+    [FRAME] Button:margin
+  [FRAME] Background 343xhug_contents @(16,146) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [TEXT] 基础信息 343x21 @(16,115) bg=#1A1A1A TEXT="基础信息" fs=15 color=#1A1A1A
+  [FRAME] Margin 343xhug_contents @(16,313)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 价格 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="价格" fs=15 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,368) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,533)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 服务内容 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="服务内容" fs=15 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,588) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,868)
+    [FRAME] Container fill_containerx21 @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [FRAME] Margin 275xhug_contents @(64,3)
+  [FRAME] Background 343xhug_contents @(16,918) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,1198)
+    [FRAME] Container fill_containerx21 @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(0,0)
+      [FRAME] Margin 275xhug_contents @(64,3)
+  [FRAME] Background 343xhug_contents @(16,1248) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [GROUP] Group 159 36x36 @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 14x14 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [GROUP] Group 160 36x36 @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 14x14 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,1436)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 规则 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="规则" fs=16 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,1491) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,1659)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 发布前检查 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="发布前检查" fs=16 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,1714) bg=#FFFFFF r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 20x20 @(auto,auto) bg=#34C759 r=10
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+  [FRAME] Container 375xhug_contents @(0,1788)
+    [FRAME] Button 167.5x52 @(auto,auto) bg=#FFFFFF r=999 stroke=#151617
+      [TEXT] 删除套餐 hug_contentsxhug_contents @(auto,auto) bg=#151617 TEXT="删除套餐" fs=15 color=#151617
+    [FRAME] Button 165.5x52 @(auto,auto) bg=#171819 r=999
+      [TEXT] 保存修改 hug_contentsxhug_contents @(auto,auto) bg=#FFFFFF TEXT="保存修改" fs=15 color=#FFFFFF
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,1936) bg=#FFFFFF

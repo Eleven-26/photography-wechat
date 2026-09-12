@@ -1,0 +1,102 @@
+[FRAME] SC02-日程 本周 375x1001 @(2784,14114) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x1001 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,917)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22
+      [FRAME] SVG 20x20 @(auto,auto)
+        [VECTOR] Vector 13.333333015441895x14.166666030883789 @(3.3333334922790527,2.500000238418579)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 日程 hug_contentsxhug_contents @(auto,auto) TEXT="日程" fs=17 Bold color=#151617
+    [FRAME] Button:margin
+  [GROUP] Group 49 343x44 @(16,114)
+    [RECTANGLE] Rectangle 64 343x44 @(16,114) bg=#FFFFFF
+    [RECTANGLE] Rectangle 65 112x40 @(18,116) bg=#FFFFFF
+    [TEXT] 今日 26x18 @(61,127) TEXT="今日" fs=13 Regular color=#666666
+    [GROUP] Group 48 112x40 @(132,116)
+      [RECTANGLE] Rectangle 66 112x40 @(132,116) bg=#121212
+      [TEXT] 本周 26x18 @(175,126) TEXT="本周" fs=13 Bold color=#FFFFFF
+      [FRAME] Container hug_contentsxhug_contents @(204,126.5)
+    [RECTANGLE] Rectangle 67 112x40 @(245,116) bg=#FFFFFF
+    [TEXT] 可约档期 52x18 @(275,127) TEXT="可约档期" fs=13 Regular color=#666666
+  [TEXT] 8月5日 - 8月11日 339x20 @(18,178) TEXT="8月5日 - 8月11日" fs=15 Bold color=#151617
+  [TEXT] 8月8日 周四 · 今日 339x20 @(18,308) TEXT="8月8日 周四 · 今日" fs=15 Bold color=#151617
+  [GROUP] Group 117 343x80 @(17,208)
+    [RECTANGLE] Rectangle 162 343x80 @(17,208) bg=#FFFFFF
+    [RECTANGLE] Rectangle 163 40x60 @(33,218) bg=#FFFFFF
+    [RECTANGLE] Rectangle 164 40x60 @(78,218) bg=#FFFFFF
+    [RECTANGLE] Rectangle 165 40x60 @(123,218) bg=#FFFFFF
+    [RECTANGLE] Rectangle 166 40x60 @(168,218) bg=#121212
+    [RECTANGLE] Rectangle 167 40x60 @(213,218) bg=#FFFFFF
+    [RECTANGLE] Rectangle 168 40x60 @(258,218) bg=#FFFFFF
+    [RECTANGLE] Rectangle 169 40x60 @(303,218) bg=#FFFFFF
+    [TEXT] 5 8x18 @(49,245) TEXT="5" fs=13 Bold color=#151617
+    [TEXT] 6 8x18 @(94,245) TEXT="6" fs=13 Bold color=#151617
+    [TEXT] 7 8x18 @(139,245) TEXT="7" fs=13 Bold color=#151617
+    [TEXT] 8 8x18 @(184,245) TEXT="8" fs=13 Bold color=#FFFFFF
+    [TEXT] 9 8x18 @(229,245) TEXT="9" fs=13 Bold color=#151617
+    [TEXT] 10 16x18 @(270,245) TEXT="10" fs=13 Bold color=#151617
+    [TEXT] 11 16x18 @(315,245) TEXT="11" fs=13 Bold color=#151617
+    [TEXT] 一 40x15 @(33,224) TEXT="一" fs=11 Regular color=#999999
+    [TEXT] 二 40x15 @(78,224) TEXT="二" fs=11 Regular color=#999999
+    [TEXT] 三 40x15 @(123,224) TEXT="三" fs=11 Regular color=#999999
+    [TEXT] 四 40x15 @(168,224) TEXT="四" fs=11 Regular color=#999999
+    [TEXT] 五 40x15 @(213,224) TEXT="五" fs=11 Regular color=#999999
+    [TEXT] 六 40x15 @(258,224) TEXT="六" fs=11 Regular color=#999999
+    [TEXT] 日 40x15 @(303,224) TEXT="日" fs=11 Regular color=#999999
+    [ELLIPSE] Ellipse 25 4x4 @(51,267) bg=#C3C3C3
+    [ELLIPSE] Ellipse 27 4x4 @(276,267) bg=#20845C
+    [ELLIPSE] Ellipse 28 4x4 @(186,267) bg=#FFFFFF
+    [ELLIPSE] Ellipse 26 4x4 @(96,267) bg=#C2C2C2
+    [ELLIPSE] Ellipse 29 4x4 @(231,267) bg=#B66E00
+  [FRAME] Background+Border+Shadow 343x114 @(16,338) bg=#FFFFFF r=16
+    [FRAME] Container 309xhug_contents @(17,16)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+        [TEXT] 09:00-11:00 hug_contentsxhug_contents @(auto,auto) TEXT="09:00-11:00" fs=16 Bold color=#151617
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#FFF3D6 r=999
+        [TEXT] 即将开始 hug_contentsxhug_contents @(auto,auto) TEXT="即将开始" fs=11 Medium color=#B66E00
+    [FRAME] Margin 309xhug_contents @(17,50)
+      [FRAME] Container fill_containerx18 @(auto,auto)
+        [TEXT] 陈雨 · 家庭纪念写真 hug_contentsxhug_contents @(auto,auto) TEXT="陈雨 · 家庭纪念写真" fs=18 Bold color=#171819
+    [FRAME] Container 309x20 @(17,78)
+      [TEXT] 越秀公园 · 2.5h hug_contentsxhug_contents @(auto,auto) TEXT="越秀公园 · 2.5h" fs=13 Regular color=#666666
+  [FRAME] Background+Border+Shadow 343x114 @(16,462) bg=#FFFFFF r=16
+    [FRAME] Container 309xhug_contents @(17,16)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+        [TEXT] 14:00-16:00 hug_contentsxhug_contents @(auto,auto) TEXT="14:00-16:00" fs=16 Bold color=#151617
+      [FRAME] Background hug_contentsxhug_contents @(auto,auto) bg=#E6E7EB r=999
+        [TEXT] 待开始 hug_contentsxhug_contents @(auto,auto) TEXT="待开始" fs=11 Medium color=#666666
+    [FRAME] Margin 309xhug_contents @(17,50)
+      [FRAME] Container fill_containerx18 @(auto,auto)
+        [TEXT] 蓝桥 · 商务形象 hug_contentsxhug_contents @(auto,auto) TEXT="蓝桥 · 商务形象" fs=18 Bold color=#171819
+    [FRAME] Container 309x20 @(17,78)
+      [TEXT] 越秀公园 · 2.5h hug_contentsxhug_contents @(auto,auto) TEXT="越秀公园 · 2.5h" fs=13 Regular color=#666666
+  [FRAME] Background+Border+Shadow 343x70 @(16,586) bg=#FFFFFF r=16
+    [FRAME] Container 311x21 @(16,14)
+      [TEXT] 16:00 - 18:00 空闲 311x18 @(0,1) TEXT="16:00 - 18:00 空闲" fs=13 Bold color=#333333
+    [FRAME] Container 311x21 @(16,35)
+      [TEXT] 可临时接单或处理后期 311x18 @(0,1) TEXT="可临时接单或处理后期" fs=13 Regular color=#666666
+    [FRAME] Background hug_contentsxhug_contents @(287,24) bg=#E5F6ED r=999
+      [TEXT] 可约 hug_contentsxhug_contents @(auto,auto) TEXT="可约" fs=11 Medium color=#20845C
+  [FRAME] Section 343xhug_contents @(16,676)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+        [TEXT] 本周概况 fill_containerxhug_contents @(auto,auto) TEXT="本周概况" fs=15 Bold color=#151617
+    [FRAME] Background+Border+Shadow fill_containerxhug_contents @(auto,auto) bg=#FFFFFF r=16
+      [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto)
+        [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+          [TEXT] 本周拍摄 hug_contentsxhug_contents @(auto,auto) TEXT="本周拍摄" fs=15 Regular color=#666666
+        [FRAME] Container fill_containerxhug_contents @(auto,auto)
+          [TEXT] 5 场 · 2 场已完成 hug_contentsxhug_contents @(auto,auto) TEXT="5 场 · 2 场已完成" fs=15 Regular color=#333333
+      [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto)
+        [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+          [TEXT] 待修图任务 hug_contentsxhug_contents @(auto,auto) TEXT="待修图任务" fs=15 Regular color=#666666
+        [FRAME] Container fill_containerxhug_contents @(auto,auto)
+          [TEXT] 1 个 · 婚礼跟拍 24 张 hug_contentsxhug_contents @(auto,auto) TEXT="1 个 · 婚礼跟拍 24 张" fs=15 Regular color=#333333
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+        [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+          [TEXT] 可约日期 hug_contentsxhug_contents @(auto,auto) TEXT="可约日期" fs=15 Regular color=#666666
+        [FRAME] Container fill_containerxhug_contents @(auto,auto)
+          [TEXT] 8/10 · 8/16 · 8/23 hug_contentsxhug_contents @(auto,auto) TEXT="8/10 · 8/16 · 8/23" fs=15 Regular color=#20845C
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,966) bg=#FFFFFF

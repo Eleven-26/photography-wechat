@@ -1,0 +1,45 @@
+[FRAME] ME12-帮主与关于 375x812 @(4209,19290) bg=#FFFFFF
+  [RECTANGLE] Rectangle 44 375x811 @(0,1) bg=#F2F3F5
+  [FRAME] Container 240xhug_contents @(0,0.30078125)
+  [INSTANCE] 底部导航 375x83 @(0,729)
+  [FRAME] Container 375x60 @(0,44)
+    [FRAME] Button - 页面操作 44x44 @(auto,auto) bg=#FFFFFF r=22 stroke=#151617
+      [FRAME] SVG 20x20 @(auto,auto)
+    [FRAME] Container 247xhug_contents @(64,18)
+      [TEXT] 帮助与关于 hug_contentsxhug_contents @(auto,auto) bg=#1A1A1A TEXT="帮助与关于" fs=17 color=#1A1A1A
+    [FRAME] Button:margin
+  [FRAME] Margin 343xhug_contents @(16,104)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 帮助 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="帮助" fs=15 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,159) bg=#FFFFFF r=16
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,224)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 联系 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="联系" fs=15 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,279) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Background 34x34 @(auto,auto) bg=#F1F1F3 r=17
+      [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] SVG 16x16 @(auto,auto)
+  [FRAME] Margin 343xhug_contents @(16,410)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [TEXT] 关于 fill_containerxhug_contents @(auto,auto) bg=#1A1A1A TEXT="关于" fs=15 color=#1A1A1A
+  [FRAME] Background 343xhug_contents @(16,465) bg=#FFFFFF r=16
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] SVG:margin fill_containerx16 @(auto,auto)
+    [FRAME] HorizontalBorder fill_containerxhug_contents @(auto,auto) stroke=#F0F0F2
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] SVG:margin fill_containerx16 @(auto,auto)
+    [FRAME] Container fill_containerxhug_contents @(auto,auto)
+      [FRAME] Container hug_contentsxhug_contents @(auto,auto)
+      [FRAME] Margin fill_containerxhug_contents @(auto,auto)
+  [INSTANCE] Iphone 375x44 @(0,0) bg=#FFFFFF
+  [INSTANCE] Iphone 375x34 @(0,778) bg=#FFFFFF

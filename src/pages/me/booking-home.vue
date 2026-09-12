@@ -1,0 +1,293 @@
+<template>
+  <view class="page-bh page-wrap">
+    <view class="status-bar" />
+    <!-- Header：返回箭头 白圆钮 + 「我的预约主页」居中（1:5940 实测） -->
+    <view class="page-bh__header">
+      <view class="page-bh__back pressable" @click="goBack"><AppIcon name="back-dark" :size="20" /></view>
+      <text class="page-bh__title">我的预约主页</text>
+    </view>
+
+    <!-- 状态黑卡 #161616 r16（y114）：金点 + 说明 + 链接条 + 双钮 -->
+    <view class="page-bh__hero">
+      <view class="page-bh__hero-head">
+        <view class="page-bh__hero-dot" />
+        <text class="page-bh__hero-title">主页已就绪</text>
+        <text class="page-bh__hero-hint">客户可直接下单</text>
+      </view>
+      <text class="page-bh__hero-desc">客户在微信里打开链接：看作品 → 选套餐 → 挑档期 → 线下付款 → 系统记档</text>
+      <view class="page-bh__hero-link" @click="copyLink">
+        <AppIcon name="me-link" :size="13" />
+        <text class="page-bh__hero-url">slot.app/lusheng-photography</text>
+        <text class="page-bh__hero-copy">复制</text>
+      </view>
+      <view class="page-bh__hero-btns">
+        <view class="page-bh__hero-gold pressable" @click="share">
+          <AppIcon name="me-share" :size="13" />
+          <text>分享到微信</text>
+        </view>
+        <view class="page-bh__hero-ghost pressable" @click="goPreview"><text>客户视角预览</text></view>
+      </view>
+    </view>
+
+    <!-- 主页内容（y335 标题 + y366 三行卡） -->
+    <view class="page-bh__sec">主页内容</view>
+    <view class="page-bh__card">
+      <view class="info-row page-bh__row pressable" @click="goPackages">
+        <view class="page-bh__row-icon"><AppIcon name="me-pkg2" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">套餐报价</text>
+          <text class="page-bh__row-sub">客户在主页选择并下单</text>
+        </view>
+        <text class="page-bh__row-count">4 个</text>
+        <AppIcon name="chevron-right-gray" :size="16" />
+      </view>
+      <view class="info-row page-bh__row pressable" @click="goWorks">
+        <view class="page-bh__row-icon"><AppIcon name="me-img" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">作品展示</text>
+          <text class="page-bh__row-sub">主页顶部轮播</text>
+        </view>
+        <text class="page-bh__row-count">86 张</text>
+        <AppIcon name="chevron-right-gray" :size="16" />
+      </view>
+      <view class="info-row page-bh__row pressable" @click="goSchedule">
+        <view class="page-bh__row-icon"><AppIcon name="me-cal2" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">可约档期</text>
+          <text class="page-bh__row-sub">去日程 Tab 管理</text>
+        </view>
+        <AppIcon name="chevron-right-gray" :size="16" />
+      </view>
+    </view>
+
+    <!-- 收款方式（y563 标题 + 提示 + y613 一行卡） -->
+    <view class="page-bh__sec-row">
+      <text class="page-bh__sec">收款方式</text>
+      <text class="page-bh__sec-hint">客户下单后按此转账</text>
+    </view>
+    <view class="page-bh__card page-bh__card--mt">
+      <view class="info-row page-bh__row pressable" @click="goPay">
+        <view class="page-bh__row-icon page-bh__row-icon--round"><AppIcon name="me-wallet2" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">收款设置</text>
+          <text class="page-bh__row-sub">银行卡 · 微信收款码 · 支付宝收款码</text>
+        </view>
+        <view class="page-bh__badge-ok"><text>已设</text></view>
+        <AppIcon name="chevron-right-gray" :size="16" />
+      </view>
+    </view>
+
+    <!-- 最近分享（y678 标题 + y733 两行卡） -->
+    <view class="page-bh__sec page-bh__sec--mt">最近分享</view>
+    <view class="page-bh__card">
+      <view class="info-row page-bh__row pressable" @click="saveQrcode">
+        <view class="page-bh__row-icon page-bh__row-icon--round"><AppIcon name="me-qrcode" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">保存主页二维码</text>
+          <text class="page-bh__row-sub">打印放店里 · 3 天前</text>
+        </view>
+        <view class="page-bh__badge-gray"><text>二维码</text></view>
+      </view>
+      <view class="info-row page-bh__row pressable" @click="share">
+        <view class="page-bh__row-icon page-bh__row-icon--round page-bh__row-icon--alt"><AppIcon name="me-send" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">发给微信好友「王浩」</text>
+          <text class="page-bh__row-sub">昨天 16:20</text>
+        </view>
+        <view class="page-bh__badge-gray"><text>微信</text></view>
+      </view>
+    </view>
+
+    <AppTabBar active="me" />
+    <view class="page-bh__safe" />
+  </view>
+</template>
+
+<script>
+/**
+ * ME03 我的预约主页（稿 1:5940 实测 1:1）
+ * 状态黑卡（主页已就绪+链接条+分享/预览双钮）→ 主页内容三行 → 收款方式（已设）→ 最近分享两行。
+ */
+export default {
+  name: 'MeBookingHome',
+  methods: {
+    goBack() {
+      uni.navigateBack()
+    },
+    copyLink() {
+      uni.setClipboardData({ data: 'slot.app/lusheng-photography' })
+    },
+    share() {
+      uni.showToast({ title: '分享到微信（演示）', icon: 'none' })
+    },
+    goPreview() {
+      uni.navigateTo({ url: '/pages/me/preview' })
+    },
+    goPackages() {
+      uni.navigateTo({ url: '/pages/me/packages' })
+    },
+    goWorks() {
+      uni.navigateTo({ url: '/pages/me/works' })
+    },
+    goSchedule() {
+      uni.switchTab({ url: '/pages/schedule/index' })
+    },
+    goPay() {
+      uni.navigateTo({ url: '/pages/me/pay-settings' })
+    },
+    saveQrcode() {
+      uni.showToast({ title: '保存主页二维码（演示）', icon: 'none' })
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.page-bh {
+  &__header {
+    position: relative;
+    box-sizing: border-box;
+    height: 60px;
+    display: flex;
+    align-items: center;
+  }
+  &__back {
+    box-sizing: border-box;
+    position: absolute;
+    left: 32rpx;
+    z-index: 1;
+    width: 88rpx;
+    height: 88rpx;
+    border-radius: 50%;
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &__title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 34rpx;
+    line-height: 48rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  &__hero {
+    margin: 20rpx 32rpx 0; /* 稿：hero 左缘 x16 = 32rpx；顶距 header 底 104→114 = 10px */
+    background-color: #161616;
+    border-radius: 32rpx;
+    padding: 32rpx;
+  }
+  &__hero-head { display: flex; align-items: center; gap: 16rpx; }
+  &__hero-dot { width: 14rpx; height: 14rpx; border-radius: 4rpx; background-color: #FFD60A; flex-shrink: 0; }
+  &__hero-title { font-size: 30rpx; font-weight: 500; color: #FFFFFF; }
+  &__hero-hint { margin-left: auto; font-size: 22rpx; color: #8D8D93; }
+  &__hero-desc { display: block; margin-top: 16rpx; font-size: 23rpx; line-height: 36rpx; color: #B9B9BF; }
+  &__hero-link {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    margin-top: 24rpx;
+    background-color: #272727;
+    border-radius: 16rpx;
+    padding: 20rpx 24rpx;
+  }
+  &__hero-url { flex: 1; font-size: 22rpx; color: #C9C9CF; }
+  &__hero-copy { font-size: 22rpx; font-weight: 500; color: #FFD60A; flex-shrink: 0; }
+  &__hero-btns { display: flex; gap: 16rpx; margin-top: 32rpx; }
+  &__hero-gold {
+    box-sizing: border-box;
+    width: 300rpx;
+    height: 76rpx;
+    border-radius: 999rpx;
+    background-color: #FFD60A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12rpx;
+    text { font-size: 26rpx; font-weight: 500; color: #161616; }
+  }
+  &__hero-ghost {
+    box-sizing: border-box;
+    flex: 1;
+    height: 76rpx;
+    border-radius: 999rpx;
+    border: 2rpx solid #3D3D3D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text { font-size: 26rpx; color: #FFFFFF; }
+  }
+
+  &__sec { margin: 40rpx 36rpx 0; font-size: 30rpx; font-weight: 500; color: #1A1A1A; } /* 稿：hero 底 315 → 「主页内容」339（上 20px） */
+  &__sec--mt { margin-top: 40rpx; }
+  &__sec-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 24rpx;
+    margin: 40rpx 36rpx 0;
+    .page-bh__sec { margin: 0; }
+  }
+  &__sec-hint { font-size: 24rpx; color: #9A9AA0; white-space: nowrap; flex-shrink: 0; }
+
+  &__card {
+    margin: 24rpx 32rpx 0; /* 稿：标题墨迹 354 → 卡片 366（下 12px） */
+    &--mt { margin-top: 24rpx; } /* 稿：sec-row 标题 587–602 → 卡2 613（下 12px） */
+    background-color: $white;
+    border-radius: 32rpx;
+    overflow: hidden;
+  }
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 24rpx;
+  }
+  &__row-icon {
+    box-sizing: border-box;
+    width: 68rpx;
+    height: 68rpx;
+    border-radius: 50%;
+    background-color: #F1F1F3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    &--round { border-radius: 50%; }
+    &--alt { background-color: #F1F1F3; }
+  }
+  &__row-main { flex: 1; min-width: 0; }
+  &__row-label { font-size: 30rpx; color: #1A1A1A; }
+  &__row-sub {
+    display: block;
+    margin-top: 6rpx;
+    font-size: 21rpx;
+    color: #666666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &__row-count { font-size: 24rpx; color: #8E8E93; flex-shrink: 0; }
+
+  &__badge-ok {
+    box-sizing: border-box;
+    background-color: #DFF5E9;
+    border-radius: 999rpx;
+    padding: 8rpx 20rpx;
+    flex-shrink: 0;
+    text { font-size: 22rpx; color: #00A860; }
+  }
+  &__badge-gray {
+    box-sizing: border-box;
+    background-color: #F1F1F3;
+    border-radius: 999rpx;
+    padding: 8rpx 20rpx;
+    flex-shrink: 0;
+    text { font-size: 22rpx; color: #8E8E93; }
+  }
+
+  &__safe { height: calc(166rpx + env(safe-area-inset-bottom)); }
+}
+</style>
