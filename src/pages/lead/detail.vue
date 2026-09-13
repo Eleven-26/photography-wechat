@@ -22,12 +22,12 @@
     <view class="page-ld__card page-ld__card--wait">
       <view class="page-ld__wait-row">
         <AppIcon name="clock-dark-sm" :size="20" />
-        <text class="page-ld__wait-text">客户正在 H5 等待回复 · 已等待 8 分钟</text>
+        <text class="page-ld__wait-text">客户正在客户端站点等待回复 · 已等待 8 分钟</text>
       </view>
       <view class="page-ld__send-btn pressable" @click="sendWorks">
         <text>发送作品给客户</text>
       </view>
-      <text class="page-ld__wait-note">从作品集选择作品，生成链接通过 H5 发送</text>
+      <text class="page-ld__wait-note">从作品集选择作品，生成链接通过客户端站点发送</text>
     </view>
 
     <text class="page-ld__sec">需求摘要</text>
@@ -64,7 +64,7 @@
 
     <!-- 底部毛玻璃操作栏：提示 + 白描边追问 + 黑创建报价（1:71 实测） -->
     <view class="glass-footer">
-      <text class="page-ld__foot-tip">追问和报价将通过 H5 发送给客户</text>
+      <text class="page-ld__foot-tip">追问和报价将通过客户端站点发送给客户</text>
       <view class="page-ld__foot-btns">
         <view class="page-ld__btn-ghost pressable" @click="goAsk">
           <text>追问客户</text>
@@ -80,17 +80,17 @@
 <script>
 /**
  * L02 线索详情（稿 1:3177 实测 1:1）
- * 客户来源卡 → H5 等待卡（发送作品黑胶囊）→ 需求摘要 → AI 建议（进 L03）→ 沟通记录 → 底栏（追问/创建报价）。
- * 底栏提示「追问和报价将通过 H5 发送给客户」为稿内固定文案。
+ * 客户来源卡 → 客户端站点等待卡（发送作品黑胶囊）→ 需求摘要 → AI 建议（进 L03）→ 沟通记录 → 底栏（追问/创建报价）。
+ * 底栏提示「追问和报价将通过客户端站点发送给客户」为稿内固定文案。
  */
 export default {
   name: 'LeadDetail',
   data() {
     return {
       messages: [
-        { time: 'H5 · 小红书渠道 · 8分钟前', text: '想咨询家庭写真，2大1小，孩子5岁，周末有空吗？' },
-        { time: 'H5 · 小红书渠道 · 5分钟前', text: '预算2000-3000，想要自然一点的风格' },
-        { time: 'H5 · 小红书渠道 · 3分钟前', text: '在越秀公园拍可以吗？孩子在那边比较放松' },
+        { time: '客户端站点 · 小红书渠道 · 8分钟前', text: '想咨询家庭写真，2大1小，孩子5岁，周末有空吗？' },
+        { time: '客户端站点 · 小红书渠道 · 5分钟前', text: '预算2000-3000，想要自然一点的风格' },
+        { time: '客户端站点 · 小红书渠道 · 3分钟前', text: '在越秀公园拍可以吗？孩子在那边比较放松' },
       ],
     }
   },

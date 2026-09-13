@@ -1,5 +1,5 @@
 {
-  "_comment": "SLOT 客户端（H5 + 微信小程序）· uni-app Vue3 · 版本号取 npm dist-tag vue3（2026-09-07 实测），升级时全家桶统一升",
+  "_comment": "SLOT 员工端（H5 + 微信小程序）· uni-app Vue3 · 版本号取 npm dist-tag vue3（2026-09-07 实测），升级时全家桶统一升",
   "name": "photography-wechat",
   "version": "0.1.0",
   "scripts": {

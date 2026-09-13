@@ -182,7 +182,7 @@
       <AppIcon name="calendar-dark-md" :size="20" />
       <view class="page-sc__manage-main">
         <text class="page-sc__manage-title">档期管理</text>
-        <text class="page-sc__manage-sub">关闭特定日期或时段 · 同步到 H5 预约页</text>
+        <text class="page-sc__manage-sub">关闭特定日期或时段 · 同步到客户端站点预约页</text>
       </view>
       <AppIcon name="chevron-right-gray" :size="16" />
     </view>

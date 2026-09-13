@@ -5,7 +5,7 @@
  * 存储：uni.setStorageSync（H5 → localStorage / 小程序 → storage，跨端一致）
  *
  * ⚠️ 本仓是**员工端**：存的是员工（user 表）信息，不是客户（crm_customer）。
- *    storage key 由 slot_customer_* 改为 slot_staff_*，避免与 h5 客户仓串号
+ *    storage key 由 slot_customer_* 改为 slot_staff_*，避免与客户端仓（photography-h5）串号
  *    （两个端若部署在同域，localStorage 是共享的，key 必须区分）。
  *    首次读取会把旧的 slot_customer_* 迁移过来，登录一次后自然覆盖。
  */

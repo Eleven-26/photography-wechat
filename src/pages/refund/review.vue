@@ -30,7 +30,7 @@
         <text class="page-pfr__alert-amount">￥{{ formatAmount(refund.amount) }}</text>
       </view>
       <text class="page-pfr__alert-sub">
-        {{ stage === 'confirming' ? '客户在 H5 确认收到 ¥' + formatAmount(refund.amount) + ' 后，订单自动完结' : '客户申请取消并退定金 ¥' + formatAmount(refund.amount) + ' · 系统校验已通过' }}
+        {{ stage === 'confirming' ? '客户在客户端站点确认收到 ¥' + formatAmount(refund.amount) + ' 后，订单自动完结' : '客户申请取消并退定金 ¥' + formatAmount(refund.amount) + ' · 系统校验已通过' }}
       </text>
     </view>
 
@@ -88,7 +88,7 @@
         </view>
         <text class="page-pfr__voucher-sub">微信/银行卡转账成功后，截图上传凭证 · 客户会收到确认通知</text>
         <text class="page-pfr__voucher-sub page-pfr__voucher-sub--tip">
-          {{ stage === 'confirming' ? '客户在 H5 确认收到退款后，订单自动完结（已取消 · 已退款）' : '已批准 2 天 · 请尽快转账，超 72h 未上传凭证系统将提醒客户与你沟通' }}
+          {{ stage === 'confirming' ? '客户在客户端站点确认收到退款后，订单自动完结（已取消 · 已退款）' : '已批准 2 天 · 请尽快转账，超 72h 未上传凭证系统将提醒客户与你沟通' }}
         </text>
       </view>
     </template>
