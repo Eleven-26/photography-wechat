@@ -1,7 +1,8 @@
 /**
  * 登录态管理 —— token 与**员工（摄影师）**信息存取
  *
- * 登录方式：全端统一手机号验证码（需求文档 v1.3 §2/§8，不依赖微信授权）
+ * 登录方式：**账号 + 密码**（2026-09-14 起，与 PC 后台同口径）。
+ *   手机验证码登录 / 微信授权登录为预留方式（接口在 api/auth.js 中已备好）。
  * 存储：uni.setStorageSync（H5 → localStorage / 小程序 → storage，跨端一致）
  *
  * ⚠️ 本仓是**员工端**：存的是员工（user 表）信息，不是客户（crm_customer）。
@@ -33,8 +34,9 @@ export function getToken() {
 }
 
 /**
- * 读取员工信息（后端 staff.go → StaffLogin 返回的 user 字段：
- * id / username / nickname / avatar / mobile / role_id / store_id）
+ * 读取员工信息（后端 staff.go → StaffPasswordLogin 返回的 user 字段，结构同 PC 的
+ * UserInfoVO：内嵌 sys_user 全字段 id / username / nickname / avatar / mobile /
+ * role_id / company_id / store_id…，另加 role_code / role_name / data_scope / permissions）
  */
 export function getStaff() {
   const raw = uni.getStorageSync(KEY_STAFF) || uni.getStorageSync(LEGACY_KEY_STAFF)

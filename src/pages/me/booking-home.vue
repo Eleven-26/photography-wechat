@@ -110,14 +110,16 @@ import { getStudioSettings } from '@/api/settings'
  * ME03 我的预约主页（稿 1:5940 实测 1:1）
  * 状态黑卡（主页已就绪+链接条+分享/预览双钮）→ 主页内容三行 → 收款方式（已设）→ 最近分享两行。
  *
- * 预约主页链接由**服务端**下发（studio/get 的 homepage_url = share.homepage_base_url + ?slug=xxx），
- * 前端不拼域名；未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
+ * 预约主页链接由**服务端**下发（studio/get 的 homepage_url =
+ * share.homepage_base_url + ?slug=xxx&staff_id=<我的账号id>），前端不拼域名；
+ * 未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
+ * staff_id 即分享人：客户从这条链接进来下单，订单就归到我名下（biz_order.photographer_id）。
  */
 export default {
   name: 'MeBookingHome',
   data() {
     return {
-      /** 预约主页分享链接（服务端拼装，含 ?slug= 租户标识） */
+      /** 预约主页分享链接（服务端拼装，含 ?slug= 租户标识与 &staff_id= 分享人） */
       shareUrl: '',
     }
   },

@@ -11,7 +11,8 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     /** 是否已登录 */
     loggedIn: isLoggedIn(),
-    /** 员工信息（对齐 staff.go → StaffLogin 的 user 字段：id/username/nickname/avatar/mobile/role_id/store_id） */
+    /** 员工信息（对齐后端 staff.go → StaffPasswordLogin 的 user 字段，结构同 PC 的 UserInfoVO：
+     *  内嵌 sys_user 全字段 + role_code / role_name / data_scope / permissions） */
     staff: getStaff(),
   }),
   getters: {

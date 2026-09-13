@@ -23,6 +23,9 @@ export default [
       'node_modules/**',
       '.assets-raw/**',
       '**/*.d.ts',
+      // 本项目的工作目录（memory / artifacts / tmp）：内含临时脚本与构建产物快照，
+      // 不属源码，扫进来会把 lint 结果淹没。
+      '.workbuddy/**',
     ],
   },
 

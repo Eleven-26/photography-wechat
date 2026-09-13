@@ -38,8 +38,12 @@ export const API_PREFIX_CLIENT = clientPrefix
 export const API_PATHS = {
   // 认证（公开）
   auth: {
+    /** 账号 + 密码登录（当前唯一接入 UI 的方式；复用 PC 同一套凭据校验与失败锁定） */
+    login: 'auth/login',
+    /** ⏳ 预留：发送短信验证码（手机验证码登录尚未接入 UI） */
     smsCode: 'auth/sms-code',
-    login: 'auth/login'
+    /** ⏳ 预留：手机验证码登录（与 smsCode 成对，缺一不可用） */
+    loginByCode: 'auth/login-by-code'
   },
   // 工作台
   dashboard: { overview: 'overview' },
@@ -139,6 +143,9 @@ export const API_PATHS = {
 
 /** 客户区路径（去掉 /wechat 前缀）—— 仅供「客户视角预览」等客户身份场景 */
 export const CLIENT_API_PATHS = {
+  // ⚠️ 客户区登录是**客户手机号验证码**（挂 /wechat，与 H5 客户区同源，
+  //    见 internal/presentation/h5/h5.go → RegisterPublic），
+  //    与员工区 auth/login（账号密码）同名不同义，勿混用。
   auth: {
     smsCode: 'auth/sms-code',
     login: 'auth/login'

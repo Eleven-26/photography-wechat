@@ -120,14 +120,17 @@ import { getStudioSettings } from '@/api/settings'
  * 资料卡 → 预约主页黑卡（金点+链接条+双钮 150/152x38）→ 套餐与作品两行 → 接单与收款（toggle #34C759 / 已设徽章）→ 通用三行。
  * 行图标均从画板导出（me-pkg/me-works/me-booking/me-wallet/me-bell/me-shield/me-help）。
  *
- * 预约主页链接由**服务端**下发（studio/get 的 homepage_url = share.homepage_base_url + ?slug=xxx），
- * 前端不拼域名；未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
+ * 预约主页链接由**服务端**下发（studio/get 的 homepage_url =
+ * share.homepage_base_url + ?slug=xxx&staff_id=<我的账号id>），前端不拼域名；
+ * 未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
+ * staff_id 即分享人：客户从这条链接进来下单，订单就归到我名下（biz_order.photographer_id），
+ * 因此在员工端「我的订单」里能直接看到自己的客户单。
  */
 export default {
   name: 'MeIndex',
   data() {
     return {
-      /** 预约主页分享链接（服务端拼装，含 ?slug= 租户标识） */
+      /** 预约主页分享链接（服务端拼装，含 ?slug= 租户标识与 &staff_id= 分享人） */
       shareUrl: '',
     }
   },

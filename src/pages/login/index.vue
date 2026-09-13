@@ -6,47 +6,40 @@
       <text class="login__slogan">摄影师工作台</text>
     </view>
 
-    <!-- 表单区：手机号（+86 前缀）+ 验证码 -->
+    <!-- 表单区：账号 + 密码（与 PC 后台同口径；手机验证码 / 微信授权登录为预留方式） -->
     <view class="login__form">
       <view class="login__field">
-        <text class="login__prefix">+86</text>
         <input
-          v-model="mobile"
+          v-model="form.username"
           class="login__input"
-          type="number"
-          maxlength="11"
-          placeholder="手机号"
+          type="text"
+          maxlength="50"
+          placeholder="账号"
           placeholder-class="login__placeholder"
-          @input="onMobileInput"
+          @confirm="onLogin"
         />
       </view>
 
       <view class="login__field">
         <input
-          v-model="smsCode"
+          v-model="form.password"
           class="login__input"
-          type="number"
-          maxlength="6"
-          placeholder="验证码"
+          type="password"
+          password
+          maxlength="32"
+          placeholder="密码"
           placeholder-class="login__placeholder"
+          @confirm="onLogin"
         />
-        <!-- 发送验证码：60s 倒计时；禁用期间不可点 -->
-        <view
-          class="login__send pressable"
-          :class="{ 'login__send--disabled': counting || !mobileValid }"
-          @click="onSendCode"
-        >
-          <text>{{ counting ? `${countdown}s 后重发` : '获取验证码' }}</text>
-        </view>
       </view>
 
       <!-- 登录按钮：黑胶囊主钮（摄影师端 $btn-primary）；提交中 loading 防重复 -->
-      <AppButton class="login__btn" :loading="submitting" @click="onLogin">登录 / 注册</AppButton>
+      <AppButton class="login__btn" :loading="submitting" @click="onLogin">登 录</AppButton>
 
-      <!-- 协议提示 -->
-      <text class="login__agreement">登录即代表同意《用户协议》与《隐私政策》；未注册手机号将自动创建账号</text>
+      <!-- 账号说明：员工账号由管理员在后台创建，无自助注册 / 找回密码入口 -->
+      <text class="login__agreement">账号由工作室管理员创建；忘记密码请联系管理员重置</text>
 
-      <!-- 演示模式：后端未联调时跳过验证码看 UI（联调后移除） -->
+      <!-- 演示模式：后端未启动时跳过登录看 UI（联调稳定后移除） -->
       <view class="login__demo pressable" @click="onDemo">
         <text class="login__demo-text">演示模式进入（跳过登录）</text>
       </view>
@@ -58,81 +51,47 @@
 /**
  * 摄影师端登录 —— 结构 1:1 平移客户端登录页（客户端已验收稿），浅色 token 适配
  *
- * 登录方式：手机号验证码（全端统一口径，不依赖微信授权）；摄影师身份由后端 token 角色区分。
+ * 登录方式（2026-09-14 调整）：**账号 + 密码**，与 PC 后台同口径 ——
+ *   后端两端共用同一套凭据校验与失败锁定（IP 10 次 / 账号 5 次，各锁 15 分钟）。
+ *   原「手机号 + 验证码」登录退为预留：接口在 api/auth.js 中保留（发码 + 验证码登录成对），
+ *   将来与「微信授权登录」一并接入，届时本页需加登录方式切换。
+ * 摄影师身份由后端 token 角色区分（响应含 role_code / permissions）。
  * 错误处理：校验失败仅提示，绝不清空已输入内容。
- * 演示模式：写入 demo-token 直达订单列表（联调后移除）。
- * 接口：api/auth.js（sendSmsCode / loginByCode，路径联调核对）。
+ * 演示模式：写入 demo-token 直达订单列表（联调稳定后移除）。
+ * 接口：api/auth.js（loginByPassword）。
  */
-import { sendSmsCode, loginByCode } from '@/api/auth'
+import { loginByPassword } from '@/api/auth'
 import { useUserStore } from '@/stores/user'
 
 export default {
   data() {
     return {
-      mobile: '',
-      smsCode: '',
+      form: { username: '', password: '' },
       submitting: false,
-      counting: false,
-      countdown: 60,
-      timer: null,
     }
   },
-  computed: {
-    /** 手机号 11 位才可发送/登录 */
-    mobileValid() {
-      return /^1\d{10}$/.test(this.mobile)
-    },
-  },
-  beforeUnmount() {
-    if (this.timer) clearInterval(this.timer)
-  },
   methods: {
-    onMobileInput() {
-      // 仅保留数字，避免粘贴带入非数字字符
-      this.mobile = this.mobile.replace(/\D/g, '').slice(0, 11)
-    },
-    async onSendCode() {
-      if (this.counting || !this.mobileValid) {
-        uni.showToast({ title: this.mobileValid ? '验证码发送中' : '请输入正确手机号', icon: 'none' })
-        return
-      }
-      try {
-        await sendSmsCode(this.mobile)
-        uni.showToast({ title: '验证码已发送', icon: 'none' })
-        this.startCountdown()
-      } catch (e) {
-        // request 层已 toast 错误信息；输入保留
-      }
-    },
-    startCountdown() {
-      this.counting = true
-      this.countdown = 60
-      this.timer = setInterval(() => {
-        this.countdown -= 1
-        if (this.countdown <= 0) {
-          clearInterval(this.timer)
-          this.counting = false
-        }
-      }, 1000)
-    },
     async onLogin() {
-      if (!this.mobileValid) return uni.showToast({ title: '请输入正确手机号', icon: 'none' })
-      if (!/^\d{4,6}$/.test(this.smsCode)) return uni.showToast({ title: '请输入验证码', icon: 'none' })
+      const username = this.form.username.trim()
+      if (!username) return uni.showToast({ title: '请输入账号', icon: 'none' })
+      if (!this.form.password) return uni.showToast({ title: '请输入密码', icon: 'none' })
+      if (this.submitting) return
+
       this.submitting = true
       try {
-        /* 摄影师角色由后端 token 判定；返回字段联调核对 */
-        const data = await loginByCode(this.mobile, this.smsCode)
-        useUserStore().login(data.token, data.user || data.photographer || {})
+        /* 摄影师角色由后端 token 判定；user 结构与 PC 一致（含 role_code / permissions） */
+        const data = await loginByPassword(username, this.form.password)
+        useUserStore().login(data.token, data.user || {})
         uni.reLaunch({ url: '/pages/order/list' })
-      } catch (e) {
-        // 错误提示由 request 层统一 toast；输入保留不清空
+      } catch {
+        // 错误提示由 request 层统一 toast（后端统一文案「账号或密码错误」，不泄露账号是否存在）；输入保留不清空
       } finally {
         this.submitting = false
       }
     },
-    /** 演示模式：写入本地假 token 直接进入（后端未联调时用，联调后移除） */
+    /** 演示模式：写入本地假 token 直接进入（后端未启动时用，联调稳定后移除） */
     onDemo() {
-      useUserStore().login('demo-token', { id: 0, code: 'PHOTO', name: '路先生', mobile: '' })
+      useUserStore().login('demo-token', { id: 0, username: 'demo', nickname: '路先生', mobile: '' })
       uni.reLaunch({ url: '/pages/order/list' })
     },
   },
@@ -166,13 +125,6 @@ export default {
     height: $touch-min;
     margin-bottom: $touch-gap + 8rpx;
   }
-  &__prefix {
-    color: $text-1;
-    font-size: $fs-lg;
-    margin-right: 24rpx;
-    padding-right: 24rpx;
-    border-right: 1rpx solid rgba(21, 22, 23, 0.09);
-  }
   &__input {
     flex: 1;
     color: $text-1;
@@ -180,12 +132,6 @@ export default {
     height: 100%;
   }
   &__placeholder { color: $text-disabled; }
-  &__send {
-    color: $gold;
-    font-size: $fs-sm;
-    padding: 12rpx 0 12rpx 24rpx;
-    &--disabled { color: $text-2; }
-  }
   &__btn { margin-top: 64rpx; width: 100%; }
   &__agreement {
     display: block;
@@ -195,7 +141,7 @@ export default {
     text-align: center;
     line-height: 1.7;
   }
-  /* 演示模式入口（联调后随 onDemo 一并移除） */
+  /* 演示模式入口（后端联调稳定后随 onDemo 一并移除） */
   &__demo {
     margin-top: 48rpx;
     display: flex;
