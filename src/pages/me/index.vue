@@ -28,7 +28,7 @@
       <text class="page-me__promo-desc">作品展示 · 套餐报价 · 可约档期 · 直接下单</text>
       <view class="page-me__promo-link" @click="copyLink">
         <AppIcon name="me-link" :size="13" />
-        <text class="page-me__promo-url">slot.app/lusheng-photography</text>
+        <text class="page-me__promo-url">{{ shareUrl || '主页标识未设置' }}</text>
         <text class="page-me__promo-copy">复制</text>
       </view>
       <view class="page-me__promo-btns">
@@ -113,14 +113,37 @@
 </template>
 
 <script>
+import { getStudioSettings } from '@/api/settings'
+
 /**
  * ME01 我的（稿 1:5731 实测 1:1）
  * 资料卡 → 预约主页黑卡（金点+链接条+双钮 150/152x38）→ 套餐与作品两行 → 接单与收款（toggle #34C759 / 已设徽章）→ 通用三行。
  * 行图标均从画板导出（me-pkg/me-works/me-booking/me-wallet/me-bell/me-shield/me-help）。
+ *
+ * 预约主页链接由**服务端**下发（studio/get 的 homepage_url = share.homepage_base_url + ?slug=xxx），
+ * 前端不拼域名；未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
  */
 export default {
   name: 'MeIndex',
+  data() {
+    return {
+      /** 预约主页分享链接（服务端拼装，含 ?slug= 租户标识） */
+      shareUrl: '',
+    }
+  },
+  onShow() {
+    // tab 页每次显示都刷新，保证在「个人资料」改完资料返回后链接即时更新；静默不弹 loading
+    this.loadShareUrl()
+  },
   methods: {
+    async loadShareUrl() {
+      try {
+        const st = await getStudioSettings({ loading: false, silent: true })
+        this.shareUrl = (st && st.homepage_url) || ''
+      } catch {
+        // 静默失败：保留原值，不打断页面
+      }
+    },
     goProfile() {
       uni.navigateTo({ url: '/pages/me/profile' })
     },
@@ -149,7 +172,12 @@ export default {
       uni.navigateTo({ url: '/pages/me/help' })
     },
     copyLink() {
-      uni.setClipboardData({ data: 'slot.app/lusheng-photography' })
+      if (!this.shareUrl) {
+        uni.showToast({ title: '工作室尚未设置预约主页标识', icon: 'none' })
+        return
+      }
+      // setClipboardData 在小程序端自带系统提示，无需再 toast
+      uni.setClipboardData({ data: this.shareUrl })
     },
     toggleAccept() {
       uni.showToast({ title: '已切换接收新预约（演示）', icon: 'none' })
@@ -230,7 +258,17 @@ export default {
     border-radius: 16rpx;
     padding: 20rpx 24rpx;
   }
-  &__promo-url { flex: 1; font-size: 24rpx; color: #C9C9CF; }
+  /* 链接为服务端下发的完整 URL（含协议与 ?slug=，域名可能较长）需截断显示；
+   * min-width: 0 是 flex 子项能收缩到小于内容宽度的前提，缺它 ellipsis 不生效 */
+  &__promo-url {
+    flex: 1;
+    min-width: 0;
+    font-size: 24rpx;
+    color: #C9C9CF;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   &__promo-copy { font-size: 22rpx; font-weight: 500; color: #FFD60A; flex-shrink: 0; }
   &__promo-btns { display: flex; gap: 16rpx; margin-top: 32rpx; }
   &__promo-gold {

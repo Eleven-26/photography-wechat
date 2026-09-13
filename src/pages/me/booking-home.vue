@@ -17,7 +17,7 @@
       <text class="page-bh__hero-desc">客户在微信里打开链接：看作品 → 选套餐 → 挑档期 → 线下付款 → 系统记档</text>
       <view class="page-bh__hero-link" @click="copyLink">
         <AppIcon name="me-link" :size="13" />
-        <text class="page-bh__hero-url">slot.app/lusheng-photography</text>
+        <text class="page-bh__hero-url">{{ shareUrl || '主页标识未设置' }}</text>
         <text class="page-bh__hero-copy">复制</text>
       </view>
       <view class="page-bh__hero-btns">
@@ -104,18 +104,46 @@
 </template>
 
 <script>
+import { getStudioSettings } from '@/api/settings'
+
 /**
  * ME03 我的预约主页（稿 1:5940 实测 1:1）
  * 状态黑卡（主页已就绪+链接条+分享/预览双钮）→ 主页内容三行 → 收款方式（已设）→ 最近分享两行。
+ *
+ * 预约主页链接由**服务端**下发（studio/get 的 homepage_url = share.homepage_base_url + ?slug=xxx），
+ * 前端不拼域名；未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
  */
 export default {
   name: 'MeBookingHome',
+  data() {
+    return {
+      /** 预约主页分享链接（服务端拼装，含 ?slug= 租户标识） */
+      shareUrl: '',
+    }
+  },
+  onShow() {
+    // 从「个人资料」改完资料返回时即时刷新；静默不弹 loading
+    this.loadShareUrl()
+  },
   methods: {
+    async loadShareUrl() {
+      try {
+        const st = await getStudioSettings({ loading: false, silent: true })
+        this.shareUrl = (st && st.homepage_url) || ''
+      } catch {
+        // 静默失败：保留原值，不打断页面
+      }
+    },
     goBack() {
       uni.navigateBack()
     },
     copyLink() {
-      uni.setClipboardData({ data: 'slot.app/lusheng-photography' })
+      if (!this.shareUrl) {
+        uni.showToast({ title: '工作室尚未设置预约主页标识', icon: 'none' })
+        return
+      }
+      // setClipboardData 在小程序端自带系统提示，无需再 toast
+      uni.setClipboardData({ data: this.shareUrl })
     },
     share() {
       uni.showToast({ title: '分享到微信（演示）', icon: 'none' })
@@ -195,7 +223,17 @@ export default {
     border-radius: 16rpx;
     padding: 20rpx 24rpx;
   }
-  &__hero-url { flex: 1; font-size: 22rpx; color: #C9C9CF; }
+  /* 链接为服务端下发的完整 URL（含协议与 ?slug=，域名可能较长）需截断显示；
+   * min-width: 0 是 flex 子项能收缩到小于内容宽度的前提，缺它 ellipsis 不生效 */
+  &__hero-url {
+    flex: 1;
+    min-width: 0;
+    font-size: 22rpx;
+    color: #C9C9CF;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   &__hero-copy { font-size: 22rpx; font-weight: 500; color: #FFD60A; flex-shrink: 0; }
   &__hero-btns { display: flex; gap: 16rpx; margin-top: 32rpx; }
   &__hero-gold {
