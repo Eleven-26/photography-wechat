@@ -15,6 +15,12 @@ unpackage/
 *~
 .workbuddy
 
+# 微信开发者工具的项目配置：由工具按「导入的目录」生成，不手动维护、不入库。
+# 正确导入路径 = dist/dev/mp-weixin（开发）或 dist/build/mp-weixin（构建），
+# 配置随产物一起生成（dist/ 已忽略）；仓库根目录不是小程序项目，不应出现这两份文件。
+project.config.json
+project.private.config.json
+
 # ==================== 系统文件 ====================
 .DS_Store
 Thumbs.db

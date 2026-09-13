@@ -28,7 +28,7 @@
   },
   "quickapp": {},
   "mp-weixin": {
-    "appid": "",
+    "appid": "wxe271500167dcc208",
     "setting": {
       "urlCheck": false,
       "es6": true,
@@ -36,7 +36,7 @@
     },
     "usingComponents": true,
     "darkmode": false,
-    "_comment": "appid 由用户在微信公众平台注册后填入；urlCheck 关闭仅限开发期，提审前改回 true"
+    "_comment": "appid = 本项目微信小程序 AppID（SLOT 摄影师端）；构建时由 uni 写入产物 project.config.json，是 appid 的唯一来源。urlCheck 关闭仅限开发期，提审前改回 true"
   },
   "h5": {
     "title": "SLOT 摄影师端",
