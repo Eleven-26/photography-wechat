@@ -137,6 +137,15 @@ export default {
   onShow() {
     // tab 页每次显示都刷新，保证在「个人资料」改完资料返回后链接即时更新；静默不弹 loading
     this.loadShareUrl()
+    this.enableShareMenu()
+  },
+  /** 转发小程序卡片 → web-view 承接页打开 H5 预约主页（需在小程序后台配业务域名） */
+  onShareAppMessage() {
+    return this.buildShare()
+  },
+  onShareTimeline() {
+    const s = this.buildShare()
+    return { title: s.title, query: s.path ? s.path.split('?')[1] : '' }
   },
   methods: {
     async loadShareUrl() {
@@ -176,11 +185,34 @@ export default {
     },
     copyLink() {
       if (!this.shareUrl) {
-        uni.showToast({ title: '工作室尚未设置预约主页标识', icon: 'none' })
+        this.promptSetSlug()
         return
       }
       // setClipboardData 在小程序端自带系统提示，无需再 toast
       uni.setClipboardData({ data: this.shareUrl })
+    },
+    /** 开放右上角菜单的「发送给朋友 / 分享到朋友圈」（仅小程序端有效） */
+    enableShareMenu() {
+      // #ifdef MP-WEIXIN
+      uni.showShareMenu({ withShareTicket: true, menus: ['shareAppMessage', 'shareTimeline'] })
+      // #endif
+    },
+    /** 分享卡片内容：path 指向 web-view 承接页并带上主页地址 */
+    buildShare() {
+      const title = '预约拍摄 · 看作品选套餐约档期'
+      if (!this.shareUrl) return { title }
+      return { title, path: `/pages/common/webview?url=${encodeURIComponent(this.shareUrl)}` }
+    },
+    /** 链接尚未生成时的统一引导：去设置主页标识 */
+    promptSetSlug() {
+      uni.showModal({
+        title: '还没有可分享的链接',
+        content: '设置主页标识后，系统会生成你的专属预约主页链接',
+        confirmText: '去设置',
+        success: (r) => {
+          if (r.confirm) uni.navigateTo({ url: '/pages/me/homepage-setting' })
+        },
+      })
     },
     toggleAccept() {
       uni.showToast({ title: '已切换接收新预约（演示）', icon: 'none' })

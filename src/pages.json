@@ -37,6 +37,8 @@
     { "path": "pages/me/index", "style": { "navigationBarTitleText": "我的", "navigationStyle": "custom" } },
     { "path": "pages/me/profile", "style": { "navigationBarTitleText": "个人资料", "navigationStyle": "custom" } },
     { "path": "pages/me/booking-home", "style": { "navigationBarTitleText": "我的预约主页", "navigationStyle": "custom" } },
+    { "path": "pages/me/homepage-setting", "style": { "navigationBarTitleText": "主页标识", "navigationStyle": "custom" } },
+    { "path": "pages/common/webview", "style": { "navigationBarTitleText": "预约主页" } },
     { "path": "pages/me/preview", "style": { "navigationBarTitleText": "客户视角预览", "navigationStyle": "custom" } },
     { "path": "pages/me/packages", "style": { "navigationBarTitleText": "套餐管理", "navigationStyle": "custom" } },
     { "path": "pages/me/package-edit", "style": { "navigationBarTitleText": "编辑套餐", "navigationStyle": "custom" } },

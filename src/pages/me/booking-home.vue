@@ -32,6 +32,14 @@
     <!-- 主页内容（y335 标题 + y366 三行卡） -->
     <view class="page-bh__sec">主页内容</view>
     <view class="page-bh__card">
+      <view class="info-row page-bh__row pressable" @click="goHomepageSetting">
+        <view class="page-bh__row-icon"><AppIcon name="me-link" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">主页标识</text>
+          <text class="page-bh__row-sub">{{ slug || '未设置' }} · 客户凭它进入你的主页</text>
+        </view>
+        <AppIcon name="chevron-right-gray" :size="16" />
+      </view>
       <view class="info-row page-bh__row pressable" @click="goPackages">
         <view class="page-bh__row-icon"><AppIcon name="me-pkg2" :size="17" /></view>
         <view class="page-bh__row-main">
@@ -121,17 +129,29 @@ export default {
     return {
       /** 预约主页分享链接（服务端拼装，含 ?slug= 租户标识与 &staff_id= 分享人） */
       shareUrl: '',
+      /** 预约主页短链标识（租户级；服务端在为空时会按公司 ID 兜底生成） */
+      slug: '',
     }
   },
   onShow() {
     // 从「个人资料」改完资料返回时即时刷新；静默不弹 loading
     this.loadShareUrl()
+    this.enableShareMenu()
+  },
+  /** 转发小程序卡片 → web-view 承接页打开 H5 预约主页（需在小程序后台配业务域名） */
+  onShareAppMessage() {
+    return this.buildShare()
+  },
+  onShareTimeline() {
+    const s = this.buildShare()
+    return { title: s.title, query: s.path ? s.path.split('?')[1] : '' }
   },
   methods: {
     async loadShareUrl() {
       try {
         const st = await getStudioSettings({ loading: false, silent: true })
         this.shareUrl = (st && st.homepage_url) || ''
+        this.slug = (st && st.homepage_slug) || ''
       } catch {
         // 静默失败：保留原值，不打断页面
       }
@@ -139,16 +159,64 @@ export default {
     goBack() {
       uni.navigateBack()
     },
+    goHomepageSetting() {
+      uni.navigateTo({ url: '/pages/me/homepage-setting' })
+    },
+    /** 开放右上角菜单的「发送给朋友 / 分享到朋友圈」（仅小程序端有效） */
+    enableShareMenu() {
+      // #ifdef MP-WEIXIN
+      uni.showShareMenu({ withShareTicket: true, menus: ['shareAppMessage', 'shareTimeline'] })
+      // #endif
+    },
+    /** 分享卡片内容：path 指向 web-view 承接页并带上主页地址 */
+    buildShare() {
+      const title = '预约拍摄 · 看作品选套餐约档期'
+      if (!this.shareUrl) return { title }
+      return { title, path: `/pages/common/webview?url=${encodeURIComponent(this.shareUrl)}` }
+    },
     copyLink() {
       if (!this.shareUrl) {
-        uni.showToast({ title: '工作室尚未设置预约主页标识', icon: 'none' })
+        this.promptSetSlug()
         return
       }
       // setClipboardData 在小程序端自带系统提示，无需再 toast
       uni.setClipboardData({ data: this.shareUrl })
     },
+    /**
+     * 分享给客户：微信小程序**无法用代码唤起转发面板**，也无法直接转发外部 H5 链接，
+     * 故封装为「复制链接 + 一次性引导」，用户到微信里粘贴发送即可。
+     * 转发小程序卡片（右上角菜单）走 onShareAppMessage → web-view 承接页。
+     */
     share() {
-      uni.showToast({ title: '分享到微信（演示）', icon: 'none' })
+      if (!this.shareUrl) {
+        this.promptSetSlug()
+        return
+      }
+      uni.setClipboardData({
+        data: this.shareUrl,
+        success: () => {
+          // 等系统自带的「内容已复制」提示展示完再弹引导，避免两条提示叠加
+          setTimeout(() => {
+            uni.showModal({
+              title: '链接已复制',
+              content: '到微信里粘贴发送给客户即可。客户从这条链接下单，订单会自动归到你名下。',
+              showCancel: false,
+              confirmText: '知道了',
+            })
+          }, 800)
+        },
+      })
+    },
+    /** 链接尚未生成时的统一引导：去设置主页标识 */
+    promptSetSlug() {
+      uni.showModal({
+        title: '还没有可分享的链接',
+        content: '设置主页标识后，系统会生成你的专属预约主页链接',
+        confirmText: '去设置',
+        success: (r) => {
+          if (r.confirm) this.goHomepageSetting()
+        },
+      })
     },
     goPreview() {
       uni.navigateTo({ url: '/pages/me/preview' })
