@@ -176,7 +176,7 @@
  * 徽章色实测：AI 预填/提取 #E5F6ED/#20855C、来自套餐库 #DBEAFE/#2D69EC；预算提示绿 #83DDA2（黑卡内）。
  * 稿内「装造」按 L03/L04 口径统一为「妆造」（联调评审核对）；勾选即计入报价对应加选差价自动并入尾款口径。
  */
-import { formatAmount } from '@/utils/demo.js'
+import { formatAmount } from '@/utils/format'
 
 export default {
   name: 'QuoteCreate',
