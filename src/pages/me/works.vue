@@ -10,17 +10,17 @@
     <!-- 统计条 y114 白 r16：86 总作品 | 12 精选 | 4 分类（22/11 + #F0F0F2 竖线） -->
     <view class="page-pw__stats">
       <view class="page-pw__stat">
-        <text class="page-pw__stat-num">86</text>
+        <text class="page-pw__stat-num">{{ stats.total }}</text>
         <text class="page-pw__stat-label">总作品</text>
       </view>
       <view class="page-pw__divider" />
       <view class="page-pw__stat">
-        <text class="page-pw__stat-num">12</text>
+        <text class="page-pw__stat-num">{{ stats.featured }}</text>
         <text class="page-pw__stat-label">精选</text>
       </view>
       <view class="page-pw__divider" />
       <view class="page-pw__stat">
-        <text class="page-pw__stat-num">4</text>
+        <text class="page-pw__stat-num">{{ stats.categories }}</text>
         <text class="page-pw__stat-label">分类</text>
       </view>
     </view>
@@ -28,12 +28,12 @@
     <!-- 精选作品（y198 标题行 + 右提示 11.6 #9A9AA0 + y248 四张 110 精选格；稿内为横滑，第 4 张右缘裁切） -->
     <view class="page-pw__sec-row">
       <text class="page-pw__sec">精选作品</text>
-      <text class="page-pw__sec-hint">展示在主页顶部 · 12 张</text>
+      <text class="page-pw__sec-hint">展示在主页顶部 · {{ stats.featured }} 张</text>
     </view>
     <scroll-view class="page-pw__featured" scroll-x :show-scrollbar="false">
       <view class="page-pw__featured-list">
-        <view v-for="(g, i) in featured" :key="i" class="page-pw__featured-cell">
-          <image class="page-pw__img" :src="g" mode="aspectFill" />
+        <view v-for="a in featuredList" :key="a.id" class="page-pw__featured-cell">
+          <image class="page-pw__img" :src="a.cover" mode="aspectFill" />
           <view class="page-pw__featured-badge"><text>精选</text></view>
         </view>
       </view>
@@ -53,9 +53,10 @@
     </view>
 
     <view class="page-pw__grid">
-      <view v-for="(g, i) in grid" :key="i" class="page-pw__grid-cell" @click="goEdit">
-        <image class="page-pw__img" :src="g" mode="aspectFill" />
+      <view v-for="a in gridList" :key="a.id" class="page-pw__grid-cell" @click="goEdit(a)">
+        <image class="page-pw__img" :src="a.cover" mode="aspectFill" />
       </view>
+      <AppEmpty v-if="!loading && !gridList.length" text="暂无作品" />
     </view>
 
     <!-- 底栏：上传作品 黑胶囊 52 -->
@@ -72,43 +73,69 @@
 <script>
 /**
  * ME06 作品集（稿 1:6503 实测 1:1）
- * 统计条（86/12/4 三列 #F0F0F2 分隔）→ 精选作品 横滑 4 张 110 格（金「精选」角标 @右上）→ 分类 chips（34 高胶囊）→ 3x3 九宫格 → 底部上传作品黑胶囊。
- * 作品图：工程内置演示实拍图 static/img/（work-1~6 / pkg-1~2 / hero），联调后换成后端返回的作品 URL。
+ * 统计条（总作品/精选/分类 三列 #F0F0F2 分隔）→ 精选作品横滑（金「精选」角标）→ 分类 chips → 九宫格 → 底部上传作品黑胶囊。
+ *
+ * 数据源（2026-09-14 接线）：/asset/list
+ *   封面取 asset.cover，缺省回退 images（逗号分隔 URL 串）的首图。
+ *   分类 chips 由数据聚合（全部 + 实际存在的 category），不再写死。
  */
+import { getAssetList } from '@/api/asset'
+
 export default {
   name: 'MeWorks',
   data() {
     return {
       chip: '全部',
-      chips: ['全部', '写真', '全家福', '跟拍', '证件照'],
-      featured: [
-        '/static/img/work-1.jpg',
-        '/static/img/work-2.jpg',
-        '/static/img/work-3.jpg',
-        '/static/img/work-4.jpg',
-      ],
-      grid: [
-        '/static/img/work-5.jpg',
-        '/static/img/work-6.jpg',
-        '/static/img/pkg-1.jpg',
-        '/static/img/pkg-2.jpg',
-        '/static/img/hero.jpg',
-        '/static/img/work-1.jpg',
-        '/static/img/work-2.jpg',
-        '/static/img/work-3.jpg',
-        '/static/img/work-4.jpg',
-      ],
+      assets: [],
+      loading: false,
     }
   },
+  computed: {
+    chips() {
+      const set = new Set(this.assets.map((a) => a.category).filter(Boolean))
+      return ['全部', ...set]
+    },
+    stats() {
+      const cats = new Set(this.assets.map((a) => a.category).filter(Boolean))
+      return {
+        total: this.assets.length,
+        featured: this.assets.filter((a) => Number(a.featured) === 1).length,
+        categories: cats.size,
+      }
+    },
+    featuredList() {
+      return this.assets
+        .filter((a) => Number(a.featured) === 1)
+        .map((a) => ({ id: a.id, cover: this.coverOf(a) }))
+    },
+    gridList() {
+      const list =
+        this.chip === '全部' ? this.assets : this.assets.filter((a) => a.category === this.chip)
+      return list.map((a) => ({ id: a.id, cover: this.coverOf(a) }))
+    },
+  },
+  onShow() {
+    this.fetchAssets()
+  },
   methods: {
+    /** 封面：优先 cover，否则取 images（逗号分隔）首图 */
+    coverOf(a) {
+      return a.cover || String(a.images || '').split(',')[0] || ''
+    },
+    async fetchAssets() {
+      this.loading = true
+      const res = await getAssetList({ page: 1, page_size: 50 }).catch(() => null)
+      this.assets = (res && res.list) || []
+      this.loading = false
+    },
     goBack() {
       uni.navigateBack()
     },
     goUpload() {
       uni.navigateTo({ url: '/pages/me/works-upload' })
     },
-    goEdit() {
-      uni.navigateTo({ url: '/pages/me/works-edit' })
+    goEdit(a) {
+      uni.navigateTo({ url: `/pages/me/works-edit?id=${a.id}` })
     },
   },
 }

@@ -9,12 +9,12 @@
       <text class="page-scm__title">档期管理</text>
     </view>
 
-    <!-- 周条：8 格 44×66（含跨周首格），今日黑块，底部状态点（1:12 Group 125 实测 380 宽 → 横向滑动） -->
+    <!-- 日条：31 天（含昨日）横向滑动，今日黑块，底部状态点 -->
     <scroll-view class="page-scm__weekbar" scroll-x :show-scrollbar="false">
       <view class="page-scm__weekbar-inner">
         <view
-          v-for="(d, i) in weekDays"
-          :key="i"
+          v-for="(d, i) in days"
+          :key="d.date"
           class="page-scm__wday pressable"
           :class="{ 'page-scm__wday--on': selIdx === i, 'page-scm__wday--dim': d.past }"
           @click="pickDay(i)"
@@ -26,7 +26,7 @@
       </view>
     </scroll-view>
 
-    <!-- 时段开关（1:44 实测：标题+右侧说明 / 四行 toggle + 关闭全天黑条） -->
+    <!-- 时段开关（标题+右侧说明 / 逐行 toggle + 关闭全天） -->
     <view class="page-scm__sec-row">
       <text class="page-scm__sec">时段开关</text>
       <text class="page-scm__sec-note">{{ selNote }}</text>
@@ -34,7 +34,7 @@
     <view class="page-scm__card">
       <view
         v-for="(s, i) in slots"
-        :key="s.time"
+        :key="s.id || s.time"
         class="page-scm__slot"
         :class="{ 'page-scm__slot--line': i > 0 }"
       >
@@ -45,41 +45,43 @@
         <view
           class="page-scm__toggle"
           :class="{ 'page-scm__toggle--on': s.on, 'page-scm__toggle--locked': s.locked }"
-          @click="!s.locked && (s.on = !s.on)"
+          @click="!s.locked && toggleSlot(s)"
         >
           <view class="page-scm__toggle-dot" :class="{ 'page-scm__toggle-dot--on': s.on }" />
         </view>
       </view>
-      <view class="page-scm__close-all pressable" @click="toggleAll">
+      <AppEmpty v-if="!slots.length" text="当天没有可约时段模板" />
+      <view v-if="slots.length" class="page-scm__close-all pressable" @click="toggleAll">
         <text>{{ allOff ? '开放全天' : '关闭全天' }}</text>
       </view>
     </view>
 
-    <!-- 占用时段订单（1:79 实测 343×143：拍摄卡样式+发起改期/联系客户） -->
+    <!-- 占用时段订单 -->
     <text class="page-scm__sec page-scm__sec--gap">占用时段订单</text>
-    <view class="page-scm__order">
+    <view v-for="b in dayBlocks" :key="b.id" class="page-scm__order">
       <view class="page-scm__order-head">
-        <text class="page-scm__order-time">09:00-11:00</text>
-        <view class="page-scm__badge"><text>已确认 · 定金已收</text></view>
+        <text class="page-scm__order-time">{{ hm(b.time_range) }}</text>
+        <view class="page-scm__badge"><text>已确认 · 档期锁定</text></view>
       </view>
       <view class="page-scm__order-mid">
-        <text class="page-scm__order-name">王浩 · 亲子写真</text>
-        <text class="page-scm__order-place">越秀公园 · 2.5h</text>
+        <text class="page-scm__order-name">{{ orderTitle(b) }}</text>
+        <text class="page-scm__order-place">{{ b.photographer || '未指派摄影师' }}</text>
       </view>
       <view class="page-scm__order-btns">
-        <view class="page-scm__obtn page-scm__obtn--ghost pressable" @click="reschedule">
+        <view class="page-scm__obtn page-scm__obtn--ghost pressable" @click="reschedule(b)">
           <text>发起改期</text>
         </view>
-        <view class="page-scm__obtn page-scm__obtn--dark pressable" @click="contact">
+        <view class="page-scm__obtn page-scm__obtn--dark pressable" @click="contact(b)">
           <text>联系客户</text>
         </view>
       </view>
     </view>
+    <AppEmpty v-if="!dayBlocks.length" text="当天没有订单占用" />
 
-    <!-- 底部提示（1:97 实测 343×61 #E6E7EB r14） -->
+    <!-- 底部提示 -->
     <view class="page-scm__tip">
       <AppIcon name="info-gray-sm" :size="13" />
-      <text class="page-scm__tip-text">手动关闭只影响还没被订单占用的时段 · 已占时段由订单控制</text>
+      <text class="page-scm__tip-text">时段模板按**星期几**生效（同周几的日期共享一套）· 已占时段由订单控制，不可手动关闭</text>
     </view>
 
     <AppTabBar active="schedule" />
@@ -90,88 +92,225 @@
 <script>
 /**
  * SC04 档期管理（稿 1:4297 实测 1:1）
- * 周条（今日黑块，31 天连续可横滑、点选联动下方时段开关，各日状态独立缓存）→ 时段开关（已占行锁定灰开关/可约绿开关/已关闭灰）+ 关闭全天 → 占用时段订单卡 → 提示。
- * 开关实测：开 #00B972 / 关 #D9D9D9，50×28 圆点 24。订单控制时段不可手关（与锁档口径一致）。
+ * 日条（31 天可横滑、点选联动下方时段开关）→ 时段开关 → 占用时段订单卡 → 提示。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /slot-template/list → 可约时段模板 biz_slot_template（**按星期几** + status 启停）
+ *   /schedule/list      → 档期锁 biz_calendar_block（当天已被订单占用的时段）
+ *   /slot-template/save → 开关落库（关闭用 status=0，保留模板行不删除）
+ *   /order/detail/:id   → 「联系客户」时取客户手机号（档期锁本身不带电话）
+ *
+ * ⚠️ 语义边界（重要）：后端**没有**"某天某时段开关"这种按日期的开放表，
+ *    只有按**星期几**的模板。因此这里的开关改的是"每周几的模板"，
+ *    影响所有同星期几的日期（同周几的日期共享一套）——UI 已如实标注，不假装按日期生效。
+ * ⚠️ 已占时段（当天有档期锁）行锁定不可手关：与「手动关闭只影响未被占用的时段」口径一致。
  */
+import { getScheduleList, listSlotTemplates, saveSlotTemplate } from '@/api/schedule'
+import { getOrderDetail } from '@/api/order'
+
+const WEEK = ['日', '一', '二', '三', '四', '五', '六']
+const DAY_COUNT = 31
+const DOT_OK = '#76D596'
+const DOT_OFF = '#FF8181'
+const DOT_TODAY = 'transparent'
+
+function ymd(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+function hm(t) {
+  return String(t || '').slice(0, 5)
+}
+
 export default {
   name: 'ScheduleManage',
   data() {
-    /* 31 天连续日条（8/7-9/6）：星期几按稿基准 8/7=一 推算循环，14 之后 15、16…；红点=有订单占用 */
-    const names = ['一', '二', '三', '四', '五', '六', '日']
-    /* 前 8 天状态点按稿原值（10 红=订单占用 / 11 金），之后循环 */
-    const first = { 2: '#76D596', 3: '#FF8181', 4: '#FFDA08', 5: '#76D596', 6: '#76D596', 7: '#76D596' }
-    const pattern = ['#76D596', '#FF8181', '#FFDA08', '#76D596', '#76D596', '#D4D4D4', '#76D596']
-    const days = []
-    for (let i = 0; i < 31; i++) {
-      const n = 7 + i
-      const dom = n <= 31 ? n : n - 31
-      days.push({
-        w: names[i % 7],
-        dom,
-        m: n <= 31 ? 8 : 9,
-        label: i === 1 ? '今' : String(dom),
-        dot: i === 0 ? '#D4D4D4' : (i === 1 ? 'transparent' : (first[i] || pattern[(i - 2) % pattern.length])),
-        past: i === 0,
-      })
-    }
     return {
-      weekDays: days,
-      selIdx: 1, /* 默认选中今日（8/8） */
-      slotCache: {}, /* 各日开关状态，切日保留 */
-      slots: [
-        { time: '09:00-11:00', state: '已占用 · 王浩 · 亲子写真（订单控制，不可手动关）', on: false, locked: true },
-        { time: '11:00-14:00', on: true },
-        { time: '14:00-16:00', on: false },
-        { time: '16:00-18:00', on: true },
-      ],
+      days: [],
+      selIdx: 1,
+      templates: [],
+      blocks: [],
+      slots: [],
+      saving: false,
     }
   },
   computed: {
-    selNote() {
-      const d = this.weekDays[this.selIdx]
-      return `${d.m}月${d.dom}日 · 周${d.w} · 时段模板 4 个时段`
+    todayStr() {
+      return ymd(new Date())
     },
-    /* 非锁定时段全部关闭 → 按钮切「开放全天」 */
+    selDate() {
+      return (this.days[this.selIdx] || {}).date || this.todayStr
+    },
+    selWeekday() {
+      return new Date(`${this.selDate}T00:00:00`).getDay()
+    },
+    selNote() {
+      const d = this.days[this.selIdx]
+      if (!d) return ''
+      return `${d.m}月${d.dom}日 · 周${d.w} · ${this.slots.length} 个时段模板（同周${d.w}共享）`
+    },
+    dayBlocks() {
+      return this.blocks.filter((b) => b.date === this.selDate)
+    },
+    /** 非锁定时段全部关闭 → 按钮切「开放全天」 */
     allOff() {
       const open = this.slots.filter((s) => !s.locked)
       return open.length > 0 && open.every((s) => !s.on)
     },
   },
+  onLoad() {
+    this.buildDays()
+    this.selIdx = 1 // 默认选中今日（days[0] 为昨日）
+    this.fetchAll()
+  },
   methods: {
-    /* 红点日=有订单占用（首行锁定），其余默认全部可约 */
-    genSlots(d) {
-      const hasOrder = d.dot === '#FF8181'
-      return [
-        { time: '09:00-11:00', state: hasOrder ? '已占用 · 订单控制，不可手动关' : '可约', on: !hasOrder, locked: hasOrder },
-        { time: '11:00-14:00', on: true },
-        { time: '14:00-16:00', on: !hasOrder },
-        { time: '16:00-18:00', on: true },
-      ]
+    hm,
+    /** 31 天日条：今日在 index 1（与稿一致），index 0 为昨日（置灰） */
+    buildDays() {
+      const out = []
+      const now = new Date()
+      for (let i = 0; i < DAY_COUNT; i++) {
+        const d = new Date(now)
+        d.setDate(d.getDate() + i - 1)
+        const date = ymd(d)
+        out.push({
+          date,
+          w: WEEK[d.getDay()],
+          dom: d.getDate(),
+          m: d.getMonth() + 1,
+          label: date === this.todayStr ? '今' : String(d.getDate()),
+          past: date < this.todayStr,
+          dot: this.dotFor(date),
+        })
+      }
+      this.days = out
+    },
+    dotFor(date) {
+      if (date < this.todayStr) return '#D4D4D4'
+      if (date === this.todayStr) return DOT_TODAY
+      const locked = this.blocks.some((b) => b.date === date)
+      if (locked) return DOT_OFF
+      return this.templatesFor(date).length ? DOT_OK : 'transparent'
+    },
+    templatesFor(date) {
+      const wd = new Date(`${date}T00:00:00`).getDay()
+      return this.templates.filter((t) => Number(t.weekday) === wd)
+    },
+    async fetchAll() {
+      const start = ymd(new Date(new Date().getTime() - 86400000))
+      const end = ymd(new Date(new Date().getTime() + 40 * 86400000))
+      const [tplRes, blockRes] = await Promise.all([
+        listSlotTemplates().catch(() => null),
+        getScheduleList({ start_date: start, end_date: end }).catch(() => null),
+      ])
+      this.templates = Array.isArray(tplRes) ? tplRes : []
+      this.blocks = (Array.isArray(blockRes) ? blockRes : []).filter((b) => b.status !== 2)
+      this.buildDays()
+      this.buildSlots()
+    },
+    /** 由模板 + 当天档期锁推导开关行 */
+    buildSlots() {
+      const locked = this.blocks.filter((b) => b.date === this.selDate)
+      this.slots = this.templatesFor(this.selDate)
+        .map((t) => {
+          const range = `${hm(t.start_time)}-${hm(t.end_time)}`
+          const hit = locked.find((b) => b.time_range === range)
+          return {
+            id: t.id,
+            time: range,
+            start: hm(t.start_time),
+            end: hm(t.end_time),
+            on: t.status !== 0,
+            locked: !!hit,
+            state: hit ? `已占用 · ${hit.customer_name || '订单'}（订单控制，不可手动关）` : '',
+          }
+        })
+        .sort((a, b) => a.time.localeCompare(b.time))
     },
     pickDay(i) {
-      if (this.weekDays[i].past || this.selIdx === i) return
-      /* 当前日开关状态入缓存，恢复/生成目标日（Vue3 响应式代理，无需 $set） */
-      this.slotCache[this.selIdx] = JSON.parse(JSON.stringify(this.slots))
+      if (this.selIdx === i) return
       this.selIdx = i
-      this.slots = this.slotCache[i] || this.genSlots(this.weekDays[i])
+      this.buildSlots()
     },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/schedule/index' }) })
     },
-    toggleAll() {
+    /** 单个开关：写回该星期的模板 status（1-启用 0-停用） */
+    async toggleSlot(s) {
+      if (this.saving) return
+      const next = !s.on
+      s.on = next
+      this.saving = true
+      const ok = await this.persist(s, next)
+      this.saving = false
+      if (!ok) {
+        s.on = !next
+        return
+      }
+      uni.showToast({ title: next ? '已开放该时段' : '已关闭该时段', icon: 'none' })
+    },
+    async toggleAll() {
+      if (this.saving) return
       const open = this.allOff
-      this.slots.forEach((s) => { if (!s.locked) s.on = open })
-      uni.showToast({ title: open ? '已开放全天可约时段（演示）' : '已关闭全部可约时段（演示）', icon: 'none' })
+      const targets = this.slots.filter((s) => !s.locked)
+      if (!targets.length) return uni.showToast({ title: '没有可调整的时段', icon: 'none' })
+      this.saving = true
+      for (const s of targets) {
+        s.on = open
+      }
+      let ok = true
+      for (const s of targets) {
+        // 串行写回，避免并发写同一星期模板互相覆盖
+        if (!(await this.persist(s, open))) {
+          ok = false
+          break
+        }
+      }
+      this.saving = false
+      if (!ok) {
+        this.buildSlots()
+        return
+      }
+      uni.showToast({ title: open ? '已开放全天' : '已关闭全天', icon: 'none' })
     },
-    reschedule() {
-      uni.navigateTo({ url: '/pages/schedule/reschedule' })
+    /**
+     * 落库：模板启停用 status 表达（后端无单独的"停用"接口）。
+     * 关闭 = status 0；重新开放 = status 1（保留模板行，避免删了再建丢 id / 丢历史）。
+     */
+    async persist(s, on) {
+      const payload = {
+        photographer_id: 0,
+        weekday: this.selWeekday,
+        start_time: s.start,
+        end_time: s.end,
+        status: on ? 1 : 0,
+      }
+      const ok = await saveSlotTemplate(payload, s.id).then(() => true).catch(() => false)
+      if (ok) this.syncLocalTemplate(s.id, on)
+      return ok
     },
-    contact() {
-      uni.showToast({ title: '联系客户（演示）', icon: 'none' })
+    syncLocalTemplate(id, on) {
+      const t = this.templates.find((x) => x.id === id)
+      if (t) t.status = on ? 1 : 0
+    },
+    orderTitle(b) {
+      return [b.customer_name || '未命名', b.project_type].filter(Boolean).join(' · ')
+    },
+    reschedule(b) {
+      if (!b.order_id) return uni.showToast({ title: '该档期未关联订单', icon: 'none' })
+      uni.navigateTo({ url: '/pages/schedule/reschedule?id=' + b.order_id })
+    },
+    /** 联系客户：档期锁不带电话，按 order_id 反查订单取手机号 */
+    async contact(b) {
+      if (!b.order_id) return uni.showToast({ title: '该档期未关联订单', icon: 'none' })
+      const res = await getOrderDetail(b.order_id).catch(() => null)
+      const mobile = res && res.order && res.order.customer_mobile
+      if (!mobile) return uni.showToast({ title: '暂无联系电话', icon: 'none' })
+      uni.makePhoneCall({ phoneNumber: String(mobile) })
     },
   },
 }
 </script>
+
 
 <style lang="scss" scoped>
 .page-scm {

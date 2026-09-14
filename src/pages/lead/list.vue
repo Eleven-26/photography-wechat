@@ -43,6 +43,7 @@
         </view>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
+      <AppEmpty v-if="!loading && !filtered.length" text="暂无线索" />
     </view>
 
     <AppTabBar active="order" />
@@ -54,37 +55,65 @@
 /**
  * L01 线索列表（稿 1:3110 实测 1:1）
  * 分段 Tab：待处理（选中黑底）/ 全部 / 已报价；线索卡白 r20。
- * 徽章色实测：待回复 #FFE9AF/#B66E00、待报价 #FFF3D6/#B47200、待确认 #E5F6ED/#20845C。
- * 状态对应后端线索状态（custom_request→线索），联调后走 /leads 接口（联调核对）。
+ * 徽章色实测：待回复 #FFE9AF/#B66E00、待报价 #FFF3D6/#B47200、已报价 #E5F6ED/#20845C。
+ *
+ * 数据源（2026-09-14 接线）：/lead/list —— 一次性拉取后前端按 Tab 过滤
+ *   （与订单列表同模式，线索量小、避免三次请求）。
+ * 后端线索状态（enum.LeadStatus）：1-待回复 2-待报价 3-已报价 4-已成交 5-已流失。
+ * Tab 口径：待处理 = 1|2（尚未报价的活跃线索）/ 已报价 = 3 / 全部 = 不过滤。
  */
+import { getLeadList } from '@/api/lead'
+import { fromNow } from '@/utils/format'
+
+/** 状态 → 徽章色调 / 文案（稿内三色族 + 流失灰） */
+const TONE = { 1: 'reply', 2: 'quote', 3: 'confirm', 4: 'confirm', 5: 'lost' }
+const LABEL = { 1: '待回复', 2: '待报价', 3: '已报价', 4: '已成交', 5: '已流失' }
+
 export default {
   name: 'LeadList',
   data() {
     return {
       tab: 'pending',
-      tabs: [
-        { key: 'pending', label: '待处理' },
-        { key: 'all', label: '全部', count: 18 },
-        { key: 'quoted', label: '已报价' },
-      ],
-      leads: [
-        { id: 'l1', name: '蓝桥科技 ', status: '待回复', tone: 'reply', sub: '商务形象照 · 定制需求·微信 · 32分钟前', quote: false },
-        { id: 'l2', name: '张明 ', status: '待报价', tone: 'quote', sub: '婚礼跟拍 · 定制需求·抖音 · 1小时前', quote: false },
-        { id: 'l3', name: '李芳 ', status: '待报价', tone: 'quote', sub: '亲子写真 · 预约页咨询·小红书 · 2小时前', quote: false },
-        { id: 'l4', name: '王浩 ', status: '待确认', tone: 'confirm', sub: '证件照 · 预约页咨询·微信 · 昨天', quote: false },
-        /* 已报价演示项（tab 切换可见；稿内只画待处理 4 行，此为列表延续推导） */
-        { id: 'l5', name: '陈雨 ', status: '待确认', tone: 'confirm', sub: '家庭写真 · 定制需求·小红书 · 昨天', quote: true },
-      ],
+      leads: [],
+      loading: false,
     }
   },
   computed: {
+    /** Tab（「全部」计数走动态；无数据时不渲染计数） */
+    tabs() {
+      return [
+        { key: 'pending', label: '待处理' },
+        { key: 'all', label: '全部', count: this.leads.length || null },
+        { key: 'quoted', label: '已报价' },
+      ]
+    },
     filtered() {
-      if (this.tab === 'pending') return this.leads.filter((l) => !l.quote)
-      if (this.tab === 'quoted') return this.leads.filter((l) => l.quote)
-      return this.leads
+      const rows = this.leads.map((l) => ({
+        id: l.id,
+        rawStatus: Number(l.status),
+        name: (l.name || '').trim(),
+        status: LABEL[Number(l.status)] || '待跟进',
+        tone: TONE[Number(l.status)] || 'reply',
+        sub: [l.project_type, l.source, fromNow(l.last_follow_at || l.next_follow_at)]
+          .filter(Boolean)
+          .join(' · '),
+      }))
+      if (this.tab === 'all') return rows
+      if (this.tab === 'quoted') return rows.filter((r) => r.rawStatus === 3)
+      return rows.filter((r) => r.rawStatus === 1 || r.rawStatus === 2)
     },
   },
+  onShow() {
+    this.fetchLeads()
+  },
   methods: {
+    async fetchLeads() {
+      this.loading = true
+      /* request 层已 toast；失败保持空态，不注入演示线索 */
+      const res = await getLeadList({ page: 1, page_size: 50 }).catch(() => null)
+      this.leads = (res && res.list) || []
+      this.loading = false
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/work/index' }) })
     },
@@ -187,6 +216,7 @@ export default {
     &--reply { background-color: #FFE9AF; text { color: #B66E00; } }
     &--quote { background-color: #FFF3D6; text { color: #B47200; } }
     &--confirm { background-color: #E5F6ED; text { color: #20845C; } }
+    &--lost { background-color: #F2F3F5; text { color: #747981; } }
   }
   &__sub {
     display: block;

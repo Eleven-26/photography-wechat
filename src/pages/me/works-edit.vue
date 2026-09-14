@@ -8,13 +8,13 @@
     </view>
 
     <!-- 封面图卡 343x263 r16：底部黑渐变上标题 14.8 白 + 日期地点 10；右上 32 编辑圆钮 -->
-    <view class="page-we__cover">
+    <view class="page-we__cover" :style="coverStyle">
       <view class="page-we__cover-edit pressable" @click="changeCover">
         <AppIcon name="me-img" :size="15" />
       </view>
       <view class="page-we__cover-foot">
-        <text class="page-we__cover-title">越秀公园 · 秋日家庭写真</text>
-        <text class="page-we__cover-sub">2026/08/08 · 越秀公园</text>
+        <text class="page-we__cover-title">{{ asset.title }}</text>
+        <text class="page-we__cover-sub">{{ coverSub }}</text>
       </view>
     </view>
 
@@ -22,7 +22,7 @@
     <text class="page-we__sec">分类</text>
     <view class="page-we__chips">
       <view
-        v-for="c in chips"
+        v-for="c in chipsView"
         :key="c"
         class="page-we__chip"
         :class="{ 'page-we__chip--on': chip === c }"
@@ -39,8 +39,8 @@
     </view>
     <view class="page-we__card">
       <view
-        v-for="p in pkgs"
-        :key="p.name"
+        v-for="p in pkgRows"
+        :key="p.id"
         class="info-row page-we__row"
         @click="togglePkg(p)"
       >
@@ -74,10 +74,10 @@
         <!-- 绿圆内白勾：稿实测圆 ⌀34px、勾宽 ≈15px（占圆 45%）→ check-white size 28（勾占画布 55%） -->
         <view class="page-we__auth-icon"><AppIcon name="check-white" :size="28" /></view>
         <view class="page-we__row-main">
-          <text class="page-we__auth-title">已获客户授权</text>
-          <text class="page-we__auth-sub">{{ '陈雨已于 2026/08/20 同意展示 · 未授权\n作品不可公开' }}</text>
+          <text class="page-we__auth-title">{{ authTitle }}</text>
+          <text class="page-we__auth-sub">{{ authSub }}</text>
         </view>
-        <view class="page-we__auth-badge"><text>已授权</text></view>
+        <view class="page-we__auth-badge"><text>{{ authBadge }}</text></view>
       </view>
     </view>
 
@@ -93,43 +93,148 @@
 <script>
 /**
  * ME08 编辑作品（稿 1:6698 实测 1:1）
- * 封面卡（标题/日期地点浮层 + 32 编辑圆钮）→ 分类 chips → 关联套餐勾选（黑勾 20 r6 / 灰描边未选）→ 可见性分段（精选展示选中）→ 已授权绿卡 → 底栏 删除/发布。
+ * 封面卡（标题/日期地点浮层 + 32 编辑圆钮）→ 分类 chips → 关联套餐勾选 → 可见性分段 → 授权卡 → 底栏 删除/发布。
  * 稿内「亲自写真 · 基础」按 ME04 口径修正为「亲子写真 · 基础」。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /asset/detail/:id → 作品回填（title/cover/images/category/location/shoot_date/package_ids/featured/visibility/authorization）
+ *   /package/list     → 关联套餐候选（勾选态由 package_ids 推导）
+ *   /asset/update/:id → 保存（title/category/package_ids…）
+ *   /asset/status/:id → 发布与开关（status 2-已发布、featured、visibility；全部用指针语义，0 是合法值）
+ *   /asset/delete/:id → 删除
+ * 可见性分段映射：精选展示=featured 1 / 公开=visibility 1 / 未公开=visibility 2。
  */
+import { getAssetDetail, updateAsset, setAssetFlags, deleteAsset } from '@/api/asset'
+import { getPackageList } from '@/api/package'
+import { formatAmount } from '@/utils/format'
+
 export default {
   name: 'MeWorksEdit',
   data() {
     return {
-      chip: '写真',
-      chips: ['写真', '全家福', '跟拍', '证件照'],
-      vis: '精选展示',
-      pkgs: [
-        { name: '亲子写真 · 基础', price: '¥2,680', on: true },
-        { name: '个人写真', price: '¥1,580', on: false },
-      ],
+      assetId: 0,
+      asset: {},
+      packages: [],
+      selectedIds: [],
+      chip: '',
+      vis: '公开',
+      submitting: false,
     }
   },
+  computed: {
+    /** 分类 chips：保证当前分类在列（后端分类可自由填，不在预设内则置首） */
+    chipsView() {
+      const base = ['写真', '全家福', '跟拍', '证件照']
+      return this.chip && !base.includes(this.chip) ? [this.chip, ...base] : base
+    },
+    coverStyle() {
+      return this.asset.cover
+        ? {
+            backgroundImage:
+              `linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.72) 100%), url(${this.asset.cover})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }
+        : {}
+    },
+    coverSub() {
+      const d = String(this.asset.shoot_date || '')
+      return [d.replace(/-/g, '/'), this.asset.location].filter(Boolean).join(' · ')
+    },
+    pkgRows() {
+      return this.packages.map((p) => ({
+        id: p.id,
+        name: p.name || '',
+        price: p.base_price ? `¥${formatAmount(p.base_price)}` : '—',
+        on: this.selectedIds.includes(p.id),
+      }))
+    },
+    isAuthorized() { return Number(this.asset.authorization) === 2 },
+    authTitle() { return this.isAuthorized ? '已获客户授权' : '尚未获得客户授权' },
+    authBadge() { return this.isAuthorized ? '已授权' : '待授权' },
+    authSub() {
+      return this.isAuthorized
+        ? '客户已同意展示 · 未授权作品不可公开'
+        : '需先取得客户授权 · 未授权作品不可公开'
+    },
+  },
+  onLoad(query) {
+    this.assetId = Number(query.id || 0)
+    this.fetchAll()
+  },
   methods: {
+    async fetchAll() {
+      const [asset, pkgs] = await Promise.all([
+        this.assetId ? getAssetDetail(this.assetId).catch(() => null) : null,
+        getPackageList({ page: 1, page_size: 50 }).catch(() => null),
+      ])
+      this.asset = asset || {}
+      this.packages = (pkgs && pkgs.list) || []
+      this.chip = this.asset.category || ''
+      this.selectedIds = String(this.asset.package_ids || '')
+        .split(',')
+        .filter(Boolean)
+        .map(Number)
+      this.vis = Number(this.asset.featured) === 1
+        ? '精选展示'
+        : (Number(this.asset.visibility) === 2 ? '未公开' : '公开')
+    },
     goBack() {
       uni.navigateBack()
     },
     changeCover() {
-      uni.showToast({ title: '更换封面（演示）', icon: 'none' })
+      uni.showToast({ title: '封面请在上传作品时设置', icon: 'none' })
     },
     togglePkg(p) {
-      p.on = !p.on
+      const i = this.selectedIds.indexOf(p.id)
+      if (i >= 0) this.selectedIds.splice(i, 1)
+      else this.selectedIds.push(p.id)
     },
     del() {
       uni.showModal({
         title: '删除作品',
         content: '删除后不可恢复',
-        success: (res) => {
-          if (res.confirm) uni.navigateBack()
+        success: async (res) => {
+          if (!res.confirm) return
+          const ok = await deleteAsset(this.assetId).then(() => true).catch(() => false)
+          if (ok) {
+            uni.showToast({ title: '已删除', icon: 'none' })
+            setTimeout(() => uni.navigateBack(), 700)
+          }
         },
       })
     },
-    publish() {
-      uni.showToast({ title: '已保存发布（演示）', icon: 'success' })
+    async publish() {
+      if (this.submitting) return
+      this.submitting = true
+      const pkgIds = this.selectedIds.join(',')
+      const saved = await updateAsset(this.assetId, {
+        title: this.asset.title,
+        category: this.chip,
+        package_ids: pkgIds,
+        cover: this.asset.cover,
+        images: this.asset.images,
+        location: this.asset.location,
+        shoot_date: this.asset.shoot_date,
+      })
+        .then(() => true)
+        .catch(() => false)
+      if (!saved) {
+        this.submitting = false
+        return
+      }
+      /* 发布 + 可见性：featured/visibility 走独立开关接口（指针语义，0 亦为合法值） */
+      const ok = await setAssetFlags(this.assetId, {
+        status: 2,
+        featured: this.vis === '精选展示' ? 1 : 0,
+        visibility: this.vis === '未公开' ? 2 : 1,
+      })
+        .then(() => true)
+        .catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '已保存发布', icon: 'success' })
+      setTimeout(() => uni.navigateBack(), 700)
     },
   },
 }

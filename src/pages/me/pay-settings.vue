@@ -16,23 +16,20 @@
     <!-- 银行卡（y178 标题行 + 已启用徽章 + y233 三行） -->
     <view class="page-ps__sec-row">
       <text class="page-ps__sec">银行卡</text>
-      <view class="page-ps__badge"><text>已启用</text></view>
+      <view class="page-ps__badge" :class="{ 'page-ps__badge--off': !enabled('bank') }">
+        <text>{{ enabled('bank') ? '已启用' : '未设置' }}</text>
+      </view>
     </view>
     <view class="page-ps__card">
       <!-- 稿实测：三行右侧**均带** chevron 箭头（原仅「户名」行有，缺两个） -->
-      <view class="info-row page-ps__row pressable" @click="edit('开户行')">
-        <text class="page-ps__label">开户行</text>
-        <text class="page-ps__value">招商银行 广州分行</text>
-        <AppIcon name="chevron-right-gray" :size="16" />
-      </view>
-      <view class="info-row page-ps__row pressable" @click="edit('卡号')">
-        <text class="page-ps__label">卡号</text>
-        <text class="page-ps__value">6217 8301 **** 2874</text>
-        <AppIcon name="chevron-right-gray" :size="16" />
-      </view>
-      <view class="info-row page-ps__row pressable" @click="edit('户名')">
-        <text class="page-ps__label">户名</text>
-        <text class="page-ps__value">路明</text>
+      <view
+        v-for="r in bankRows"
+        :key="r.field"
+        class="info-row page-ps__row pressable"
+        @click="editBank(r.field, r.label)"
+      >
+        <text class="page-ps__label">{{ r.label }}</text>
+        <text class="page-ps__value" :class="{ 'page-ps__value--empty': !r.value }">{{ r.value || '未设置' }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
     </view>
@@ -40,22 +37,26 @@
     <!-- 微信收款码（y398 标题行 + 已启用 + y453 二维码卡） -->
     <view class="page-ps__sec-row">
       <text class="page-ps__sec">微信收款码</text>
-      <view class="page-ps__badge"><text>已启用</text></view>
+      <view class="page-ps__badge" :class="{ 'page-ps__badge--off': !enabled('wechat') }">
+        <text>{{ enabled('wechat') ? '已启用' : '未设置' }}</text>
+      </view>
     </view>
     <view class="page-ps__card page-ps__card--qr">
-      <!-- 稿：纵向布局——二维码图在上（居中）、提示文案在下（居中）；原为横向排布 + 深色格子占位块 -->
-      <image class="page-ps__qr-img pressable" src="/static/img/qr-pay.png" mode="aspectFit" @click="changeQr('微信')" />
+      <!-- 稿：纵向布局——二维码图在上（居中）、提示文案在下（居中） -->
+      <image class="page-ps__qr-img pressable" :src="qrOf('wechat')" mode="aspectFit" @click="changeQr('微信', 'wechat')" />
       <text class="page-ps__qr-hint">点击更换 · 客户扫码转账后无需凭证，你确认到账</text>
     </view>
 
     <!-- 支付宝收款码（y670 标题行 + 已启用 + y725 二维码卡） -->
     <view class="page-ps__sec-row">
       <text class="page-ps__sec">支付宝收款码</text>
-      <view class="page-ps__badge"><text>已启用</text></view>
+      <view class="page-ps__badge" :class="{ 'page-ps__badge--off': !enabled('alipay') }">
+        <text>{{ enabled('alipay') ? '已启用' : '未设置' }}</text>
+      </view>
     </view>
     <view class="page-ps__card page-ps__card--qr">
-      <!-- 稿：纵向布局（同上），支付宝与微信共用同一张二维码示例图 -->
-      <image class="page-ps__qr-img pressable" src="/static/img/qr-pay.png" mode="aspectFit" @click="changeQr('支付宝')" />
+      <!-- 稿：纵向布局（同上），未设置时回落占位图 -->
+      <image class="page-ps__qr-img pressable" :src="qrOf('alipay')" mode="aspectFit" @click="changeQr('支付宝', 'alipay')" />
       <text class="page-ps__qr-hint">点击更换 · 客户扫码转账后无需凭证，你确认到账</text>
     </view>
 
@@ -71,19 +72,108 @@
 /**
  * ME09-2 收款设置（稿 1:6425 实测 1:1）
  * 资金不经平台灰条 → 银行卡三行（开户行/卡号/户名）→ 微信收款码（159 方码 + 更换提示）→ 支付宝收款码 → 确认规则灰条。
- * 二维码稿内为实图（image 12），演示用占位块，联调换图。
+ *
+ * 数据源（2026-09-14 接线）：/settings/payment-method/{list,create,update}（biz_payment_method）
+ *   银行卡 → type=bank（开户行=name、卡号=account_no、户名=account_name）
+ *   微信收款码 → type=wechat（qrcode） / 支付宝收款码 → type=alipay（qrcode）
+ * ⚠️ 后端无独立「开户行」字段：以 name（收款方式名称）承载，语义等价于「银行名称 · 支行」。
+ * ⚠️ 收款码走通用上传 /upload/file（biz_type 记类型名）后再写回 qrcode。
  */
+import { listPaymentMethods, createPaymentMethod, updatePaymentMethod } from '@/api/settings'
+import { uploadFile } from '@/api/upload'
+
+const QR_PLACEHOLDER = '/static/img/qr-pay.png'
+
 export default {
   name: 'MePaySettings',
+  data() {
+    return { methods: [] }
+  },
+  computed: {
+    /** type=bank 的收款方式（不存在为 null） */
+    bank() {
+      return this.find('bank')
+    },
+    bankRows() {
+      const b = this.bank || {}
+      return [
+        { field: 'name', label: '开户行', value: b.name || '' },
+        { field: 'account_no', label: '卡号', value: b.account_no || '' },
+        { field: 'account_name', label: '户名', value: b.account_name || '' },
+      ]
+    },
+  },
+  onShow() {
+    this.fetchMethods()
+  },
   methods: {
+    find(type) {
+      return this.methods.find((m) => m.type === type) || null
+    },
+    /** 该类型是否已配置且启用 */
+    enabled(type) {
+      const m = this.find(type)
+      return !!(m && m.status === 1)
+    },
+    /** 收款码 URL（未设置回落占位图） */
+    qrOf(type) {
+      const m = this.find(type)
+      return (m && m.qrcode) || QR_PLACEHOLDER
+    },
+    async fetchMethods() {
+      const res = await listPaymentMethods().catch(() => null)
+      this.methods = Array.isArray(res) ? res : (res && res.list) || []
+    },
     goBack() {
       uni.navigateBack()
     },
-    edit(label) {
-      uni.showToast({ title: `编辑${label}（演示）`, icon: 'none' })
+    /** 银行卡行内编辑：开户行→name / 卡号→account_no / 户名→account_name */
+    editBank(field, label) {
+      const cur = (this.bank && this.bank[field]) || ''
+      uni.showModal({
+        title: `编辑${label}`,
+        editable: true,
+        placeholderText: `请输入${label}`,
+        content: cur,
+        success: (res) => {
+          if (!res.confirm) return
+          this.saveMethod('bank', '银行卡', { [field]: String(res.content || '').trim() })
+        },
+      })
     },
-    changeQr(name) {
-      uni.showToast({ title: `更换${name}收款码（演示）`, icon: 'none' })
+    /** 更换收款码：选图 → 通用上传 → 写回 qrcode */
+    changeQr(label, type) {
+      uni.chooseImage({
+        count: 1,
+        sizeType: ['compressed'],
+        success: async (res) => {
+          const path = res.tempFilePaths && res.tempFilePaths[0]
+          if (!path) return
+          const up = await uploadFile(path, { biz_type: type }).catch(() => null)
+          if (!up || !up.url) return
+          await this.saveMethod(type, `${label}收款码`, { qrcode: up.url })
+        },
+      })
+    },
+    /** 新建（无 id）或更新（有 id）收款方式；携带未改动字段以免被零值覆盖 */
+    async saveMethod(type, fallbackName, patch) {
+      const cur = this.find(type) || {}
+      const payload = {
+        name: cur.name || fallbackName,
+        type,
+        account_name: cur.account_name || '',
+        account_no: cur.account_no || '',
+        qrcode: cur.qrcode || '',
+        status: cur.status != null ? cur.status : 1,
+        sort: cur.sort || 0,
+        ...patch,
+      }
+      const ok = cur.id
+        ? await updatePaymentMethod(cur.id, payload).then(() => true).catch(() => false)
+        : await createPaymentMethod(payload).then(() => true).catch(() => false)
+      if (!ok) return
+      uni.showToast({ title: '已保存', icon: 'success' })
+      this.fetchMethods()
     },
   },
 }
@@ -151,6 +241,7 @@ export default {
     border-radius: 999rpx;
     padding: 6rpx 20rpx;
     text { font-size: 24rpx; color: #00A860; }
+    &--off { background-color: #EDEEF0; text { color: #8E8E93; } }
   }
 
   &__card {
@@ -181,6 +272,7 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    &--empty { color: #B0B0B5; }
   }
   /* 稿：卡内为真实二维码图（Ardot 导出 qr-pay.png，159px）；原为深色格子占位块 */
   &__qr-img {

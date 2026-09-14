@@ -22,7 +22,7 @@
     <view class="page-fb__card">
       <view class="info-row page-fb__row pressable" @click="pickType">
         <text class="page-fb__label">问题类型</text>
-        <text class="page-fb__value">功能异常 · 请选择</text>
+        <text class="page-fb__value">{{ typeLabel }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-fb__row pressable" @click="editDesc">
@@ -32,7 +32,7 @@
       </view>
       <view class="info-row page-fb__row pressable" @click="addShot">
         <text class="page-fb__label">截图</text>
-        <text class="page-fb__value page-fb__value--ph">添加截图 · 选填 · 最多 3 张</text>
+        <text class="page-fb__value page-fb__value--ph">{{ shotsText }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
     </view>
@@ -43,11 +43,11 @@
       <text class="page-fb__sec-hint">仅用于回访，不会展示给客户</text>
     </view>
     <view class="page-fb__card">
-      <view class="info-row page-fb__row info-row--last">
+      <view class="info-row page-fb__row info-row--last pressable" @click="editContact">
         <view class="page-fb__row-icon"><AppIcon name="me-calendar" :size="17" /></view>
         <view class="page-fb__row-main">
           <text class="page-fb__row-label">微信号 / 手机号</text>
-          <text class="page-fb__row-sub">lusheng_0823 · 选填，方便回访</text>
+          <text class="page-fb__row-sub">{{ contactText }}</text>
         </view>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
@@ -63,29 +63,116 @@
 /**
  * ME12b 意见反馈（稿 11:313 实测 1:1）
  * 账号卡 → 反馈三行（问题类型/问题描述/截图选填）→ 联系方式行 → 提交反馈黑胶囊 52。
+ *
+ * 数据源（2026-09-14 第六批接线）：/feedback/submit（**免权限点**，操作对象是提交人本人）
+ *   截图先走通用上传 /upload/file 换成 URL，再随 body 一起提交（服务端最多留 3 张）。
+ * ⚠️ 描述下限 10 字与稿内占位文案一致；后端另有 1000 字上限。
  */
+import { uploadFile } from '@/api/upload'
+import { submitFeedback } from '@/api/feedback'
+
+const TYPES = [
+  { key: 'bug', label: '功能异常' },
+  { key: 'advice', label: '改进建议' },
+  { key: 'other', label: '其他' },
+]
+
 export default {
   name: 'MeFeedback',
   data() {
     return {
+      type: '',
       desc: '',
+      contact: '',
+      shots: [], // 已上传成功的截图 URL
+      uploading: false,
+      submitting: false,
     }
+  },
+  computed: {
+    typeLabel() {
+      const t = TYPES.find((x) => x.key === this.type)
+      return t ? t.label : '请选择'
+    },
+    shotsText() {
+      if (!this.shots.length) return '添加截图 · 选填 · 最多 3 张'
+      return `已添加 ${this.shots.length} 张 · 点按可继续添加`
+    },
+    contactText() {
+      return this.contact || '选填，方便回访'
+    },
   },
   methods: {
     goBack() {
       uni.navigateBack()
     },
     pickType() {
-      uni.showToast({ title: '选择问题类型（演示）', icon: 'none' })
+      uni.showActionSheet({
+        itemList: TYPES.map((t) => t.label),
+        success: (res) => {
+          this.type = TYPES[res.tapIndex].key
+        },
+      })
     },
     editDesc() {
-      uni.showToast({ title: '输入问题描述（演示）', icon: 'none' })
+      uni.showModal({
+        title: '问题描述',
+        editable: true,
+        placeholderText: '请描述遇到的问题或建议，不少于 10 字',
+        content: this.desc,
+        success: (res) => {
+          if (res.confirm) this.desc = String(res.content || '').trim()
+        },
+      })
     },
+    editContact() {
+      uni.showModal({
+        title: '联系方式',
+        editable: true,
+        placeholderText: '微信号 / 手机号（选填）',
+        content: this.contact,
+        success: (res) => {
+          if (res.confirm) this.contact = String(res.content || '').trim()
+        },
+      })
+    },
+    /** 截图：选图 → 逐张上传（串行，避免小程序并发限流） */
     addShot() {
-      uni.showToast({ title: '添加截图（演示）', icon: 'none' })
+      const rest = 3 - this.shots.length
+      if (rest <= 0) return uni.showToast({ title: '最多 3 张', icon: 'none' })
+      if (this.uploading) return
+      uni.chooseImage({
+        count: rest,
+        sizeType: ['compressed'],
+        success: async (res) => {
+          const paths = res.tempFilePaths || []
+          if (!paths.length) return
+          this.uploading = true
+          for (const p of paths) {
+            const up = await uploadFile(p, { biz_type: 'feedback' }).catch(() => null)
+            if (up && up.url) this.shots.push(up.url)
+          }
+          this.uploading = false
+        },
+      })
     },
-    submit() {
-      uni.showToast({ title: '已提交（演示）', icon: 'success' })
+    async submit() {
+      if (this.submitting) return
+      if (!this.type) return uni.showToast({ title: '请选择问题类型', icon: 'none' })
+      if (this.desc.length < 10) return uni.showToast({ title: '问题描述不少于 10 字', icon: 'none' })
+      this.submitting = true
+      const ok = await submitFeedback({
+        type: this.type,
+        content: this.desc,
+        images: this.shots,
+        contact: this.contact,
+      })
+        .then(() => true)
+        .catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '已提交，感谢反馈', icon: 'success' })
+      setTimeout(() => uni.navigateBack(), 900)
     },
   },
 }

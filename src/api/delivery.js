@@ -8,6 +8,7 @@
  *   POST /wechat/staff/delivery/upload-retouched/:id    :id = 交付单 ID
  *   POST /wechat/staff/delivery/feedback/list           客户修图反馈列表（body { status?, page, page_size }）
  *   POST /wechat/staff/delivery/feedback/handle/:item_id
+ *   POST /wechat/staff/delivery/send-final/:id         :id = **交付单 ID**（第六批补开）
  */
 import { rpc } from '@/api/common/http'
 import { API_PATHS } from '@/api/common/apiPath'
@@ -18,7 +19,11 @@ import { API_PATHS } from '@/api/common/apiPath'
  */
 export const createDelivery = (orderId) => rpc(API_PATHS.delivery.create, {}, orderId)
 
-/** 交付单详情 @param {number} id **订单 ID**（按订单反查交付单） → { delivery, items } */
+/**
+ * 交付单详情 @param {number} id **订单 ID**（按订单反查交付单）
+ * 返回 model.Delivery **对象本身**（不是 { delivery, items } 包装）。
+ * 文件明细另调 getDeliveryItems（同一 :id 口径）。
+ */
 export const getDeliveryDetail = (id) => rpc(API_PATHS.delivery.detail, {}, id)
 
 /**
@@ -37,6 +42,13 @@ export const uploadSamples = (id, payload) => rpc(API_PATHS.delivery.uploadSampl
 
 /** 上传精修成品 @param {number} id 交付单 ID @param {Object} payload { items } */
 export const uploadRetouched = (id, payload) => rpc(API_PATHS.delivery.uploadRetouched, payload, id)
+
+/**
+ * 发送最终确认（:id 为**交付单 ID**）。
+ * 前置条件：交付单已进入「待确认交付」（阶段 4，即精修成品已上传完），否则后端 400。
+ * 仅记录 sent_final_at 并通知客户；客户确认后由 PC/后台确认交付（阶段 5）。
+ */
+export const sendFinal = (id) => rpc(API_PATHS.delivery.sendFinal, {}, id)
 
 /** 客户修图反馈列表 @param {Object} params { status?, page, page_size } → PageOK */
 export const listFeedback = (params) => rpc(API_PATHS.delivery.feedbackList, params)

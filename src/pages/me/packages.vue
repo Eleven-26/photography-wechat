@@ -12,8 +12,8 @@
       <view class="page-pk__ov-left">
         <text class="page-pk__ov-label">已上架 · 客户可见</text>
         <view class="page-pk__ov-nums">
-          <text class="page-pk__ov-num">4</text>
-          <text class="page-pk__ov-total"> / 5 个</text>
+          <text class="page-pk__ov-num">{{ liveCount }}</text>
+          <text class="page-pk__ov-total"> / {{ packages.length }} 个</text>
         </view>
       </view>
       <text class="page-pk__ov-hint">{{ '下架套餐客户不可见\n不影响已成交订单' }}</text>
@@ -23,8 +23,8 @@
     <text class="page-pk__sec">全部套餐</text>
     <view class="page-pk__card">
       <view
-        v-for="p in packages"
-        :key="p.name"
+        v-for="p in rows"
+        :key="p.id"
         class="info-row page-pk__row pressable"
         @click="goEdit(p)"
       >
@@ -43,6 +43,7 @@
           <view class="page-pk__knob" />
         </view>
       </view>
+      <AppEmpty v-if="!loading && !rows.length" text="暂无套餐" />
     </view>
 
     <!-- 底栏：新建套餐 黑胶囊 52 高（fillx52 within 343） -->
@@ -59,23 +60,66 @@
 <script>
 /**
  * ME04 套餐管理（稿 1:6079 实测 1:1）
- * 概览（4/5 上架）→ 套餐行（38 色块方标：写真 #3E5C76 / #7C6BA8 / 家庭 #B0654A / 个人 #6E8A5B / 品牌 #9AA0A6；toggle 上架绿 #34C759 下架 #DFDFE3；草稿徽章）→ 底部新建套餐。
+ * 概览（已上架/总数）→ 套餐行（38 色块方标按分类取色；toggle 上架绿 #34C759 下架 #DFDFE3；草稿徽章）→ 底部新建套餐。
  * 稿内「亲自写真」按上下文语义修正为「亲子写真」（待评审核对，同 CU01 口径）。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /package/list        → 套餐分页（name/category/base_price/photos_included/shoot_hours/status…）
+ *   /package/status/:id  → 上下架（status 2-已上架 / 3-已下线；1-草稿）
+ * 套餐分类无固定色板，按分类/名称哈希取族色。
  */
+import { getPackageList, setPackageStatus } from '@/api/package'
+import { formatAmount } from '@/utils/format'
+
+const THUMB_COLORS = ['#3E5C76', '#7C6BA8', '#B0654A', '#6E8A5B', '#9AA0A6']
+
+function pickColor(key) {
+  const s = key || ''
+  let h = 0
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) % 997
+  return THUMB_COLORS[h % THUMB_COLORS.length]
+}
+
 export default {
   name: 'MePackages',
   data() {
     return {
-      packages: [
-        { name: '亲子写真 · 基础', spec: '2人·约2h·精修30张', price: '¥2,680', color: '#3E5C76', tag: '写真', live: true },
-        { name: '亲子写真 · 轻奢', spec: '2人·约2h·精修30张·含相册', price: '¥3,980', color: '#7C6BA8', tag: '写真', live: true },
-        { name: '家庭纪实', spec: '不限人数·约3h·精修40张', price: '¥4,580', color: '#B0654A', tag: '家庭', live: true },
-        { name: '个人写真', spec: '1人·约1.5h·精修20张', price: '¥1,580', color: '#6E8A5B', tag: '个人', live: true },
-        { name: '品牌内容定制', spec: '需求沟通后定价', price: '—', color: '#9AA0A6', tag: '品牌', live: false, draft: true },
-      ],
+      packages: [],
+      loading: false,
+      switching: false,
     }
   },
+  computed: {
+    liveCount() { return this.packages.filter((p) => Number(p.status) === 2).length },
+    rows() {
+      return this.packages.map((p) => ({
+        id: p.id,
+        name: p.name || '',
+        spec: [
+          p.category,
+          p.shoot_hours ? `约${p.shoot_hours}h` : '',
+          p.photos_included ? `精修${p.photos_included}张` : '',
+        ]
+          .filter(Boolean)
+          .join('·'),
+        price: p.base_price ? `¥${formatAmount(p.base_price)}` : '—',
+        color: pickColor(p.category || p.name),
+        tag: String(p.category || '套餐').slice(0, 2),
+        live: Number(p.status) === 2,
+        draft: Number(p.status) === 1,
+      }))
+    },
+  },
+  onShow() {
+    this.fetchPackages()
+  },
   methods: {
+    async fetchPackages() {
+      this.loading = true
+      const res = await getPackageList({ page: 1, page_size: 50 }).catch(() => null)
+      this.packages = (res && res.list) || []
+      this.loading = false
+    },
     goBack() {
       uni.navigateBack()
     },
@@ -83,11 +127,18 @@ export default {
       uni.navigateTo({ url: '/pages/me/package-edit?mode=create' })
     },
     goEdit(p) {
-      uni.navigateTo({ url: `/pages/me/package-edit?mode=edit&name=${encodeURIComponent(p.name)}` })
+      uni.navigateTo({ url: `/pages/me/package-edit?mode=edit&id=${p.id}` })
     },
-    toggle(p) {
-      p.live = !p.live
-      uni.showToast({ title: p.live ? '已上架（演示）' : '已下架（演示）', icon: 'none' })
+    /** 上下架：2-已上架 ↔ 3-已下线 */
+    async toggle(p) {
+      if (this.switching) return
+      this.switching = true
+      const next = p.live ? 3 : 2
+      const ok = await setPackageStatus(p.id, next).then(() => true).catch(() => false)
+      this.switching = false
+      if (!ok) return
+      uni.showToast({ title: next === 2 ? '已上架' : '已下架', icon: 'none' })
+      this.fetchPackages()
     },
   },
 }

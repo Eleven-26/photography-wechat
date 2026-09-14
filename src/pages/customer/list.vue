@@ -27,12 +27,12 @@
       </view>
       <scroll-view class="page-cu__follow-scroll" scroll-x :show-scrollbar="false">
         <view class="page-cu__follow-list">
-          <view v-for="f in followUps" :key="f.name" class="page-cu__follow-item">
+          <view v-for="f in followUps" :key="f.id" class="page-cu__follow-item">
             <view class="page-cu__follow-main">
               <text class="page-cu__follow-name">{{ f.name }}</text>
               <text class="page-cu__follow-sub">{{ f.sub }}</text>
             </view>
-            <view class="page-cu__follow-btn pressable" @click="call"><text>电话</text></view>
+            <view class="page-cu__follow-btn pressable" @click="call(f)"><text>电话</text></view>
           </view>
         </view>
       </scroll-view>
@@ -55,7 +55,7 @@
     <view class="page-cu__list">
       <view
         v-for="(c, i) in filtered"
-        :key="c.name"
+        :key="c.id"
         class="page-cu__row pressable"
         :class="{ 'page-cu__row--line': i > 0 }"
         @click="goDetail(c)"
@@ -75,6 +75,7 @@
           <text v-if="c.date" class="page-cu__date">{{ c.date }}</text>
         </view>
       </view>
+      <AppEmpty v-if="!loading && !filtered.length" text="暂无客户" />
     </view>
 
     <AppTabBar active="customer" />
@@ -87,8 +88,32 @@
  * CU01 客户列表（稿 1:5625 实测 1:1）
  * 搜索+新建（44 黑方块加号）→ 今日待跟进黑卡（深灰客户条+电话钮）→ 过滤 chips → 客户行。
  * 头像底色实测：李 #F89494 / 林 #08A4FF / 孟 #EFA803 / 王 #00CB8E / 姜 #699EFF / 许 #FF6ABE。
- * 状态色实测：进行中 #B66E00 / 询价中 #121212 / 待跟进 #00B972 / 已完成 #666666。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /customer/list        → 客户分页（name/mobile/status/order_count/total_amount/prefer_style…）
+ *   /customer/today-follow→ 今日待跟进线索（黑卡横滑条）
+ * chips 为稿内文案，按客户状态映射：最近合作=活跃(2) / 待跟进=潜在(1) / 已完成=流失(3)（待评审确认）。
+ * 头像无色板字段，按姓名哈希取族色；客户 status：1-潜在 2-活跃 3-流失。
  */
+import { getCustomerList, getTodayFollow } from '@/api/customer'
+import { formatAmount, fromNow, contactPhotographer } from '@/utils/format'
+
+const AVATAR_COLORS = ['#F89494', '#08A4FF', '#EFA803', '#00CB8E', '#699EFF', '#FF6ABE']
+/** 客户状态 → 右侧状态字 + 圆点色 */
+const STATUS_MAP = {
+  1: { text: '潜在', dot: '#00B972' },
+  2: { text: '活跃', dot: '#B66E00' },
+  3: { text: '流失', dot: '#999999' },
+}
+
+/** 按姓名哈希取头像底族色（后端无头像色字段） */
+function pickColor(name) {
+  const s = name || ''
+  let h = 0
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) % 997
+  return AVATAR_COLORS[h % AVATAR_COLORS.length]
+}
+
 export default {
   name: 'CustomerList',
   data() {
@@ -96,41 +121,78 @@ export default {
       keyword: '',
       chip: '全部',
       chips: ['全部', '最近合作', '待跟进', '已完成'],
-      followUps: [
-        { name: '陈雨', sub: '11:00拍摄 · 越秀公园' },
-        { name: '李婷婷', sub: '拍摄后 3 天未选片' },
-      ],
-      customers: [
-        { name: '李芳', avatar: '#F89494', sub: '商务形象照 · 3 单 · ¥12,800 · 样片…', status: '进行中', dot: '#B66E00', date: '8/6拍', group: '进行中' },
-        { name: '林七月', avatar: '#08A4FF', sub: '亲子写真 · 4 单 · 报价 2 天', status: '询价中', dot: '#121212', group: '待跟进' },
-        { name: '孟川', avatar: '#EFA803', sub: '商务形象照 · 3 单 · ¥12,800 · 样片…', status: '待跟进', dot: '#00B972', group: '待跟进' },
-        { name: '王林', avatar: '#00CB8E', sub: '婚礼跟拍 · 2 单', status: '已完成', date: '8/6拍', group: '已完成' },
-        { name: '姜浩然', avatar: '#699EFF', sub: '证件照 · 1 单', status: '已完成', date: '8/6拍', group: '已完成' },
-        { name: '许青', avatar: '#FF6ABE', sub: '全家福 · 1 单', status: '已完成', date: '8/6拍', group: '已完成' },
-      ],
+      followUps: [],
+      customers: [],
+      loading: false,
     }
   },
   computed: {
+    /** 客户展示行（模板字段与稿一致：name/avatar/sub/status/dot） */
+    rows() {
+      return this.customers.map((c) => {
+        const st = STATUS_MAP[Number(c.status)] || {}
+        return {
+          id: c.id,
+          name: c.name || '',
+          avatar: pickColor(c.name),
+          sub: [
+            c.prefer_style || c.tags,
+            `${c.order_count || 0} 单`,
+            c.total_amount ? `¥${formatAmount(c.total_amount)}` : '',
+          ]
+            .filter(Boolean)
+            .join(' · '),
+          status: st.text || '',
+          dot: st.dot || '',
+          rawStatus: Number(c.status),
+        }
+      })
+    },
     filtered() {
-      let list = this.customers
-      if (this.chip === '待跟进') list = list.filter((c) => c.group === '待跟进')
-      if (this.chip === '已完成') list = list.filter((c) => c.group === '已完成')
-      if (this.chip === '最近合作') list = [...list].reverse()
-      if (this.keyword) {
-        list = list.filter((c) => c.name.includes(this.keyword))
-      }
+      let list = this.rows
+      if (this.chip === '待跟进') list = list.filter((c) => c.rawStatus === 1)
+      else if (this.chip === '最近合作') list = list.filter((c) => c.rawStatus === 2)
+      else if (this.chip === '已完成') list = list.filter((c) => c.rawStatus === 3)
+      const kw = this.keyword.trim()
+      if (kw) list = list.filter((c) => c.name.includes(kw) || String(c.sub).includes(kw))
       return list
     },
   },
+  onShow() {
+    this.fetchCustomers()
+    this.fetchFollowUps()
+  },
   methods: {
+    async fetchCustomers() {
+      this.loading = true
+      const res = await getCustomerList({ page: 1, page_size: 50 }).catch(() => null)
+      this.customers = (res && res.list) || []
+      this.loading = false
+    },
+    async fetchFollowUps() {
+      const res = await getTodayFollow({ limit: 10 }).catch(() => null)
+      const list = Array.isArray(res) ? res : (res && res.list) || []
+      this.followUps = list.map((f) => ({
+        id: f.id,
+        name: f.name || f.customer_name || '',
+        mobile: f.mobile || '',
+        sub: [
+          f.project_type,
+          f.shoot_time ? `${f.shoot_time}拍摄` : '',
+          fromNow(f.next_follow_at),
+        ]
+          .filter(Boolean)
+          .join(' · '),
+      }))
+    },
     addCustomer() {
       uni.navigateTo({ url: '/pages/customer/create' })
     },
-    call() {
-      uni.showToast({ title: '呼叫客户（演示）', icon: 'none' })
+    call(f) {
+      contactPhotographer(f && f.mobile)
     },
     goDetail(c) {
-      uni.navigateTo({ url: `/pages/customer/detail?name=${encodeURIComponent(c.name)}` })
+      uni.navigateTo({ url: `/pages/customer/detail?id=${c.id}` })
     },
   },
 }

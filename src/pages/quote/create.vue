@@ -12,16 +12,16 @@
     <!-- 黑卡：V1 + 标题 + 总价 + 修改总价 + 预算提示（1:17 Group 69 实测 343×160） -->
     <view class="page-quote__hero">
       <view class="page-quote__hero-top">
-        <text class="page-quote__hero-title">家庭纪念 · 周末户外定制</text>
-        <view class="page-quote__ver"><text>V1</text></view>
+        <text class="page-quote__hero-title">{{ heroTitle }}</text>
+        <view class="page-quote__ver"><text>V{{ version }}</text></view>
       </view>
       <view class="page-quote__hero-price-row">
-        <text class="page-quote__hero-price">¥2,680</text>
+        <text class="page-quote__hero-price">¥{{ formatAmount(totalPrice) }}</text>
         <view class="page-quote__edit-price pressable" @click="editPrice"><text>修改总价</text></view>
       </view>
       <view class="page-quote__budget">
-        <view class="page-quote__budget-check"><AppIcon name="check-sm" :size="10" /></view>
-        <text>在客户预算范围内（¥2,000-3,000）</text>
+        <view v-if="inBudget" class="page-quote__budget-check"><AppIcon name="check-sm" :size="10" /></view>
+        <text>{{ budgetText }}</text>
       </view>
     </view>
 
@@ -43,22 +43,27 @@
             <text class="page-quote__row-title">基础套餐</text>
             <view class="page-quote__chip page-quote__chip--blue"><text>来自套餐库</text></view>
           </view>
-          <text class="page-quote__row-sub">按"家庭纪念·2大1小"从 2 个套餐中匹配</text>
+          <text class="page-quote__row-sub">{{ pkgHint }}</text>
         </view>
-        <text class="page-quote__row-val">¥2,680</text>
+        <text class="page-quote__row-val">¥{{ formatAmount(basePrice) }}</text>
         <view class="page-quote__arrow" :class="{ 'page-quote__arrow--open': open.pkg }" />
       </view>
       <view v-if="open.pkg" class="page-quote__expand">
         <view class="page-quote__pkg-chips">
-          <view class="page-quote__pkg page-quote__pkg--on">
-            <text class="page-quote__pkg-name">基础套餐</text>
-            <text class="page-quote__pkg-sub">￥2,680 引用12次</text>
-          </view>
-          <view class="page-quote__pkg pressable" @click="pickPkg('lux')">
-            <text class="page-quote__pkg-name">家庭轻奢</text>
-            <text class="page-quote__pkg-sub">￥3,880 引用五次</text>
+          <view
+            v-for="p in packages"
+            :key="p.id"
+            class="page-quote__pkg pressable"
+            :class="{ 'page-quote__pkg--on': p.id === selectedPkgId }"
+            @click="selectPkg(p)"
+          >
+            <text class="page-quote__pkg-name">{{ p.name }}</text>
+            <text class="page-quote__pkg-sub">
+              ￥{{ formatAmount(p.base_price) }} · 含{{ p.photos_included || 0 }}张
+            </text>
           </view>
         </view>
+        <AppEmpty v-if="!packages.length" text="套餐库为空，请先在管理端创建套餐" />
         <view class="page-quote__custom pressable" @click="customPkg">
           <view class="page-quote__custom-plus" />
           <text>库里没有合适的，自定义填价</text>
@@ -75,9 +80,9 @@
             <text class="page-quote__row-title">拍摄时长</text>
             <view class="page-quote__chip page-quote__chip--green"><text>AI 预填</text></view>
           </view>
-          <text class="page-quote__row-sub">套餐含 20 张 · 超出按 ¥60/张</text>
+          <text class="page-quote__row-sub">{{ hoursHint }}</text>
         </view>
-        <text class="page-quote__row-val page-quote__row-val--md">2.5 <text class="page-quote__unit">小时</text></text>
+        <text class="page-quote__row-val page-quote__row-val--md">{{ hours }} <text class="page-quote__unit">小时</text></text>
         <view class="page-quote__arrow" :class="{ 'page-quote__arrow--open': open.hours }" />
       </view>
       <view v-if="open.hours" class="page-quote__expand">
@@ -86,7 +91,7 @@
           <text class="page-quote__step-val">{{ hours }} <text class="page-quote__unit">小时</text></text>
           <view class="page-quote__step-btn pressable" @click="stepHours(1)"><text>+</text></view>
         </view>
-        <text class="page-quote__expand-note">当前 2.5 小时为基础套餐含时，不产生加时费</text>
+        <text class="page-quote__expand-note">{{ hoursNote }}</text>
       </view>
     </view>
 
@@ -135,7 +140,7 @@
           </view>
           <text class="page-quote__row-sub">勾选即计入报价</text>
         </view>
-        <text class="page-quote__row-val page-quote__row-val--md page-quote__row-val--bold">妆造</text>
+        <text class="page-quote__row-val page-quote__row-val--md page-quote__row-val--bold">{{ addonSummary }}</text>
         <view class="page-quote__arrow" :class="{ 'page-quote__arrow--open': open.addon }" />
       </view>
       <view v-if="open.addon" class="page-quote__expand page-quote__expand--addons">
@@ -143,13 +148,13 @@
           v-for="a in addons"
           :key="a.name"
           class="page-quote__addon"
-          @click="a.on = !a.on"
+          @click="toggleAddon(a)"
         >
           <view class="page-quote__addon-check" :class="{ 'page-quote__addon-check--on': a.on }">
             <AppIcon v-if="a.on" name="check-sm" :size="12" />
           </view>
           <text class="page-quote__addon-name">{{ a.name }}</text>
-          <text class="page-quote__addon-price">{{ a.price }}</text>
+          <text class="page-quote__addon-price">{{ a.label }}</text>
         </view>
       </view>
     </view>
@@ -172,37 +177,124 @@
 <script>
 /**
  * L05 编辑报价（稿 L05-1 收起态 1:7813 / L05-2 展开态 1:7903，本页为可展开完整版）
- * 黑卡（V1/总价/修改/预算绿提示）→ AI 预填提示 → 基础套餐/拍摄时长/拍摄地点/可加项目四张可展开卡 → 底栏双钮。
+ * 黑卡（版本/总价/修改/预算提示）→ AI 预填提示 → 基础套餐/拍摄时长/拍摄地点/可加项目四张可展开卡 → 底栏双钮。
  * 徽章色实测：AI 预填/提取 #E5F6ED/#20855C、来自套餐库 #DBEAFE/#2D69EC；预算提示绿 #83DDA2（黑卡内）。
- * 稿内「装造」按 L03/L04 口径统一为「妆造」（联调评审核对）；勾选即计入报价对应加选差价自动并入尾款口径。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /lead/detail/:id  → 线索（project_type/name/budget_min/budget_max/shoot_date）
+ *   /package/list     → 套餐库（选择基础套餐 → base_price / photos_included / addon_unit_price）
+ *   /quote/list/:lead_id → 已有报价单（用于推导版本号）
+ *   /quote/create/:lead_id + /quote/status/:id → 保存草稿(1) / 发送(2)
+ * 「可加项目」后端报价单只承载一个 addon_price 总额，故两项加选为本地配置，勾选后合计进 addon_price。
+ * ⚠️ 线索模型无「拍摄地点/场地费」字段，该卡暂保留稿内文案（待后端补字段后接入）。
  */
 import { formatAmount } from '@/utils/format'
+import { getLeadDetail } from '@/api/lead'
+import { getPackageList } from '@/api/package'
+import { createQuote, getQuoteList, setQuoteStatus } from '@/api/quote'
 
 export default {
   name: 'QuoteCreate',
   data() {
     return {
+      leadId: '',
+      lead: {},
+      packages: [],
+      selectedPkgId: 0,
+      version: 1,
+      draftId: 0,
+      submitting: false,
       open: { pkg: false, hours: false, place: false, addon: false }, /* 稿 L05-1 默认全收起，点击行展开（L05-2） */
       hours: 2.5,
       placeMode: 'out',
       addons: [
-        { name: '妆造服务（客户尚未确认）', price: '+¥200', on: true },
-        { name: '加急交付 7天→3天', price: '+¥100', on: false },
+        { name: '妆造服务（客户尚未确认）', label: '+¥200', amount: 200, on: true },
+        { name: '加急交付 7天→3天', label: '+¥100', amount: 100, on: false },
       ],
     }
   },
+  computed: {
+    selectedPkg() { return this.packages.find((p) => p.id === this.selectedPkgId) || null },
+    basePrice() { return Number((this.selectedPkg && this.selectedPkg.base_price) || 0) },
+    addonTotal() {
+      return this.addons.filter((a) => a.on).reduce((sum, a) => sum + Number(a.amount || 0), 0)
+    },
+    totalPrice() { return this.basePrice + this.addonTotal },
+    addonSummary() {
+      const on = this.addons.filter((a) => a.on).map((a) => a.name.split('（')[0])
+      return on.length ? on.join('、') : '—'
+    },
+    heroTitle() {
+      const t = (this.lead && this.lead.project_type) || '定制'
+      return `${t} · 报价单`
+    },
+    budgetText() {
+      const lo = Number((this.lead && this.lead.budget_min) || 0)
+      const hi = Number((this.lead && this.lead.budget_max) || 0)
+      if (!lo && !hi) return '客户未提供预算区间'
+      const range = `¥${formatAmount(lo)}-${formatAmount(hi)}`
+      return this.inBudget ? `在客户预算范围内（${range}）` : `超出客户预算（${range}）`
+    },
+    /** 总价是否落在客户预算区间内（无预算时不判定为超） */
+    inBudget() {
+      const hi = Number((this.lead && this.lead.budget_max) || 0)
+      return !hi || this.totalPrice <= hi
+    },
+    pkgHint() {
+      const t = (this.lead && this.lead.project_type) || '客户需求'
+      return `按"${t}"从 ${this.packages.length} 个套餐中匹配`
+    },
+    hoursHint() {
+      const p = this.selectedPkg
+      if (!p) return '请先选择基础套餐'
+      return `套餐含 ${p.photos_included || 0} 张 · 超出按 ¥${formatAmount(p.addon_unit_price || 0)}/张`
+    },
+    hoursNote() {
+      const p = this.selectedPkg
+      const base = Number((p && p.shoot_hours) || 0)
+      if (!base) return `当前 ${this.hours} 小时，未含加时费`
+      return this.hours > base
+        ? `套餐含 ${base} 小时，超出 ${this.hours - base} 小时将产生加时费`
+        : `当前 ${this.hours} 小时为基础套餐含时，不产生加时费`
+    },
+  },
+  onLoad(query) {
+    this.leadId = (query && query.lead_id) || (query && query.id) || ''
+    this.fetchAll()
+  },
   methods: {
+    formatAmount,
+    async fetchAll() {
+      const [lead, pkgs, quotes] = await Promise.all([
+        this.leadId ? getLeadDetail(this.leadId).catch(() => null) : null,
+        getPackageList({ page: 1, page_size: 20 }).catch(() => null),
+        this.leadId ? getQuoteList(this.leadId).catch(() => null) : null,
+      ])
+      this.lead = lead || {}
+      const plist = Array.isArray(pkgs) ? pkgs : (pkgs && pkgs.list) || []
+      this.packages = plist
+      if (plist.length) this.selectPkg(plist[0])
+      const qlist = Array.isArray(quotes) ? quotes : (quotes && quotes.list) || []
+      if (qlist.length) {
+        const maxVer = Math.max(...qlist.map((q) => Number(q.version || 1)))
+        this.version = maxVer + 1
+      }
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/lead/detail' }) })
     },
     toggle(k) {
       this.open[k] = !this.open[k]
     },
-    pickPkg() {
-      uni.showToast({ title: '切换套餐（演示）', icon: 'none' })
+    /** 选基础套餐：同步默认时长为其含时 */
+    selectPkg(p) {
+      this.selectedPkgId = p.id
+      const h = Number(p.shoot_hours || 0)
+      if (h > 0) this.hours = h
     },
+    toggleAddon(a) { a.on = !a.on },
     customPkg() {
-      uni.showToast({ title: '自定义填价（演示）', icon: 'none' })
+      uni.showToast({ title: '自定义套餐请在管理端新增', icon: 'none' })
     },
     stepHours(d) {
       const v = Math.round((this.hours + d * 0.5) * 10) / 10
@@ -210,13 +302,47 @@ export default {
       this.hours = v
     },
     editPrice() {
-      uni.showToast({ title: '修改总价（演示）', icon: 'none' })
+      uni.showToast({ title: '总价由套餐与加项自动计算', icon: 'none' })
     },
-    saveDraft() {
-      uni.showToast({ title: '草稿已保存（演示）', icon: 'none' })
+    /** 首次落库（草稿），返回报价单 id；后续复用同一张 */
+    async ensureQuote() {
+      if (this.draftId) return this.draftId
+      if (!this.selectedPkgId) {
+        uni.showToast({ title: '请先选择基础套餐', icon: 'none' })
+        return 0
+      }
+      const res = await createQuote(this.leadId, {
+        package_id: this.selectedPkgId,
+        title: this.heroTitle,
+        addon_price: this.addonTotal,
+        shoot_date: (this.lead && this.lead.shoot_date) || '',
+        remark: '',
+      }).catch(() => null)
+      const id = res && (res.id || (res.quote && res.quote.id))
+      if (!id) {
+        uni.showToast({ title: '保存失败，请重试', icon: 'none' })
+        return 0
+      }
+      this.draftId = id
+      return id
     },
-    sendQuote() {
-      uni.showToast({ title: `报价已发送（${formatAmount(2680)} 起，演示）`, icon: 'none' })
+    async saveDraft() {
+      if (this.submitting) return
+      this.submitting = true
+      const id = await this.ensureQuote()
+      this.submitting = false
+      if (!id) return
+      uni.showToast({ title: '草稿已保存', icon: 'none' })
+    },
+    async sendQuote() {
+      if (this.submitting) return
+      this.submitting = true
+      const id = await this.ensureQuote()
+      if (!id) { this.submitting = false; return }
+      const ok = await setQuoteStatus(id, 2).then(() => true).catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '报价已发送', icon: 'success' })
       setTimeout(() => uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/lead/list' }) }), 900)
     },
   },

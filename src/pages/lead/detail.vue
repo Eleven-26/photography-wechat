@@ -7,22 +7,22 @@
         <AppIcon name="back-dark" :size="20" />
       </view>
       <view class="page-ld__title-wrap">
-        <text class="page-ld__title">陈雨</text>
-        <text class="page-ld__title-sub">· 家庭写真</text>
+        <text class="page-ld__title">{{ lead.name }}</text>
+        <text class="page-ld__title-sub">· {{ lead.project_type }}</text>
       </view>
     </view>
 
     <!-- 客户来源卡：白 r16（1:13 实测 y114） -->
     <view class="page-ld__card page-ld__card--src">
-      <text class="page-ld__name">陈雨</text>
-      <text class="page-ld__src">预约页咨询 · 小红书渠道 · 8分钟前首次咨询</text>
+      <text class="page-ld__name">{{ lead.name }}</text>
+      <text class="page-ld__src">{{ sourceText }}</text>
     </view>
 
     <!-- 等待回复卡：白 r16 + 图标行 + 黑胶囊发送作品 + 说明（1:20 实测 y214） -->
     <view class="page-ld__card page-ld__card--wait">
       <view class="page-ld__wait-row">
         <AppIcon name="clock-dark-sm" :size="20" />
-        <text class="page-ld__wait-text">客户正在客户端站点等待回复 · 已等待 8 分钟</text>
+        <text class="page-ld__wait-text">{{ waitText }}</text>
       </view>
       <view class="page-ld__send-btn pressable" @click="sendWorks">
         <text>发送作品给客户</text>
@@ -32,7 +32,7 @@
 
     <text class="page-ld__sec">需求摘要</text>
     <view class="page-ld__card">
-      <text class="page-ld__brief">家庭纪念写真，2大1小，孩子5岁。希望周末在越秀公园拍，自然风格。预算2000-3000。</text>
+      <text class="page-ld__brief">{{ lead.remark }}</text>
     </view>
 
     <!-- AI 建议（1:35 实测：标题+徽章 / 已整理 Brief 卡） -->
@@ -45,15 +45,15 @@
         <text class="page-ld__brief-title">AI 已整理 Brief</text>
         <AppIcon name="chevron-right-dark" :size="20" />
       </view>
-      <text class="page-ld__brief-sub">已确认 9 项 · 还有 3 项影响报价</text>
+      <text class="page-ld__brief-sub">{{ briefSummary }}</text>
     </view>
 
     <!-- 沟通记录（1:50 实测：三行、行间 #F0F0EB） -->
     <text class="page-ld__sec">沟通记录</text>
     <view class="page-ld__card">
       <view
-        v-for="(msg, i) in messages"
-        :key="i"
+        v-for="(msg, i) in messageRows"
+        :key="msg.id"
         class="page-ld__msg"
         :class="{ 'page-ld__msg--line': i > 0 }"
       >
@@ -82,30 +82,87 @@
  * L02 线索详情（稿 1:3177 实测 1:1）
  * 客户来源卡 → 客户端站点等待卡（发送作品黑胶囊）→ 需求摘要 → AI 建议（进 L03）→ 沟通记录 → 底栏（追问/创建报价）。
  * 底栏提示「追问和报价将通过客户端站点发送给客户」为稿内固定文案。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /lead/detail/:id    → 线索主体（name/project_type/source/remark/created_at）
+ *   /lead/messages/:id  → 沟通记录（direction 1-客户发来 2-工作室发出、content、created_at）
+ *   /brief/list/:lead_id→ 需求摘要项（status 3-已确认 / 1-待追问；affects_pricing 影响报价）
  */
+import { getLeadDetail, getLeadMessages, listBriefs } from '@/api/lead'
+import { fromNow } from '@/utils/format'
+
 export default {
   name: 'LeadDetail',
   data() {
     return {
-      messages: [
-        { time: '客户端站点 · 小红书渠道 · 8分钟前', text: '想咨询家庭写真，2大1小，孩子5岁，周末有空吗？' },
-        { time: '客户端站点 · 小红书渠道 · 5分钟前', text: '预算2000-3000，想要自然一点的风格' },
-        { time: '客户端站点 · 小红书渠道 · 3分钟前', text: '在越秀公园拍可以吗？孩子在那边比较放松' },
-      ],
+      leadId: '',
+      lead: {},
+      messages: [],
+      briefs: [],
     }
   },
+  computed: {
+    /** 「已确认 X 项 · 还有 Y 项影响报价」（Y = 未确认且影响报价的待追问项） */
+    briefSummary() {
+      const confirmed = this.briefs.filter((b) => Number(b.status) === 3).length
+      const pricing = this.briefs.filter(
+        (b) => Number(b.affects_pricing) === 1 && Number(b.status) !== 3
+      ).length
+      return `已确认 ${confirmed} 项 · 还有 ${pricing} 项影响报价`
+    },
+    /** 沟通记录展示行（方向 + 相对时间） */
+    messageRows() {
+      return this.messages.map((m) => ({
+        id: m.id,
+        time: [Number(m.direction) === 1 ? '客户发来' : '工作室发出', fromNow(m.created_at)]
+          .filter(Boolean)
+          .join(' · '),
+        text: m.content,
+      }))
+    },
+    /** 等待时长文案（自线索创建起算；无时间字段时退化为不带时长） */
+    waitText() {
+      const at = this.lead && (this.lead.created_at || this.lead.next_follow_at)
+      const t = at ? new Date(String(at).replace(/-/g, '/')).getTime() : NaN
+      if (Number.isNaN(t)) return '客户正在客户端站点等待回复'
+      const min = Math.max(0, Math.floor((Date.now() - t) / 60000))
+      return `客户正在客户端站点等待回复 · 已等待 ${min} 分钟`
+    },
+    /** 来源卡副行 */
+    sourceText() {
+      const first = fromNow(this.lead && (this.lead.created_at || this.lead.next_follow_at))
+      return [this.lead && this.lead.source, first && `${first}首次咨询`]
+        .filter(Boolean)
+        .join(' · ')
+    },
+  },
+  onLoad(query) {
+    this.leadId = (query && query.id) || ''
+    this.fetchAll()
+  },
   methods: {
+    async fetchAll() {
+      if (!this.leadId) return
+      const [lead, messages, briefs] = await Promise.all([
+        getLeadDetail(this.leadId).catch(() => null),
+        getLeadMessages(this.leadId).catch(() => []),
+        listBriefs(this.leadId).catch(() => []),
+      ])
+      this.lead = lead || {}
+      this.messages = Array.isArray(messages) ? messages : (messages && messages.list) || []
+      this.briefs = Array.isArray(briefs) ? briefs : (briefs && briefs.list) || []
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/lead/list' }) })
     },
     goBrief() {
-      uni.navigateTo({ url: '/pages/lead/ai-brief' })
+      uni.navigateTo({ url: `/pages/lead/ai-brief?id=${this.leadId}` })
     },
     goAsk() {
-      uni.navigateTo({ url: '/pages/lead/ask' })
+      uni.navigateTo({ url: `/pages/lead/ask?id=${this.leadId}` })
     },
     goQuote() {
-      uni.navigateTo({ url: '/pages/quote/create' })
+      uni.navigateTo({ url: `/pages/quote/create?lead_id=${this.leadId}` })
     },
     sendWorks() {
       uni.navigateTo({ url: '/pages/me/works' })

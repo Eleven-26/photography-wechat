@@ -37,7 +37,7 @@
           <text>{{ s }}</text>
         </view>
       </view>
-      <text class="page-os__mode-hint">客户下单后你收到提醒，确认后才占用档期——适合需要先沟通需求的拍摄。</text>
+      <text class="page-os__mode-hint">{{ modeHint }}</text>
     </view>
 
     <!-- 档期规则（标题行 + 提示 + 一行卡跳日程） -->
@@ -66,24 +66,60 @@
 /**
  * ME09 接单设置（稿 1:6176 实测 1:1）
  * 接收新预约开关 → 新单确认方式分段（手动/自动确认）→ 档期规则行（跳日程 Tab）→ 保存黑胶囊 48。
+ *
+ * 数据源（2026-09-14 第六批接线）：复用 /studio/get、/studio/update：
+ *   accept_new（biz_studio_setting 既有列，1-接收 0-暂停）、
+ *   confirm_mode（本次新增列，manual-手动确认 auto-自动确认）。
+ * ⚠️ 与「通知设置」不同，本页有显式保存按钮（档期策略属重要配置，不适合边点边存）。
  */
+import { getStudioSettings, updateStudioSettings } from '@/api/settings'
+
+const MODE_LABEL = { manual: '手动确认', auto: '自动确认' }
+
 export default {
   name: 'MeOrderSettings',
   data() {
     return {
       accept: true,
       mode: '手动确认',
+      submitting: false,
     }
   },
+  computed: {
+    modeHint() {
+      return this.mode === '自动确认'
+        ? '客户下单即自动占用档期并进入待定金——适合标准化套餐、可快速确认的拍摄。'
+        : '客户下单后你收到提醒，确认后才占用档期——适合需要先沟通需求的拍摄。'
+    },
+  },
+  onShow() {
+    this.fetchSettings()
+  },
   methods: {
+    async fetchSettings() {
+      const res = await getStudioSettings().catch(() => null)
+      if (!res) return
+      this.accept = res.accept_new !== 0
+      this.mode = MODE_LABEL[res.confirm_mode] || '手动确认'
+    },
     goBack() {
       uni.navigateBack()
     },
     goSchedule() {
       uni.switchTab({ url: '/pages/schedule/index' })
     },
-    save() {
-      uni.showToast({ title: '已保存（演示）', icon: 'success' })
+    async save() {
+      if (this.submitting) return
+      this.submitting = true
+      const ok = await updateStudioSettings({
+        accept_new: this.accept ? 1 : 0,
+        confirm_mode: this.mode === '自动确认' ? 'auto' : 'manual',
+      })
+        .then(() => true)
+        .catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '已保存', icon: 'success' })
     },
   },
 }

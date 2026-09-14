@@ -15,14 +15,16 @@
     <view class="page-df__hero">
       <view class="page-df__hero-top">
         <view class="page-df__hero-badge">
-          <text class="page-df__hero-badge-txt">V2 预览版</text>
+          <text class="page-df__hero-badge-txt">V{{ retouchVersion }} 预览版</text>
         </view>
         <text class="page-df__hero-count">{{ photoCount }} 张</text>
       </view>
       <view class="page-df__grid">
-        <view v-for="(p, i) in photos" :key="i" class="page-df__pic">
-          <!-- 原型占位：稿内为真实样片填充，接入后换 image 组件 -->
-          <view class="page-df__pic-ph" :style="{ background: phColor(i) }" />
+        <view v-for="p in photos" :key="p.id" class="page-df__pic">
+          <image class="page-df__pic-img" :src="p.url" mode="aspectFill" />
+        </view>
+        <view v-if="!photos.length" class="page-df__empty">
+          <text class="page-df__empty-txt">暂无精修成品</text>
         </view>
       </view>
     </view>
@@ -31,10 +33,12 @@
     <view class="page-df__label">精修成品</view>
     <view class="page-df__card page-df__card--row">
       <view class="page-df__up">
-        <text class="page-df__up-title">已重新上传 24 / 24 张</text>
+        <text class="page-df__up-title">{{ retouchText }}</text>
         <text class="page-df__up-sub">精修图完成后上传 · 高清下载以此为准</text>
       </view>
-      <view class="page-df__badge-green"><text class="page-df__badge-green-txt">已上传</text></view>
+      <view class="page-df__badge-green" :class="{ 'page-df__badge-green--off': !photoCount }">
+        <text class="page-df__badge-green-txt">{{ photoCount ? '已上传' : '待上传' }}</text>
+      </view>
     </view>
 
     <!-- 交付检查卡：预览水印 / 文件校验 两行 -->
@@ -43,12 +47,16 @@
       <view class="page-df__check-row page-df__check-row--line">
         <AppIcon name="check-green-sm" :size="16" />
         <text class="page-df__check-title">预览水印</text>
-        <view class="page-df__badge-green"><text class="page-df__badge-green-txt">通过</text></view>
+        <view class="page-df__badge-green" :class="{ 'page-df__badge-green--off': !checks.watermark.ok }">
+          <text class="page-df__badge-green-txt">{{ checks.watermark.text }}</text>
+        </view>
       </view>
       <view class="page-df__check-row">
         <AppIcon name="check-green-sm" :size="16" />
         <text class="page-df__check-title">文件校验</text>
-        <view class="page-df__badge-green"><text class="page-df__badge-green-txt">通过</text></view>
+        <view class="page-df__badge-green" :class="{ 'page-df__badge-green--off': !checks.files.ok }">
+          <text class="page-df__badge-green-txt">{{ checks.files.text }}</text>
+        </view>
       </view>
     </view>
 
@@ -74,31 +82,88 @@
 </template>
 
 <script>
-import { demoOrderById } from '@/utils/demo'
+/**
+ * D11 最终成片（稿 1:3468 实测）：黑 Hero 九宫格 + 精修成品 + 交付检查 + 高清下载说明 + 单钮。
+ *
+ * 数据源（2026-09-14 接线；:id = **order_id**）：
+ *   /delivery/detail/:id → 交付单（retouch_version 精修轮次 / retouch_target 计划张数 /
+ *     sample_count 样片数 / stage 阶段）
+ *   /delivery/items/:id  → 交付明细，取 kind=3（精修成品）作九宫格与计数
+ * 底部按钮「发送最终确认」→ POST /delivery/send-final/:id（**:id = 交付单 ID**，非订单 ID）。
+ * 后端要求 stage=4（待确认交付），否则 400 —— 即：没有成品就不能发确认。
+ *
+ * ⚠️ 交付检查两项均为**服务端事实推导**，不是常量：
+ *    预览水印 ← 样片是否已上传（sample_count>0）；文件校验 ← 精修成品是否已落库。
+ */
+import { getDeliveryDetail, getDeliveryItems, sendFinal } from '@/api/delivery'
+
+/** DeliveryItem.kind：1-样片 2-已选 3-精修成品 */
+const KIND_RETOUCHED = 3
+/** 九宫格最多展示 9 张 */
+const GRID_MAX = 9
 
 export default {
   data() {
     return {
       orderId: '',
-      photoCount: 24, // 稿内徽章文案「24 张」
-      photos: new Array(9).fill(0), // 稿 3x3 九宫格（展示占位，接入后为真实缩略图列表）
-      palette: ['#D8D5D0', '#C9CDC9', '#D6CFC4', '#CFD3D8', '#D9D2C6', '#C8CCC8', '#D5D0CA', '#CCC9C4', '#D0D4CE'],
+      delivery: null,
+      items: [],
+      submitting: false,
     }
+  },
+  computed: {
+    retouched() {
+      return this.items.filter((it) => it.kind === KIND_RETOUCHED)
+    },
+    photoCount() {
+      return this.retouched.length
+    },
+    photos() {
+      return this.retouched.slice(0, GRID_MAX)
+    },
+    retouchVersion() {
+      return (this.delivery && this.delivery.retouch_version) || 1
+    },
+    retouchText() {
+      const target = (this.delivery && this.delivery.retouch_target) || this.photoCount
+      return `已上传 ${this.photoCount} / ${target} 张`
+    },
+    checks() {
+      const samples = Number((this.delivery && this.delivery.sample_count) || 0)
+      return {
+        watermark: samples > 0 ? { ok: true, text: '通过' } : { ok: false, text: '待上传样片' },
+        files: this.photoCount > 0 ? { ok: true, text: '通过' } : { ok: false, text: '待上传成品' },
+      }
+    },
   },
   onLoad(options) {
     this.orderId = (options && options.id) || ''
-    this.order = demoOrderById(this.orderId) || null
+    this.fetchAll()
   },
   methods: {
+    async fetchAll() {
+      if (!this.orderId) return
+      const [dRes, iRes] = await Promise.all([
+        getDeliveryDetail(this.orderId).catch(() => null),
+        getDeliveryItems(this.orderId).catch(() => null),
+      ])
+      this.delivery = dRes || null
+      this.items = Array.isArray(iRes) ? iRes : []
+    },
     goBack() {
       uni.navigateBack()
     },
-    phColor(i) {
-      return this.palette[i % this.palette.length]
-    },
-    onConfirm() {
-      // 联调后接「发送最终确认」接口，此处演示提示
-      uni.showToast({ title: '已发送最终确认（演示）', icon: 'none' })
+    async onConfirm() {
+      if (this.submitting) return
+      const d = this.delivery
+      if (!d || !d.id) return uni.showToast({ title: '交付单尚未创建', icon: 'none' })
+      if (!this.photoCount) return uni.showToast({ title: '请先上传精修成品', icon: 'none' })
+      this.submitting = true
+      const ok = await sendFinal(d.id).then(() => true).catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '已发送最终确认', icon: 'success' })
+      setTimeout(() => uni.navigateBack(), 900)
     },
   },
 }
@@ -180,9 +245,20 @@ export default {
     border-radius: 32rpx; /* 稿 r16 */
     overflow: hidden;
   }
-  &__pic-ph {
+  &__pic-img {
     width: 100%;
     height: 100%;
+  }
+  &__empty {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60rpx 0;
+  }
+  &__empty-txt {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 26rpx;
   }
 
   &__label {
@@ -243,6 +319,13 @@ export default {
   }
   &__badge-green--sm {
     padding: 4rpx 14rpx;
+  }
+  /* 未达成（灰色）—— 交付检查项未通过时用 */
+  &__badge-green--off {
+    background-color: #EDEEF0;
+  }
+  &__badge-green--off .page-df__badge-green-txt {
+    color: #8E8E93;
   }
   &__badge-green-txt {
     color: $badge-green-text;

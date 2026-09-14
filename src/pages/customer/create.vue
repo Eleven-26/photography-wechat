@@ -36,12 +36,22 @@
 </template>
 
 <script>
+/**
+ * CU03 添加客户（稿 30:150 实测 1:1）
+ * 姓名* / 联系电话* / 来源 chips（选填）→ 确认添加。
+ *
+ * 数据源（2026-09-14 接线）：POST /customer/create（权限点 customer:create，沿用 PC）。
+ * 提交字段：name / mobile / source —— ⚠️ 后端字段名是 mobile（不是 phone）。
+ */
+import { createCustomer } from '@/api/customer'
+
 export default {
   name: 'CustomerCreate',
   data() {
     return {
       sources: ['朋友介绍', '小红书', '抖音', '老客户转介绍', '其他'],
       form: { name: '', phone: '', source: '' },
+      submitting: false,
     }
   },
   methods: {
@@ -53,7 +63,7 @@ export default {
         uni.reLaunch({ url: '/pages/customer/list' })
       }
     },
-    save() {
+    async save() {
       // 必填校验：错误仅提示，不清空已填内容
       if (!this.form.name.trim()) {
         uni.showToast({ title: '请填写客户姓名', icon: 'none' })
@@ -63,8 +73,18 @@ export default {
         uni.showToast({ title: '请填写联系电话', icon: 'none' })
         return
       }
-      // 演示态：联调时替换为创建客户接口（api/customer）
-      uni.showToast({ title: '已添加（演示）', icon: 'success' })
+      if (this.submitting) return
+      this.submitting = true
+      const ok = await createCustomer({
+        name: this.form.name.trim(),
+        mobile: this.form.phone.trim(),
+        source: this.form.source,
+      })
+        .then(() => true)
+        .catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '已添加', icon: 'success' })
       setTimeout(() => this.goBack(), 600)
     },
   },

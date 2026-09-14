@@ -12,7 +12,7 @@
     <view class="page-ac__card">
       <view class="info-row page-ac__row pressable" @click="goPhone">
         <text class="page-ac__label">手机号</text>
-        <text class="page-ac__value">138****5200</text>
+        <text class="page-ac__value">{{ mobileText }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-ac__row pressable" @click="edit('微信')">
@@ -22,7 +22,7 @@
       </view>
       <view class="info-row page-ac__row pressable" @click="goDevices">
         <text class="page-ac__label">登录设备</text>
-        <text class="page-ac__value page-ac__value--sub">当前手机 · 共 1 台</text>
+        <text class="page-ac__value page-ac__value--sub">{{ deviceText }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
     </view>
@@ -36,11 +36,49 @@
 <script>
 /**
  * ME11 账号与安全（稿 1:6298 实测 1:1）
- * 登录账号三行（手机号 138****5200 / 微信 已绑定 / 登录设备 当前手机·共 1 台）→ 退出登录白胶囊红字 #E5484D。
+ * 登录账号三行（手机号脱敏 / 微信 已绑定 / 登录设备 当前手机·共 N 台）→ 退出登录白胶囊红字 #E5484D。
+ *
+ * 数据源（2026-09-14 接线）：/user/profile（本人资料，含 mobile）、/device/list（登录设备）、
+ *   /user/logout（服务端注销当前令牌，jti 进黑名单）。
+ * ⚠️ 后端 SysUser 无「微信绑定」字段：微信行仅作展示，不可编辑（原为演示 toast）。
  */
+import { getProfile, logout as apiLogout } from '@/api/user'
+import { getDeviceList } from '@/api/device'
+import { useUserStore } from '@/stores/user'
+
 export default {
   name: 'MeAccount',
+  data() {
+    return {
+      profile: null,
+      deviceCount: 0,
+    }
+  },
+  computed: {
+    /** 手机号脱敏：138****5200；无手机号时回落到账号名 */
+    mobileText() {
+      const m = (this.profile && this.profile.mobile) || ''
+      if (!m) return (this.profile && this.profile.username) || '未设置'
+      return m.length >= 7 ? `${m.slice(0, 3)}****${m.slice(-4)}` : m
+    },
+    deviceText() {
+      return this.deviceCount > 0 ? `当前手机 · 共 ${this.deviceCount} 台` : '当前手机 · 共 1 台'
+    },
+  },
+  onShow() {
+    this.fetchProfile()
+    this.fetchDevices()
+  },
   methods: {
+    async fetchProfile() {
+      const res = await getProfile().catch(() => null)
+      if (res) this.profile = res
+    },
+    async fetchDevices() {
+      const res = await getDeviceList().catch(() => null)
+      const list = Array.isArray(res) ? res : (res && res.list) || []
+      this.deviceCount = list.length
+    },
     goBack() {
       uni.navigateBack()
     },
@@ -51,16 +89,18 @@ export default {
       uni.navigateTo({ url: '/pages/me/devices' })
     },
     edit(label) {
-      uni.showToast({ title: `${label}（演示）`, icon: 'none' })
+      uni.showToast({ title: `${label}暂不支持在小程序内修改`, icon: 'none' })
     },
     logout() {
       uni.showModal({
         title: '退出登录',
         content: '确定退出当前账号？',
-        success: (res) => {
-          if (res.confirm) {
-            uni.reLaunch({ url: '/pages/login/index' })
-          }
+        success: async (res) => {
+          if (!res.confirm) return
+          // 先服务端注销（令牌进黑名单），失败也不阻塞本地登出
+          await apiLogout().catch(() => null)
+          useUserStore().logout()
+          uni.reLaunch({ url: '/pages/login/index' })
         },
       })
     },

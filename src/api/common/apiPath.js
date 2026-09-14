@@ -51,7 +51,10 @@ export const API_PATHS = {
   user: {
     profile: 'user/profile',
     changePassword: 'user/change-password',
-    logout: 'user/logout'
+    logout: 'user/logout',
+    /** 换绑手机号：验证码发往**当前**手机号（scene=change_mobile，与登录隔离） */
+    mobileCode: 'user/mobile-code',
+    changeMobile: 'user/change-mobile'
   },
   // 通用上传（multipart/form-data：file + store_id + biz_type + biz_id）
   // 被收款凭证、交付样片/成品等多条链路共用（见 routes/user.go → /upload/file）
@@ -90,6 +93,8 @@ export const API_PATHS = {
   customer: {
     list: 'customer/list',
     detail: 'customer/detail',
+    /** 客户名下订单（小程序「客户档案」页订单列表；权限点 customer:view，与详情同权） */
+    orders: 'customer/orders',
     /** 客户建档（权限点沿用 PC 的 customer:create） */
     create: 'customer/create',
     mobile: 'customer/mobile',
@@ -116,7 +121,9 @@ export const API_PATHS = {
     uploadSamples: 'delivery/upload-samples',
     uploadRetouched: 'delivery/upload-retouched',
     feedbackList: 'delivery/feedback/list',
-    feedbackHandle: 'delivery/feedback/handle'
+    feedbackHandle: 'delivery/feedback/handle',
+    /** :id = **交付单 ID**（与 upload-* 同口径）；发送最终确认给客户 */
+    sendFinal: 'delivery/send-final'
   },
   // 财务（收款核验 / 退款审核）
   finance: {
@@ -182,6 +189,10 @@ export const API_PATHS = {
   customRequest: {
     list: 'custom-request/list',
     respond: 'custom-request/respond'
+  },
+  // 意见反馈（2026-09-14 第六批补开；免权限点，操作对象是提交人本人）
+  feedback: {
+    submit: 'feedback/submit'
   }
 }
 

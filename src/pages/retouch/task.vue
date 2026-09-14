@@ -16,8 +16,8 @@
     <view class="page-rt__hero">
       <view class="page-rt__hero-top">
         <view class="page-rt__hero-txts">
-          <text class="page-rt__hero-name">陈雨 · 家庭纪念</text>
-          <text class="page-rt__hero-sub">8/8 10:00 拍摄 · 越秀公园 · 2大1小</text>
+          <text class="page-rt__hero-name">{{ heroName }}</text>
+          <text class="page-rt__hero-sub">{{ heroSub }}</text>
         </view>
         <view class="page-rt__hero-no"><text class="page-rt__hero-no-txt">{{ orderNo }}</text></view>
       </view>
@@ -28,11 +28,11 @@
           <text class="page-rt__hero-unit">已修</text>
         </view>
         <view class="page-rt__hero-deadline">
-          <text class="page-rt__hero-deadline-txt">截止8/24</text>
+          <text class="page-rt__hero-deadline-txt">{{ deadlineText }}</text>
         </view>
       </view>
       <view class="page-rt__track">
-        <view class="page-rt__track-fill" :style="{ width: (fixed / total) * 100 + '%' }" />
+        <view class="page-rt__track-fill" :style="{ width: percent + '%' }" />
       </view>
     </view>
 
@@ -50,7 +50,7 @@
         </view>
         <view
           v-for="p in todoList"
-          :key="p.name"
+          :key="p.id"
           class="page-rt__card"
           :class="{ 'page-rt__card--lift': dragging && dragItem && dragItem.name === p.name }"
           @touchstart="tst($event, p, 'todo')"
@@ -77,7 +77,7 @@
         </view>
         <view
           v-for="p in doneList"
-          :key="p.name"
+          :key="p.id"
           class="page-rt__card"
           :class="{ 'page-rt__card--lift': dragging && dragItem && dragItem.name === p.name }"
           @touchstart="tst($event, p, 'done')"
@@ -111,26 +111,35 @@
 </template>
 
 <script>
-import { demoOrderById } from '@/utils/demo'
+/**
+ * D08 修图任务看板（稿 1:7458 实测 1:1）
+ * 头卡（订单/进度/截止）+ 待修/已修双栏看板（拖拽跨栏标记）+ 底部「上传精修图」。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /order/detail/:id       → 头卡（客户·套餐 / 拍摄时间地点 / 订单号）
+ *   /delivery/detail/:id    → 计划精修张数(retouch_target)、选片截止(select_deadline)   :id = order_id
+ *   /delivery/items/:id     → 交付明细，按 kind 分栏：2-已选（待修） / 3-精修成品（已修）
+ *
+ * ⚠️ 左栏「待修」= 客户已选但还没上传精修成品的片子；右栏「已修」= 已落库的精修成品。
+ *    两栏都是**服务端事实**，不是本地标记：拖拽只做本地归类（便于自己理片），
+ *    真正的"修好"以上传精修图为准（右栏张数随后端数据变化）——避免前端造出
+ *    "服务器不存在的已修状态"。
+ */
+import { getOrderDetail } from '@/api/order'
+import { getDeliveryDetail, getDeliveryItems } from '@/api/delivery'
+
+/** DeliveryItem.kind：1-样片 2-已选 3-精修成品（enum.DeliveryItemKind） */
+const KIND_SELECTED = 2
+const KIND_RETOUCHED = 3
 
 export default {
   data() {
     return {
       orderId: '',
-      orderNo: 'SL-260808-12',
-      total: 20,
-      // 稿内看板照片与备注（图片暂用工程内置实拍图，联调后换真实原图 URL）
-      todoList: [
-        { name: 'DSC_0234', note: '天空太干净了，加点云/彩。', img: '/static/img/work-1.jpg' },
-        { name: 'DSC_0542', note: '天空太干净了，加点云/彩。', img: '/static/img/work-2.jpg' },
-        { name: 'DSC_0643', note: '', img: '/static/img/work-3.jpg' },
-      ],
-      doneList: [
-        { name: 'DSC_0132', note: '', img: '/static/img/work-4.jpg' },
-        { name: 'DSC_0255', note: '整体调亮点', img: '/static/img/work-5.jpg' },
-        { name: 'DSC_0131', note: '整体饱和度高一下，要看起来有高级感', img: '/static/img/work-6.jpg' },
-        { name: 'DSC_0234B', note: '', img: '/static/img/pkg-1.jpg' },
-      ],
+      order: null,
+      delivery: null,
+      todoList: [],
+      doneList: [],
       // 拖拽状态：长按抬起 → 浮影跟手 → 松手按落点列跨栏
       dragging: false,
       dragItem: null,
@@ -143,8 +152,37 @@ export default {
     }
   },
   computed: {
+    /** 计划精修张数（交付单未建时回落到两栏合计） */
+    total() {
+      const d = this.delivery || {}
+      return d.retouch_target || this.todoList.length + this.doneList.length
+    },
+    /** 已修张数 = 右栏实际张数（服务端精修成品明细） */
     fixed() {
-      return this.doneList.length + 11 // 稿 15/20：演示基准 11 + 已标记数
+      return this.doneList.length
+    },
+    percent() {
+      return this.total > 0 ? Math.min(100, (this.fixed / this.total) * 100) : 0
+    },
+    heroName() {
+      const o = this.order || {}
+      return [o.customer_name, o.package_name].filter(Boolean).join(' · ') || '修图任务'
+    },
+    heroSub() {
+      const o = this.order || {}
+      const when = [o.shoot_date, o.shoot_time].filter(Boolean).join(' ')
+      return [when, o.shoot_address, o.people_count].filter(Boolean).join(' · ') || '待补充拍摄信息'
+    },
+    orderNo() {
+      return (this.order && this.order.code) || ''
+    },
+    deadlineText() {
+      const raw = (this.delivery && this.delivery.select_deadline) || ''
+      if (!raw) return '未设截止'
+      const s = String(raw)
+      const d = s.includes('T') ? new Date(s) : new Date(s.replace(/-/g, '/'))
+      if (Number.isNaN(d.getTime())) return `截止${s.slice(5, 10)}`
+      return `截止${d.getMonth() + 1}/${d.getDate()}`
     },
     dragTarget() {
       if (!this.dragging) return ''
@@ -156,9 +194,28 @@ export default {
   },
   onLoad(options) {
     this.orderId = (options && options.id) || ''
-    this.order = demoOrderById(this.orderId) || null
+    this.fetchAll()
   },
   methods: {
+    async fetchAll() {
+      if (!this.orderId) return
+      const [orderRes, deliveryRes, itemsRes] = await Promise.all([
+        getOrderDetail(this.orderId).catch(() => null),
+        getDeliveryDetail(this.orderId).catch(() => null),
+        getDeliveryItems(this.orderId).catch(() => null),
+      ])
+      this.order = (orderRes && orderRes.order) || null
+      this.delivery = deliveryRes || null
+      const items = Array.isArray(itemsRes) ? itemsRes : []
+      const toCard = (it) => ({
+        id: it.id,
+        name: it.filename || `IMAGE_${it.id}`,
+        note: it.feedback_content || '',
+        img: it.url,
+      })
+      this.doneList = items.filter((it) => it.kind === KIND_RETOUCHED).map(toCard)
+      this.todoList = items.filter((it) => it.kind === KIND_SELECTED).map(toCard)
+    },
     goBack() {
       uni.navigateBack()
     },
@@ -212,13 +269,13 @@ export default {
       this.dragFrom = ''
       if (!item || to === from) return
       if (from === 'todo') {
-        this.todoList = this.todoList.filter((x) => x.name !== item.name)
+        this.todoList = this.todoList.filter((x) => x.id !== item.id)
         this.doneList = [item, ...this.doneList]
-        uni.showToast({ title: '已标记修好', icon: 'none' })
+        uni.showToast({ title: '已移到已修 · 上传成品后正式生效', icon: 'none' })
       } else {
-        this.doneList = this.doneList.filter((x) => x.name !== item.name)
+        this.doneList = this.doneList.filter((x) => x.id !== item.id)
         this.todoList = [item, ...this.todoList]
-        uni.showToast({ title: '已撤销标记', icon: 'none' })
+        uni.showToast({ title: '已退回待修', icon: 'none' })
       }
       this._dropGuard = Date.now() // 拖完误触 click 不弹大图
     },
@@ -234,7 +291,8 @@ export default {
       uni.previewImage({ urls, current: p.img })
     },
     goUpload() {
-      uni.navigateTo({ url: '/pages/upload/retouch?id=' + (this.orderId || '90002') })
+      if (!this.orderId) return uni.showToast({ title: '缺少订单信息', icon: 'none' })
+      uni.navigateTo({ url: '/pages/upload/retouch?id=' + this.orderId })
     },
   },
 }

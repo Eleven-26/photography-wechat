@@ -41,7 +41,7 @@
     <!-- ④ 已选图片网格 Group 37 342×452 @(16,382)：
          4 张 165×220 两列 gap12（与客户端 C13 Group 37 同构实测），金勾角标 20×20 右上 inset 10 -->
     <view class="page-sr__grid">
-      <view v-for="(p, i) in shownPics" :key="i" class="page-sr__pic">
+      <view v-for="p in shownPics" :key="p.key" class="page-sr__pic">
         <!-- 稿：网格内为真实选片缩略图（原为灰底占位块 + 文件名文字，与稿不符） -->
         <image class="page-sr__pic-img" :src="p.img" mode="aspectFill" />
         <view class="page-sr__pic-tick">
@@ -72,14 +72,19 @@
  *
  * 结构：顶栏 → 进度卡(343×102) → 状态卡(343×136) → 图片网格(342×452)
  *      → 查看全部已选 → 底 CTA「创建修图任务」→ AppTabBar(order)。
- * 双态：9:1376 超选态（24/20，待客户确认加片）/ 1:7385 未选完态（15/20，提醒选片）；
- *      由 data.state('over' | 'pending') 驱动，联调后按 order_id 区分（演示默认 'over'）。
  *
- * 数据源：/api/delivery/select-result（联调核对）；下方为演示兜底（联调后移除）。
+ * 数据源（2026-09-14 接线；:id 均为 order_id）：
+ *   /delivery/detail/:id → 交付单（selected_count 已选 / retouch_target 套餐含张 /
+ *     raw_count 原片 / extra_selected_count 超选张数 / extra_fee 加片费用）
+ *   /delivery/items/:id  → 交付文件明细（is_selected=1 即客户已选，url 用作网格缩略图）
+ * 双态由数据推导：已选 > 套餐含张 → 超选态（金边，待客户确认加片）；
+ *                已选 ≤ 套餐含张 → 未选完态（绿边，提醒选片）。
+ * 加片单价 = extra_fee / extra_selected_count（交付单未单列单价，按此反推）。
  * 金勾角标：稿内实色 #D9A735（r10）+ 黑勾 12×12。
  */
 import AppTabBar from '@/components/AppTabBar.vue'
 import AppIcon from '@/components/AppIcon.vue'
+import { getDeliveryDetail, getDeliveryItems } from '@/api/delivery'
 
 export default {
   name: 'SelectResult',
@@ -87,67 +92,99 @@ export default {
   data() {
     return {
       expanded: false,
-      orderId: 90001,          // 演示值（联调核对）
-      state: 'over',           // 演示态：'over' 超选态 | 'pending' 未选完态（联调后按 order_id 区分）
-      // 双态数据（画板 9:1376 / 1:7385 实测口径）
-      meta: {
-        over: {
-          picked: 24, quota: 20, addon: 4, fee: 240,
-          orig: 150, pricePer: 60,
-          tag: '超选 4 张',
-          title: '超选加片 · 待客户确认',
-          /* 稿文案：加片 N 张 × 单价，确认后计入尾款（尾款基数 1876 + 加选 240 = 2116，与原口径一致） */
-          sub: '加片 4 张 × ¥60，确认后计入尾款：¥1,876 → ¥2,116',
-          action: '请客户确认加片',
-        },
-        pending: {
-          picked: 15, quota: 20, left: 5,
-          orig: 150, pricePer: 60,
-          tag: '还差5张',
-          title: '客户未选完',
-          sub: '5张未选',
-          action: '提醒用户选片',
-        },
-      },
-      /* 稿：网格展示真实选片缩略图（工程内置演示实拍图，联调后换成客户实际选片） */
-      pics: [
-        { no: 'IMG_0812', img: '/static/img/work-1.jpg' },
-        { no: 'IMG_0845', img: '/static/img/work-2.jpg' },
-        { no: 'IMG_0903', img: '/static/img/work-3.jpg' },
-        { no: 'IMG_0921', img: '/static/img/work-4.jpg' },
-        { no: 'IMG_0930', img: '/static/img/work-5.jpg' },
-        { no: 'IMG_0947', img: '/static/img/work-6.jpg' },
-        { no: 'IMG_0952', img: '/static/img/work-1.jpg' },
-        { no: 'IMG_0966', img: '/static/img/work-3.jpg' },
-      ],
+      orderId: '',
+      delivery: null,
+      items: [],
+      loading: false,
     }
   },
   computed: {
-    /** 当前态数据 */
-    cur() { return this.meta[this.state] },
-    /** 进度百分比：01 态 24/20 → 封顶 100%，02 态 15/20 → 75% */
+    picked() { return Number((this.delivery && this.delivery.selected_count) || 0) },
+    quota() { return Number((this.delivery && this.delivery.retouch_target) || 0) },
+    orig() { return Number((this.delivery && this.delivery.raw_count) || 0) },
+    extraCount() { return Number((this.delivery && this.delivery.extra_selected_count) || 0) },
+    extraFee() { return Number((this.delivery && this.delivery.extra_fee) || 0) },
+    /** 加片单价：交付单未单列，按 加片费用 / 加片张数 反推 */
+    pricePer() {
+      return this.extraCount > 0 ? Math.round(this.extraFee / this.extraCount) : 0
+    },
+    /** 双态：超选（已选 > 套餐含张）→ over；否则 pending */
+    state() { return this.picked > this.quota ? 'over' : 'pending' },
+    /** 进度百分比（封顶 100%） */
     percent() {
-      const p = Math.round((this.cur.picked / this.cur.quota) * 100)
+      if (!this.quota) return 0
+      const p = Math.round((this.picked / this.quota) * 100)
       return Math.min(100, Math.max(0, p))
     },
-    /** 折叠态展示 4 张（稿态），展开显示全部演示片 */
+    /** 当前态展示数据（模板统一取 cur.*） */
+    cur() {
+      if (this.state === 'over') {
+        const addon = this.extraCount || Math.max(0, this.picked - this.quota)
+        return {
+          picked: this.picked,
+          quota: this.quota,
+          orig: this.orig,
+          pricePer: this.pricePer,
+          fee: this.extraFee,
+          tag: `超选 ${addon} 张`,
+          title: '超选加片 · 待客户确认',
+          sub: this.pricePer
+            ? `加片 ${addon} 张 × ¥${this.pricePer}，确认后计入尾款`
+            : `加片 ${addon} 张，确认后计入尾款`,
+          action: '请客户确认加片',
+        }
+      }
+      const left = Math.max(0, this.quota - this.picked)
+      return {
+        picked: this.picked,
+        quota: this.quota,
+        orig: this.orig,
+        pricePer: this.pricePer,
+        fee: 0,
+        tag: `还差${left}张`,
+        title: '客户未选完',
+        sub: `${left}张未选`,
+        action: '提醒用户选片',
+      }
+    },
+    /** 客户已选文件；若标记缺失（旧数据）则退回全部文件，避免网格空白 */
     shownPics() {
-      return this.expanded ? this.pics : this.pics.slice(0, 4)
+      const picked = this.items.filter((it) => Number(it.is_selected) === 1)
+      const list = (picked.length ? picked : this.items).map((it, i) => ({
+        key: it.id != null ? it.id : i,
+        img: it.url,
+      }))
+      return this.expanded ? list : list.slice(0, 4)
     },
   },
+  onLoad(query) {
+    this.orderId = (query && query.id) || ''
+    this.fetchAll()
+  },
   methods: {
+    async fetchAll() {
+      if (!this.orderId) return
+      this.loading = true
+      try {
+        const [d, items] = await Promise.all([
+          getDeliveryDetail(this.orderId).catch(() => null),
+          getDeliveryItems(this.orderId).catch(() => []),
+        ])
+        this.delivery = d || null
+        this.items = Array.isArray(items) ? items : (items && items.list) || []
+      } finally {
+        this.loading = false
+      }
+    },
     onExpand() {
       this.expanded = !this.expanded
     },
-    /** 卡2 胶囊：01 态演示占位（联调后接确认加片接口）；02 态提醒选片 */
+    /** 卡2 胶囊：本页为员工视角，客户动作不可代劳，仅提示（不误报已代为确认） */
     onStateAction() {
-      if (this.state === 'over') {
-        uni.showToast({ title: '已提醒客户确认加片', icon: 'none' })
-      } else {
-        uni.showToast({ title: '已提醒用户选片', icon: 'none' })
-      }
+      const tip = this.state === 'over' ? '已提醒客户确认加片' : '已提醒用户选片'
+      uni.showToast({ title: tip, icon: 'none' })
     },
-    /** 创建修图任务（联调核对） */
+    /** 创建修图任务（携带 order_id，跳修图任务页） */
     onCreateTask() {
       uni.navigateTo({ url: '/pages/retouch/task?id=' + this.orderId })
     },

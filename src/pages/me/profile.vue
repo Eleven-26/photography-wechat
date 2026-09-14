@@ -9,9 +9,9 @@
 
     <!-- 资料入口卡 343x90 白 r16：52头像 + 店名15 + 说明10.5 + 箭头（y114） -->
     <view class="page-mp__entry pressable" @click="pickAvatar">
-      <view class="page-mp__avatar"><text>路</text></view>
+      <view class="page-mp__avatar"><text>{{ avatarText }}</text></view>
       <view class="page-mp__entry-main">
-        <text class="page-mp__entry-name">路先生摄影</text>
+        <text class="page-mp__entry-name">{{ studio.slogan || '未设置店名' }}</text>
         <text class="page-mp__entry-sub">头像 / 店名 / 简介展示在预约主页，客户第一眼看到的就是这里</text>
       </view>
       <AppIcon name="chevron-right-gray" :size="16" />
@@ -22,17 +22,17 @@
     <view class="page-mp__card">
       <view class="info-row page-mp__row pressable" @click="edit('店名')">
         <text class="page-mp__label">店名</text>
-        <text class="page-mp__value page-mp__value--dark">路先生摄影</text>
+        <text class="page-mp__value page-mp__value--dark">{{ studio.slogan || '未填写' }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-mp__row pressable" @click="edit('简介')">
         <text class="page-mp__label">简介</text>
-        <text class="page-mp__value">独立摄影师 · 专注亲子 / 家庭</text>
+        <text class="page-mp__value">{{ studio.intro || '未填写' }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-mp__row pressable" @click="edit('微信号')">
         <text class="page-mp__label">微信号</text>
-        <text class="page-mp__value">lusheng_0823 · 展示在主页 · 选填</text>
+        <text class="page-mp__value">{{ wechatText }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
     </view>
@@ -65,24 +65,75 @@
 /**
  * ME02 个人资料（稿 1:5866 实测 1:1）
  * 资料入口卡 → 资料 3 行（店名黑 13 / 简介灰 13 / 微信号灰 13）→ 档期一行 → 保存 52 黑胶囊。
+ *
+ * 数据源（2026-09-14 接线）：/studio/get、/studio/update（biz_studio_setting）
+ * ⚠️ 后端 StudioSetting 无独立「店名 / 微信号」字段：店名暂以 slogan（工作室标语）承载，
+ *    微信号无对应字段，仅展示为未填写（需在管理端维护）—— 待后端补字段后替换绑定。
  */
+import { getStudioSettings, updateStudioSettings } from '@/api/settings'
+
 export default {
   name: 'MeProfile',
+  data() {
+    return {
+      studio: {},
+      submitting: false,
+    }
+  },
+  computed: {
+    avatarText() {
+      const s = this.studio.slogan || '摄影'
+      return s.slice(0, 1)
+    },
+    wechatText() {
+      return '未填写 · 展示在主页 · 选填'
+    },
+  },
+  onShow() {
+    this.fetchStudio()
+  },
   methods: {
+    async fetchStudio() {
+      const res = await getStudioSettings().catch(() => null)
+      this.studio = res || {}
+    },
     goBack() {
       uni.navigateBack()
     },
     pickAvatar() {
-      uni.showToast({ title: '更换头像（演示）', icon: 'none' })
+      uni.showToast({ title: '头像请在管理端维护', icon: 'none' })
     },
+    /** 行内编辑（editable modal）：店名→slogan、简介→intro；微信号后端无字段 */
     edit(label) {
-      uni.showToast({ title: `编辑${label}（演示）`, icon: 'none' })
+      const field = label === '店名' ? 'slogan' : (label === '简介' ? 'intro' : '')
+      if (!field) return uni.showToast({ title: `${label}请在管理端维护`, icon: 'none' })
+      uni.showModal({
+        title: `编辑${label}`,
+        editable: true,
+        placeholderText: `请输入${label}`,
+        content: this.studio[field] || '',
+        success: (res) => {
+          if (!res.confirm) return
+          this.studio = { ...this.studio, [field]: res.content || '' }
+        },
+      })
     },
     goSchedule() {
       uni.switchTab({ url: '/pages/schedule/index' })
     },
-    save() {
-      uni.showToast({ title: '已保存（演示）', icon: 'success' })
+    async save() {
+      if (this.submitting) return
+      this.submitting = true
+      const ok = await updateStudioSettings({
+        ...this.studio,
+        slogan: this.studio.slogan || '',
+        intro: this.studio.intro || '',
+      })
+        .then(() => true)
+        .catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '已保存', icon: 'success' })
     },
   },
 }

@@ -7,11 +7,11 @@
       <text class="page-ph__title">修改手机号</text>
     </view>
 
-    <!-- 账号卡 343x90：52 头像 + 路先生 + 说明 -->
+    <!-- 账号卡 343x90：52 头像 + 昵称 + 说明 -->
     <view class="page-ph__profile">
-      <view class="page-ph__avatar"><text>路</text></view>
+      <view class="page-ph__avatar"><text>{{ avatarText }}</text></view>
       <view class="page-ph__profile-main">
-        <text class="page-ph__profile-name">路先生</text>
+        <text class="page-ph__profile-name">{{ displayName }}</text>
         <text class="page-ph__profile-sub">更换手机号后，登录与通知都会发到新号码</text>
       </view>
       <AppIcon name="chevron-right-gray" :size="16" />
@@ -22,12 +22,12 @@
     <view class="page-ph__card">
       <view class="info-row page-ph__row">
         <text class="page-ph__label">当前手机号</text>
-        <text class="page-ph__value">138****5200</text>
+        <text class="page-ph__value">{{ mobileText }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-ph__row pressable" @click="focusCode">
         <text class="page-ph__label">短信验证码</text>
-        <text class="page-ph__value page-ph__value--ph">{{ code || '输入收到的验证码 · 60s 后可重发' }}</text>
+        <text class="page-ph__value page-ph__value--ph">{{ codeHint }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-ph__row pressable" @click="focusNew">
@@ -63,27 +63,113 @@
 /**
  * ME11b 修改手机号（稿 11:239 实测 1:1）
  * 账号卡 → 验证三行（当前手机号/短信验证码/新手机号）→ 安全说明行 → 下一步黑胶囊 52。
+ *
+ * 数据源（2026-09-14 第六批接线）：
+ *   /user/profile（当前手机号，展示脱敏）、/user/mobile-code（发码到**当前**手机号）、
+ *   /user/change-mobile（body { code, new_mobile }）。
+ * ⚠️ 验证码场景是 change_mobile，与登录验证码隔离；后端在「换绑」流程里先验旧号再落新号。
+ * ⚠️ 换绑成功后本地登录态里的手机号不会自动刷新：需重新拉 /user/profile（本页 done 后返回上一页，
+ *    上一页 onShow 会重新读取，故不额外改写本地存储）。
  */
+import { getProfile, sendMobileCode, changeMobile } from '@/api/user'
+
 export default {
   name: 'MePhone',
   data() {
     return {
+      profile: null,
       code: '',
       newPhone: '',
+      cooldown: 0, // 重发倒计时（秒）
+      timer: null,
+      submitting: false,
     }
   },
+  computed: {
+    displayName() {
+      const p = this.profile || {}
+      return p.nickname || p.username || '未命名'
+    },
+    avatarText() {
+      return this.displayName.slice(0, 1)
+    },
+    mobileText() {
+      const m = (this.profile && this.profile.mobile) || ''
+      if (!m) return '未绑定'
+      return m.length >= 7 ? `${m.slice(0, 3)}****${m.slice(-4)}` : m
+    },
+    codeHint() {
+      if (this.code) return this.code
+      if (this.cooldown > 0) return `${this.cooldown}s 后可重发`
+      return '点击获取验证码'
+    },
+  },
+  onLoad() {
+    this.fetchProfile()
+  },
+  onUnload() {
+    if (this.timer) clearInterval(this.timer)
+  },
   methods: {
+    async fetchProfile() {
+      const res = await getProfile().catch(() => null)
+      if (res) this.profile = res
+    },
     goBack() {
       uni.navigateBack()
     },
-    focusCode() {
-      uni.showToast({ title: '输入短信验证码（演示）', icon: 'none' })
+    /** 点「短信验证码」行：未发码/冷却结束则先发码，再弹输入框 */
+    async focusCode() {
+      if (this.cooldown > 0) return this.promptCode()
+      const ok = await sendMobileCode().then(() => true).catch(() => false)
+      if (!ok) return
+      uni.showToast({ title: '验证码已发送至当前手机号', icon: 'none' })
+      this.startCooldown()
+      this.promptCode()
+    },
+    promptCode() {
+      uni.showModal({
+        title: '输入短信验证码',
+        editable: true,
+        placeholderText: '6 位数字',
+        content: this.code,
+        success: (res) => {
+          if (res.confirm) this.code = String(res.content || '').trim()
+        },
+      })
+    },
+    startCooldown() {
+      this.cooldown = 60
+      if (this.timer) clearInterval(this.timer)
+      this.timer = setInterval(() => {
+        this.cooldown -= 1
+        if (this.cooldown <= 0) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
+      }, 1000)
     },
     focusNew() {
-      uni.showToast({ title: '输入新手机号（演示）', icon: 'none' })
+      uni.showModal({
+        title: '输入新手机号',
+        editable: true,
+        placeholderText: '11 位手机号',
+        content: this.newPhone,
+        success: (res) => {
+          if (res.confirm) this.newPhone = String(res.content || '').trim()
+        },
+      })
     },
-    next() {
-      uni.showToast({ title: '验证并更换（演示）', icon: 'none' })
+    async next() {
+      if (this.submitting) return
+      if (!this.code) return uni.showToast({ title: '请先获取并填写验证码', icon: 'none' })
+      if (!/^1\d{10}$/.test(this.newPhone)) return uni.showToast({ title: '请输入正确的 11 位手机号', icon: 'none' })
+      this.submitting = true
+      const ok = await changeMobile(this.code, this.newPhone).then(() => true).catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '手机号已更换', icon: 'success' })
+      setTimeout(() => uni.navigateBack(), 900)
     },
   },
 }

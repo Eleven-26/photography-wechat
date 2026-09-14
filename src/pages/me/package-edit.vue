@@ -97,9 +97,9 @@
       <view class="info-row page-pe__row info-row--last">
         <view class="page-pe__check">
           <view class="page-pe__check-dot" />
-          <text>{{ isEdit ? '必填项已完成' : '必填项未填写' }}</text>
+          <text>{{ filledCount === 8 ? '必填项已完成' : `必填项 ${8 - filledCount} 项待填` }}</text>
         </view>
-        <view class="page-pe__check-badge"><text>{{ isEdit ? '8/8' : '0/8' }}</text></view>
+        <view class="page-pe__check-badge"><text>{{ filledCount }}/8</text></view>
       </view>
     </view>
 
@@ -115,31 +115,36 @@
 <script>
 /**
  * ME04b 新建套餐（11:1）+ ME05 编辑套餐（1:6789）双态一页。
- * 结构同构：基础信息3 + 价格3 + 服务内容5 + 拍摄地点（编辑态多 3 地点行）+ 关联作品（编辑态多 2 作品行）+ 规则3 + 发布前检查（0/8 vs 8/8）。
+ * 结构同构：基础信息3 + 价格3 + 服务内容5 + 拍摄地点 + 关联作品 + 规则3 + 发布前检查。
  * 底栏双钮：create=存草稿(白描边)/保存并上架(黑)；edit=删除套餐/保存修改。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /package/detail/:id → 编辑态回填（form 取自 Package 字段）
+ *   /package/create、/package/update/:id、/package/status/:id（上架）、/package/delete/:id
+ *   /studio/get → 规则卡「改期政策」取工作室设置（无权限时整卡退化为 —）
+ * ⚠️ 后端 Package 无「适用人数 / 拍摄场景 / 拍摄地点 / 关联作品」字段 —— 这几项显「—」或保留稿内展示，
+ *    待后端补字段后再接（本页只负责把已有字段落库）。
+ * ⚠️ 稿内行内编辑控件尚未定稿：点行仅提示，字段值以表单/后端数据为准。
  */
+import { getPackageDetail, createPackage, updatePackage, setPackageStatus, deletePackage } from '@/api/package'
+import { getStudioSettings } from '@/api/settings'
+import { formatAmount } from '@/utils/format'
+
+const EMPTY_FORM = {
+  name: '', cover: '', category: '', base_price: 0, deposit_rate: 0, deposit_amt: 0,
+  photos_included: 0, shoot_hours: 0, content_desc: '', addon_unit_price: 0,
+}
+
 export default {
   name: 'MePackageEdit',
   data() {
     return {
       isEdit: false,
-      basicRows: [
-        { label: '套餐名称', value: '亲子写真 · 基础' },
-        { label: '封面', value: '越秀公园 · 秋日样片 已设' },
-        { label: '简介', value: '点击编辑 · 一句话说明适合谁' },
-      ],
-      priceRows: [
-        { label: '基础价格', value: '¥2,680' },
-        { label: '定金比例', value: '30%' },
-        { label: '加选单价', value: '¥60 / 张' },
-      ],
-      serviceRows: [
-        { label: '适用人数', value: '2 人' },
-        { label: '拍摄时长', value: '约 2 小时' },
-        { label: '精修数量', value: '30 张' },
-        { label: '包含项', value: '实体相册 1 本' },
-        { label: '拍摄场景', value: '户外 · 室内' },
-      ],
+      packageId: 0,
+      form: { ...EMPTY_FORM },
+      studio: {},
+      submitting: false,
+      /* 后端无对应字段，保留稿内展示（照片墙型内容） */
       places: [
         { name: '珠江公园', fee: '默认 · ¥0' },
         { name: '越秀公园', fee: '场地费 +¥200' },
@@ -149,39 +154,143 @@ export default {
         { title: '越秀公园 · 秋日家庭写真', sub: '家庭写真 · 精选', tag: '写真', color: '#3E5C76' },
         { title: '室内亲子时光', sub: '家庭写真 · 精选', tag: '亲子', color: '#7C6BA8' },
       ],
-      ruleRows: [
-        { label: '改期政策', value: '提前 24h 免费' },
-        { label: '取消政策', value: '定金不退' },
-        { label: '交付周期', value: '7 个工作日' },
-      ],
     }
+  },
+  computed: {
+    basicRows() {
+      const f = this.form
+      return [
+        { label: '套餐名称', value: f.name || '未填写' },
+        { label: '封面', value: f.cover ? `${f.cover} 已设` : '未设置' },
+        { label: '简介', value: f.content_desc || '未填写' },
+      ]
+    },
+    priceRows() {
+      const f = this.form
+      return [
+        { label: '基础价格', value: f.base_price ? `¥${formatAmount(f.base_price)}` : '未填写' },
+        {
+          label: '定金',
+          value: f.deposit_amt
+            ? `¥${formatAmount(f.deposit_amt)}`
+            : (f.deposit_rate ? `${f.deposit_rate}%` : '未填写'),
+        },
+        {
+          label: '加选单价',
+          value: f.addon_unit_price ? `¥${formatAmount(f.addon_unit_price)} / 张` : '未填写',
+        },
+      ]
+    },
+    serviceRows() {
+      const f = this.form
+      return [
+        { label: '适用人数', value: '—' },
+        { label: '拍摄时长', value: f.shoot_hours ? `约 ${f.shoot_hours} 小时` : '未填写' },
+        { label: '精修数量', value: f.photos_included ? `${f.photos_included} 张` : '未填写' },
+        { label: '包含项', value: f.content_desc || '未填写' },
+        { label: '拍摄场景', value: '—' },
+      ]
+    },
+    ruleRows() {
+      const s = this.studio || {}
+      const free = Number(s.reschedule_free_hours || 0)
+      return [
+        { label: '改期政策', value: free ? `提前 ${free}h 免费` : '—' },
+        { label: '取消政策', value: '—' },
+        { label: '交付周期', value: '—' },
+      ]
+    },
+    /** 发布前检查 8 项必填（与后端 create 校验字段对齐） */
+    filledCount() {
+      const f = this.form
+      const checks = [
+        f.name, f.cover, f.category, f.base_price, f.deposit_rate,
+        f.photos_included, f.shoot_hours, f.content_desc,
+      ]
+      return checks.filter((v) => v !== '' && v !== 0 && v !== null && v !== undefined).length
+    },
   },
   onLoad(query) {
     this.isEdit = query.mode === 'edit'
-    if (query.name) this.basicRows[0].value = decodeURIComponent(query.name)
+    this.packageId = Number(query.id || 0)
+    this.fetchAll()
   },
   methods: {
+    async fetchAll() {
+      const tasks = [getStudioSettings().catch(() => null)]
+      if (this.isEdit && this.packageId) tasks.push(getPackageDetail(this.packageId).catch(() => null))
+      const [studio, pkg] = await Promise.all(tasks)
+      this.studio = studio || {}
+      if (pkg) {
+        this.form = {
+          ...EMPTY_FORM,
+          ...Object.keys(EMPTY_FORM).reduce((acc, k) => {
+            acc[k] = pkg[k] !== undefined && pkg[k] !== null ? pkg[k] : EMPTY_FORM[k]
+            return acc
+          }, {}),
+        }
+      }
+    },
     goBack() {
       uni.navigateBack()
     },
+    /** 行内编辑控件待设计稿；此处仅提示，避免误改后端数据 */
     edit(label) {
-      uni.showToast({ title: `编辑${label}（演示）`, icon: 'none' })
+      uni.showToast({ title: `${label}：请在管理端编辑`, icon: 'none' })
     },
-    primary1() {
-      uni.showToast({ title: this.isEdit ? '已保存修改（演示）' : '已上架（演示）', icon: 'success' })
+    /** 主钮：create=保存并上架；edit=保存修改 */
+    async primary1() {
+      const id = await this.persist()
+      if (!id) return
+      if (!this.isEdit) {
+        const ok = await setPackageStatus(id, 2).then(() => true).catch(() => false)
+        if (!ok) return
+      }
+      uni.showToast({ title: this.isEdit ? '已保存修改' : '已上架', icon: 'success' })
+      setTimeout(() => this.goBack(), 700)
     },
+    /** 次钮：create=存草稿；edit=删除套餐 */
     primary2() {
       if (this.isEdit) {
         uni.showModal({
           title: '删除套餐',
           content: '下架后客户不可见，不影响已成交订单',
-          success: (res) => {
-            if (res.confirm) uni.navigateBack()
+          success: async (res) => {
+            if (!res.confirm) return
+            const ok = await deletePackage(this.packageId).then(() => true).catch(() => false)
+            if (ok) {
+              uni.showToast({ title: '已删除', icon: 'none' })
+              setTimeout(() => this.goBack(), 700)
+            }
           },
         })
       } else {
-        uni.showToast({ title: '已存草稿（演示）', icon: 'success' })
+        this.persist().then((id) => {
+          if (id) uni.showToast({ title: '已存草稿', icon: 'success' })
+        })
       }
+    },
+    /** 落库（新建或更新），返回套餐 id；失败返回 0 */
+    async persist() {
+      if (this.submitting) return 0
+      if (!this.form.name.trim()) {
+        uni.showToast({ title: '请填写套餐名称', icon: 'none' })
+        return 0
+      }
+      this.submitting = true
+      const payload = { ...this.form }
+      const res = this.isEdit
+        ? await updatePackage(this.packageId, payload).catch(() => null)
+        : await createPackage(payload).catch(() => null)
+      this.submitting = false
+      const id = this.isEdit
+        ? this.packageId
+        : (res && (res.id || (res.package && res.package.id))) || 0
+      if (!id) {
+        uni.showToast({ title: '保存失败，请重试', icon: 'none' })
+        return 0
+      }
+      return id
     },
   },
 }

@@ -4,6 +4,7 @@
  * 后端路由：
  *   POST /wechat/staff/customer/list              body 分页
  *   POST /wechat/staff/customer/detail/:id
+ *   POST /wechat/staff/customer/orders/:id        客户名下订单（客户档案页订单列表）
  *   POST /wechat/staff/customer/create            客户建档（权限点 customer:create，与 PC 同权）
  *   POST /wechat/staff/customer/mobile            改绑客户手机号（body { customer_id, mobile }）
  *   POST /wechat/staff/customer/today-follow      今日待跟进（body { limit? }）
@@ -16,6 +17,9 @@ export const getCustomerList = (params) => rpc(API_PATHS.customer.list, params)
 
 /** 客户档案详情 @param {number} id crm_customer.id */
 export const getCustomerDetail = (id) => rpc(API_PATHS.customer.detail, {}, id)
+
+/** 客户名下订单列表 @param {number} id crm_customer.id → biz_order[] */
+export const getCustomerOrders = (id) => rpc(API_PATHS.customer.orders, {}, id)
 
 /**
  * 客户建档

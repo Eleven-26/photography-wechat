@@ -11,14 +11,14 @@
 
     <!-- 原档期卡（1:48 实测 343×78 r16） -->
     <view class="page-scr__orig">
-      <text class="page-scr__orig-label">原档期 · 8/9 周日 09:00-12:00</text>
+      <text class="page-scr__orig-label">原档期 · {{ origLabel }}</text>
       <view class="page-scr__orig-mid">
-        <text class="page-scr__orig-name">王浩 · 亲子写真</text>
-        <text class="page-scr__orig-place">越秀公园 · 2.5h</text>
+        <text class="page-scr__orig-name">{{ origName }}</text>
+        <text class="page-scr__orig-place">{{ origPlace }}</text>
       </view>
     </view>
 
-    <!-- 选新日期（1:44 实测：标题+左右滑动跨周 / 周条 8 格） -->
+    <!-- 选新日期 -->
     <view class="page-scr__sec-row">
       <text class="page-scr__sec">选新日期</text>
       <text class="page-scr__sec-note">左右滑动跨周</text>
@@ -26,41 +26,41 @@
     <scroll-view class="page-scr__weekbar" scroll-x :show-scrollbar="false">
       <view class="page-scr__weekbar-inner">
         <view
-          v-for="d in weekDays"
-          :key="d.n"
+          v-for="(d, i) in weekDays"
+          :key="d.date"
           class="page-scr__wday"
-          :class="{ 'page-scr__wday--on': selDay === d.n, 'page-scr__wday--dim': d.dim }"
-          @click="!d.dim && (selDay = d.n)"
+          :class="{ 'page-scr__wday--on': selIdx === i, 'page-scr__wday--dim': d.past }"
+          @click="!d.past && pickDay(i)"
         >
-          <text class="page-scr__wday-head" :class="{ 'page-scr__wday-head--on': selDay === d.n }">{{ d.w }}</text>
-          <text class="page-scr__wday-num" :class="{ 'page-scr__wday-num--on': selDay === d.n }">{{ d.label }}</text>
+          <text class="page-scr__wday-head" :class="{ 'page-scr__wday-head--on': selIdx === i }">{{ d.w }}</text>
+          <text class="page-scr__wday-num" :class="{ 'page-scr__wday-num--on': selIdx === i }">{{ d.label }}</text>
           <view class="page-scr__wdot" :style="{ backgroundColor: d.dot }" />
         </view>
       </view>
     </scroll-view>
 
-    <!-- 选新时段（1:46/1:56 实测：红 chip 订单角标 / 绿可约 / 灰关闭；下方推荐条） -->
+    <!-- 选新时段 -->
     <text class="page-scr__sec page-scr__sec--gap">选新时段</text>
-    <view class="page-scr__slots">
-      <view class="page-scr__slot page-scr__slot--off">
-        <text>09:00-11:00</text>
-        <view class="page-scr__slot-tag"><text>订单</text></view>
+    <view v-if="slots.length" class="page-scr__slots">
+      <view
+        v-for="(s, i) in slots"
+        :key="i"
+        class="page-scr__slot"
+        :class="['page-scr__slot--' + s.tone, { 'page-scr__slot--sel': selSlot === s.range && s.tone === 'ok' }]"
+        @click="s.tone === 'ok' && (selSlot = s.range)"
+      >
+        <text>{{ s.range }}</text>
+        <view v-if="s.tag" class="page-scr__slot-tag"><text>{{ s.tag }}</text></view>
       </view>
-      <view class="page-scr__slot page-scr__slot--ok" :class="{ 'page-scr__slot--sel': selSlot === '11:00-14:00' }" @click="selSlot = '11:00-14:00'">
-        <text>11:00-14:00</text>
-      </view>
-      <view class="page-scr__slot page-scr__slot--ok" :class="{ 'page-scr__slot--sel': selSlot === '14:00-16:00' }" @click="selSlot = '14:00-16:00'">
-        <text>14:00-16:00</text>
-      </view>
-      <view class="page-scr__slot page-scr__slot--plain"><text>16:00-18:00</text></view>
-      <!-- 推荐灰条：稿内嵌于 slots 白卡底部（矩形207 343×162，灰条 319×48 四周留 12px） -->
-      <view class="page-scr__hint">
+      <!-- 推荐灰条 -->
+      <view v-if="recommend" class="page-scr__hint">
         <AppIcon name="info-gray-sm" :size="13" />
-        <text class="page-scr__hint-text">8/10 周一 14:00-16:00 空闲 · 与其他订单无冲突</text>
+        <text class="page-scr__hint-text">{{ recommend }}</text>
       </view>
     </view>
+    <AppEmpty v-else text="该日未开放可约时段，请换一天" />
 
-    <!-- 改期原因（1:74 实测：chips wrap，选中绿底） -->
+    <!-- 改期原因 -->
     <text class="page-scr__sec page-scr__sec--gap">改期原因</text>
     <view class="page-scr__reasons">
       <view
@@ -74,9 +74,9 @@
       </view>
     </view>
 
-    <!-- 发送客户确认（1:83 实测 343×52 黑胶囊） -->
+    <!-- 发送客户确认 -->
     <view class="page-scr__submit pressable" @click="submit">
-      <text>发送客户确认</text>
+      <text>{{ submitting ? '发送中…' : '发送客户确认' }}</text>
     </view>
     <view class="page-scr__safe" />
   </view>
@@ -85,41 +85,182 @@
 <script>
 /**
  * SC04-2 发起改期（稿 1:5536 实测 1:1）
- * 原档期卡 → 选新日期周条（8 格可跨周）→ 选新时段（已占红 chip 订单角标不可选）→ 改期原因 chips → 发送客户确认。
- * 业务口径：改期 72h 外免费 / 72h 内 20% 调度费 / 24h 内不可改；客户确认制（非单方改）。
+ * 原档期卡 → 选新日期周条 → 选新时段（已占红 chip 带「订单」角标，不可选）→ 改期原因 → 发送客户确认。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /order/detail/:id            → 原档期（shoot_date / shoot_time / customer_name / package_name / shoot_address）
+ *   /slot-template/list          → 该星期几可约时段
+ *   /schedule/list               → 档期锁（标记已被订单占用的时段）
+ *   /order/reschedule/apply/:id  → 发起改期 body { new_date, new_time, reason_label }
+ *
+ * ⚠️ 后端改期是**申请制**：发起后进入待审核（biz_order_reschedule），
+ *    不是单方改期。文案保持"发送客户确认"口径，实际提交的是改期申请。
  */
+import { getScheduleList, listSlotTemplates } from '@/api/schedule'
+import { getOrderDetail, applyReschedule } from '@/api/order'
+
+const WEEK = ['日', '一', '二', '三', '四', '五', '六']
+const DAYS = 8
+const DOT_OK = '#76D596'
+const DOT_OFF = '#FF8181'
+const DOT_TODAY = 'transparent'
+
+function ymd(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+function hm(t) {
+  return String(t || '').slice(0, 5)
+}
+
 export default {
   name: 'ScheduleReschedule',
   data() {
     return {
-      selDay: 10,
-      selSlot: '14:00-16:00',
+      orderId: '',
+      order: null,
+      templates: [],
+      blocks: [],
+      weekDays: [],
+      selIdx: 0,
+      selSlot: '',
       reason: '与客户协商',
-      weekDays: [
-        { w: '一', n: 7, label: '7', dot: '#D4D4D4', dim: true },
-        { w: '二', n: 8, label: '今', dot: 'transparent', today: true },
-        { w: '三', n: 9, label: '9', dot: '#76D596' },
-        { w: '四', n: 10, label: '10', dot: '#FF8181' },
-        { w: '五', n: 11, label: '11', dot: '#FFDA08' },
-        { w: '六', n: 12, label: '12', dot: '#76D596' },
-        { w: '日', n: 13, label: '13', dot: '#76D596' },
-        { w: '一', n: 14, label: '14', dot: '#76D596' },
-      ],
       reasons: ['时间冲突', '天气原因', '场地与场地问题', '与客户协商'],
+      submitting: false,
     }
   },
+  computed: {
+    todayStr() {
+      return ymd(new Date())
+    },
+    origLabel() {
+      const o = this.order || {}
+      if (!o.shoot_date) return '待确认'
+      const d = new Date(String(o.shoot_date).replace(/-/g, '/'))
+      const w = Number.isNaN(d.getTime()) ? '' : ` 周${WEEK[d.getDay()]}`
+      return `${Number(String(o.shoot_date).slice(5, 7))}/${Number(String(o.shoot_date).slice(8, 10))}${w} ${o.shoot_time || ''}`.trim()
+    },
+    origName() {
+      const o = this.order || {}
+      return [o.customer_name, o.package_name].filter(Boolean).join(' · ') || '订单'
+    },
+    origPlace() {
+      const o = this.order || {}
+      return o.shoot_address || '地点待定'
+    },
+    selDate() {
+      return (this.weekDays[this.selIdx] || {}).date || this.todayStr
+    },
+    /** 选中日时段：模板 ∩ 档期锁 */
+    slots() {
+      const locked = this.blocks.filter((b) => b.date === this.selDate)
+      return this.templatesFor(this.selDate).map((t) => {
+        const range = `${hm(t.start_time)}-${hm(t.end_time)}`
+        const hit = locked.find((b) => b.time_range === range)
+        return hit ? { range, tone: 'off', tag: '订单' } : { range, tone: 'ok' }
+      })
+    },
+    recommend() {
+      if (!this.selSlot) return ''
+      const d = this.weekDays[this.selIdx]
+      if (!d) return ''
+      return `${this.mmdd(this.selDate)} 周${d.w} ${this.selSlot} 空闲 · 与其他订单无冲突`
+    },
+  },
+  onLoad(options) {
+    this.orderId = (options && options.id) || ''
+    this.buildDays()
+    this.fetchAll()
+  },
   methods: {
+    mmdd(date) {
+      return `${Number(date.slice(5, 7))}/${Number(date.slice(8, 10))}`
+    },
+    /** 8 天日条：昨日（置灰）+ 今日起 7 天，默认选今日 */
+    buildDays() {
+      const out = []
+      const now = new Date()
+      for (let i = 0; i < DAYS; i++) {
+        const d = new Date(now)
+        d.setDate(d.getDate() + i - 1)
+        const date = ymd(d)
+        out.push({
+          date,
+          w: WEEK[d.getDay()],
+          label: date === this.todayStr ? '今' : String(d.getDate()),
+          past: date < this.todayStr,
+          dot: this.dotFor(date),
+        })
+      }
+      this.weekDays = out
+      this.selIdx = 1
+    },
+    dotFor(date) {
+      if (date < this.todayStr) return '#D4D4D4'
+      if (date === this.todayStr) return DOT_TODAY
+      if (this.blocks.some((b) => b.date === date)) return DOT_OFF
+      return this.templatesFor(date).length ? DOT_OK : 'transparent'
+    },
+    templatesFor(date) {
+      const wd = new Date(`${date}T00:00:00`).getDay()
+      return this.templates.filter((t) => Number(t.weekday) === wd && t.status !== 0)
+    },
+    async fetchAll() {
+      const start = ymd(new Date(new Date().getTime() - 86400000))
+      const end = ymd(new Date(new Date().getTime() + 10 * 86400000))
+      const tasks = [
+        getScheduleList({ start_date: start, end_date: end }).catch(() => null),
+        listSlotTemplates().catch(() => null),
+      ]
+      if (this.orderId) tasks.push(getOrderDetail(this.orderId).catch(() => null))
+      const [blockRes, tplRes, orderRes] = await Promise.all(tasks)
+      this.blocks = (Array.isArray(blockRes) ? blockRes : []).filter((b) => b.status !== 2)
+      this.templates = (Array.isArray(tplRes) ? tplRes : []).filter((t) => t.status !== 0)
+      this.order = (orderRes && orderRes.order) || null
+      this.buildDays()
+      this.autoPickSlot()
+    },
+    /** 默认选一个可约时段（优先今天，其次往后找） */
+    autoPickSlot() {
+      for (let i = 1; i < this.weekDays.length; i++) {
+        this.selIdx = i
+        const first = this.slots.find((s) => s.tone === 'ok')
+        if (first) {
+          this.selSlot = first.range
+          return
+        }
+      }
+      this.selIdx = 1
+      this.selSlot = ''
+    },
+    pickDay(i) {
+      this.selIdx = i
+      const first = this.slots.find((s) => s.tone === 'ok')
+      this.selSlot = first ? first.range : ''
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/schedule/manage' }) })
     },
-    submit() {
+    async submit() {
+      if (this.submitting) return
+      if (!this.orderId) return uni.showToast({ title: '缺少订单信息', icon: 'none' })
       if (!this.selSlot) return uni.showToast({ title: '请选择新时段', icon: 'none' })
-      uni.showToast({ title: '改期申请已发送客户确认（演示）', icon: 'none' })
+      this.submitting = true
+      const ok = await applyReschedule(this.orderId, {
+        new_date: this.selDate,
+        new_time: this.selSlot,
+        reason_label: this.reason,
+      })
+        .then(() => true)
+        .catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: '改期申请已发送', icon: 'success' })
       setTimeout(() => uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/schedule/manage' }) }), 900)
     },
   },
 }
 </script>
+
 
 <style lang="scss" scoped>
 .page-scr {

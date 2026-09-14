@@ -13,7 +13,7 @@
     <text class="page-ask__desc">3 条问题将一次性发给客户，发送前可直接修改，取消勾选则不发送该条</text>
 
     <!-- 三张问题卡：右上勾选框（选中黑底白勾/未选灰底描边），灰底问题框 + 换一条（1:14 Group 66 实测 343×172） -->
-    <view v-for="(q, idx) in questions" :key="q.title" class="page-ask__card">
+    <view v-for="(q, idx) in questions" :key="q.id" class="page-ask__card">
       <view class="page-ask__head">
         <view class="page-ask__num"><text>{{ idx + 1 }}</text></view>
         <text class="page-ask__qtitle">{{ q.title }}</text>
@@ -36,6 +36,7 @@
         </view>
       </view>
     </view>
+    <AppEmpty v-if="!loading && !questions.length" text="暂无待追问项" />
 
     <!-- 底部毛玻璃栏：提示 + 返回 + 一键发送（1:70 实测） -->
     <view class="glass-footer">
@@ -56,18 +57,25 @@
 <script>
 /**
  * L04 一键追问（稿 1:8041 实测 1:1）
- * 发送前确认：三卡可勾选（取消勾选不发送）、问题文本可改、「换一条」重新生成。
+ * 发送前确认：三卡可勾选（取消勾选不发送）、问题文本可改、「换一条」换话术。
  * 勾选框实测：选中黑底白勾 20×20 / 未选 #F2F3F5 描边 #B7B7B7。
+ *
+ * 数据源（2026-09-14 接线）：/brief/list/:lead_id 的待追问项（status=1）。
+ *   title ← 摘要项标题；text ← AI 问题（question，空则退回 ai_suggestion）；
+ *   impact ← affects_pricing（1=影响报价 / 0=影响排期）。
+ *   「换一条」在后端给的两条候选（question / ai_suggestion）间切换，不重新请求。
+ *   发送走 /brief/send/:id（把该条追问推给客户，状态 1→2）。
  */
+import { listBriefs, sendBrief } from '@/api/lead'
+
 export default {
   name: 'LeadAsk',
   data() {
     return {
-      questions: [
-        { title: '具体日期', impact: 'quote', checked: true, text: '您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。' },
-        { title: '儿童作息', impact: 'sched', checked: true, text: '孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。' },
-        { title: '妆造需求', impact: 'quote', checked: true, text: '需要为大人或孩子安排化妆造型吗？自然妆造 +¥200 可单加。' },
-      ],
+      leadId: '',
+      questions: [],
+      loading: false,
+      sending: false,
     }
   },
   computed: {
@@ -75,22 +83,64 @@ export default {
       return this.questions.filter((q) => q.checked).length
     },
   },
+  onLoad(query) {
+    this.leadId = (query && query.id) || ''
+    this.fetchBriefs()
+  },
   methods: {
+    async fetchBriefs() {
+      if (!this.leadId) return
+      this.loading = true
+      try {
+        const items = await listBriefs(this.leadId).catch(() => [])
+        const list = Array.isArray(items) ? items : (items && items.list) || []
+        this.questions = list
+          .filter((it) => Number(it.status) === 1)
+          .map((it) => ({
+            id: it.id,
+            title: it.title,
+            impact: Number(it.affects_pricing) === 1 ? 'quote' : 'sched',
+            checked: true,
+            text: it.question || it.ai_suggestion || '',
+            alt: it.ai_suggestion || '',
+          }))
+      } finally {
+        this.loading = false
+      }
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/lead/ai-brief' }) })
     },
+    /** 换一条：在「AI 问题」与「AI 建议话术」间切换（后端仅提供这两条候选） */
     refresh(idx) {
-      const alt = {
-        具体日期: '以下两个周末档期您哪天方便？8月17-18 或 24-25，全天可约。',
-        儿童作息: '宝宝通常几点午休？我们会把拍摄安排在精神状态最好的时段。',
-        妆造需求: '需要化妆造型服务吗？自然妆造 +¥200，可单加也可含在套餐内。',
-      }
-      this.questions[idx].text = alt[this.questions[idx].title] || this.questions[idx].text
+      const q = this.questions[idx]
+      if (!q || !q.alt || q.alt === q.text) return
+      const cur = q.text
+      q.text = q.alt
+      q.alt = cur
     },
-    sendAll() {
+    async sendAll() {
       if (!this.checkedCount) return uni.showToast({ title: '请至少勾选一条问题', icon: 'none' })
-      uni.showToast({ title: `已发送 ${this.checkedCount} 条追问（演示）`, icon: 'none' })
-      setTimeout(() => uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/lead/ai-brief' }) }), 900)
+      if (this.sending) return
+      this.sending = true
+      try {
+        const picked = this.questions.filter((q) => q.checked)
+        const results = await Promise.all(
+          picked.map((q) => sendBrief(q.id).then(() => true).catch(() => false))
+        )
+        const ok = results.filter(Boolean).length
+        if (!ok) {
+          uni.showToast({ title: '发送失败，请重试', icon: 'none' })
+          return
+        }
+        uni.showToast({ title: `已发送 ${ok} 条追问`, icon: 'success' })
+        setTimeout(
+          () => uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/lead/ai-brief' }) }),
+          900
+        )
+      } finally {
+        this.sending = false
+      }
     },
   },
 }

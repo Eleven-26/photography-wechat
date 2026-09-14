@@ -23,68 +23,55 @@
       </view>
     </view>
 
-    <!-- 今天 -->
-    <text class="page-notify__day">今天</text>
-    <!-- ① 黑卡：收款待确认（1:3046 实测 343×72 #121212、金 40 r10 图标、右上白胶囊） -->
-    <view
-      v-for="n in todayList"
-      :key="n.title"
-      class="page-notify__card"
-      :class="n.dark ? 'page-notify__card--dark' : 'page-notify__card--white'"
-    >
-      <view class="page-notify__icon" :style="{ backgroundColor: n.dark ? '#FFDA08' : '#FFFFFF' }">
-        <AppIcon :name="n.icon" :size="n.dark ? 20 : 20" />
-      </view>
-      <view class="page-notify__main">
-        <text class="page-notify__item-title" :class="{ 'page-notify__item-title--dark': n.dark }">{{ n.title }}</text>
-        <text class="page-notify__item-sub" :class="{ 'page-notify__item-sub--dark': n.dark }">{{ n.sub }}</text>
-      </view>
-      <view class="page-notify__badge" :class="`page-notify__badge--${n.tone}`">
-        <text>{{ n.badge }}</text>
-      </view>
-    </view>
-    <!-- ② 白卡组（1:3058 实测 r16、行 pad16/13、32 r8 图标、行间 9% 线） -->
-    <view class="page-notify__group page-notify__group--r16">
+    <!-- 分组列表：今天 / 昨天 / 更早按「M月D日」（未读财务=黑卡，其余=白卡组） -->
+    <template v-for="g in groups" :key="g.key">
+      <text class="page-notify__day" :class="{ 'page-notify__day--yest': g.key !== 'today' }">{{ g.label }}</text>
+      <!-- ① 黑卡：未读财务（收款待确认）343×72 #121212、金 40 r10 图标、右上白胶囊 -->
       <view
-        v-for="(n, i) in todayGroup"
-        :key="n.title"
-        class="page-notify__gcell"
-        :class="{ 'page-notify__gcell--line': i > 0 }"
+        v-for="n in g.dark"
+        :key="n.id"
+        class="page-notify__card page-notify__card--dark pressable"
+        @click="openItem(n)"
       >
-        <view class="page-notify__gicon" :style="{ backgroundColor: n.iconBg }">
+        <view class="page-notify__icon" style="background-color: #FFDA08">
           <AppIcon :name="n.icon" :size="20" />
         </view>
         <view class="page-notify__main">
-          <text class="page-notify__item-title">{{ n.title }}</text>
-          <text class="page-notify__item-sub">{{ n.sub }}</text>
+          <text class="page-notify__item-title page-notify__item-title--dark">{{ n.title }}</text>
+          <text class="page-notify__item-sub page-notify__item-sub--dark">{{ n.sub }}</text>
         </view>
-        <view class="page-notify__badge" :class="`page-notify__badge--${n.tone}`">
+        <view class="page-notify__badge page-notify__badge--white">
           <text>{{ n.badge }}</text>
         </view>
       </view>
-    </view>
+      <!-- ② 白卡组（r16 / r20，行 pad16/13、32 r8 图标、行间 9% 线） -->
+      <view
+        v-if="g.rest.length"
+        class="page-notify__group"
+        :class="g.key === 'today' ? 'page-notify__group--r16' : 'page-notify__group--r20'"
+      >
+        <view
+          v-for="(n, i) in g.rest"
+          :key="n.id"
+          class="page-notify__gcell pressable"
+          :class="{ 'page-notify__gcell--line': i > 0 }"
+          @click="openItem(n)"
+        >
+          <view class="page-notify__gicon" :class="{ 'page-notify__gicon--gray': n.read }" :style="{ backgroundColor: n.iconBg }">
+            <AppIcon :name="n.icon" :size="20" />
+          </view>
+          <view class="page-notify__main">
+            <text class="page-notify__item-title">{{ n.title }}</text>
+            <text class="page-notify__item-sub">{{ n.sub }}</text>
+          </view>
+          <view class="page-notify__badge" :class="`page-notify__badge--${n.tone}`">
+            <text>{{ n.badge }}</text>
+          </view>
+        </view>
+      </view>
+    </template>
 
-    <!-- 昨天 -->
-    <text class="page-notify__day page-notify__day--yest">昨天</text>
-    <view class="page-notify__group page-notify__group--r20">
-      <view
-        v-for="(n, i) in yesterdayGroup"
-        :key="n.title"
-        class="page-notify__gcell"
-        :class="{ 'page-notify__gcell--line': i > 0 }"
-      >
-        <view class="page-notify__gicon page-notify__gicon--gray" :style="{ backgroundColor: n.iconBg }">
-          <AppIcon :name="n.icon" :size="20" />
-        </view>
-        <view class="page-notify__main">
-          <text class="page-notify__item-title">{{ n.title }}</text>
-          <text class="page-notify__item-sub">{{ n.sub }}</text>
-        </view>
-        <view class="page-notify__badge page-notify__badge--read">
-          <text>{{ n.badge }}</text>
-        </view>
-      </view>
-    </view>
+    <AppEmpty v-if="!loading && !groups.length" text="暂无通知" />
 
     <AppTabBar active="work" />
     <view class="page-notify__safe" />
@@ -94,33 +81,130 @@
 <script>
 /**
  * W02 通知（稿 1:3020 实测 1:1）
- * 结构：头部（返回+居中标题）→ 分段 Tab（全部/待处理/已读）→ 今天（黑卡收款+白卡组）→ 昨天（白卡组）→ 底部导航。
+ * 结构：头部（返回+居中标题）→ 分段 Tab（全部/待处理/已读）→ 按日期分组列表 → 底部导航。
  * 稿内黑卡右上「待处理」白底胶囊、消息/提醒黄胶囊（bg #FFE9AF 字 #B66E00）、已读灰胶囊（bg #F1F2F2 字 #747881）。
+ *
+ * 数据源（2026-09-14 接线）：/notification/list（sys_notification，服务端按 receiver_type=1+本人ID 隔离）、
+ *   /notification/unread-count（Tab 角标）、/notification/read/:id（点开即已读）。
+ * 分组规则：今天 / 昨天 / 更早按「M月D日」；未读「财务」类渲染为黑卡（收款待确认），其余走白卡组。
+ * 点击行为：未读先标记已读并本地减计数，再按 biz_type 跳转（order → 订单详情）。
  */
+import { getNotificationList, getUnreadCount, readNotification } from '@/api/notification'
+import { fromNow } from '@/utils/format'
+
+/** 通知类型（enum.NotificationType）→ 图标 / 图标底色：1-订单 2-财务 3-系统 */
+const TYPE_ICON = { 1: 'calendar-gray', 2: 'money-dark-sm', 3: 'info-gray-sm' }
+const TYPE_BG = { 1: '#FFFFFF', 2: '#FFDA08', 3: '#FFFFFF' }
+
 export default {
   name: 'NotifyIndex',
   data() {
     return {
       tab: 'all',
-      tabs: [
-        { key: 'all', label: '全部' },
-        { key: 'pending', label: '待处理', count: 4 },
-        { key: 'read', label: '已读' },
-      ],
-      todayList: [
-        { dark: true, icon: 'money-dark-sm', iconBg: '#FFDA08', title: '陈雨已转账待确认', sub: '¥804 · 微信转账 · 无需凭证 · 09:16', badge: '待处理', tone: 'white' },
-      ],
-      todayGroup: [
-        { icon: 'bubble-dark-sm', iconBg: '#FFFFFF', title: '蓝桥科技发来消息', sub: '"请问可以加一组全身照吗" · 8分钟前', badge: '待回复', tone: 'gold' },
-        { icon: 'clock-dark-sm', iconBg: '#FFFFFF', title: '拍摄时间提醒', sub: '陈雨 · 10:00 越秀公园 · 家庭纪念写真', badge: '今日', tone: 'gold' },
-      ],
-      yesterdayGroup: [
-        { icon: 'calendar-gray', iconBg: '#F3F4F5', title: '档期规则已更新', sub: '可约时间已发布 · 8/7 18:00', badge: '已读' },
-        { icon: 'doc-gray', iconBg: '#F3F4F5', title: '订单状态更新', sub: '陈雨订单今日拍摄 · 10:00', badge: '已读' },
-      ],
+      list: [],
+      unread: 0,
+      loading: true,
     }
   },
+  computed: {
+    tabs() {
+      return [
+        { key: 'all', label: '全部' },
+        { key: 'pending', label: '待处理', count: this.unread || null },
+        { key: 'read', label: '已读' },
+      ]
+    },
+    /** 按当前 Tab 过滤（待处理=未读 / 已读=is_read=1 / 全部） */
+    filtered() {
+      if (this.tab === 'pending') return this.list.filter((n) => !n.is_read)
+      if (this.tab === 'read') return this.list.filter((n) => n.is_read)
+      return this.list
+    },
+    /** 列表项：补齐展示字段（图标/底色/徽章/副行） */
+    items() {
+      return this.filtered.map((n) => this.decorate(n))
+    },
+    /** 按日期分组 → [{ key, label, dark, rest }] */
+    groups() {
+      const out = []
+      const index = {}
+      const now = new Date()
+      const dayKey = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+      const todayKey = dayKey(now)
+      const yestKey = dayKey(new Date(now.getTime() - 86400000))
+      for (const n of this.items) {
+        const t = n._time
+        let key = 'older'
+        let label = '更早'
+        if (t) {
+          const dk = dayKey(t)
+          if (dk === todayKey) { key = 'today'; label = '今天' }
+          else if (dk === yestKey) { key = 'yesterday'; label = '昨天' }
+          else { key = dk; label = `${t.getMonth() + 1}月${t.getDate()}日` }
+        }
+        if (!index[key]) {
+          index[key] = { key, label, dark: [], rest: [] }
+          out.push(index[key])
+        }
+        if (n.dark) index[key].dark.push(n)
+        else index[key].rest.push(n)
+      }
+      return out
+    },
+  },
+  onShow() {
+    this.fetchList()
+  },
   methods: {
+    /** 单条通知补展示字段；_time 供分组用（保留 Date 便于跨日比较） */
+    decorate(n) {
+      const unread = !n.is_read
+      const dark = unread && n.type === 2 // 未读财务 = 收款待确认（黑卡）
+      return {
+        ...n,
+        _time: this.parseTime(n.created_at),
+        read: !unread,
+        dark,
+        icon: TYPE_ICON[n.type] || 'info-gray-sm',
+        iconBg: TYPE_BG[n.type] || '#FFFFFF',
+        sub: [n.content, fromNow(n.created_at)].filter(Boolean).join(' · '),
+        badge: this.badgeText(n, unread),
+        tone: unread ? (dark ? 'white' : 'gold') : 'read',
+      }
+    },
+    badgeText(n, unread) {
+      if (!unread) return '已读'
+      if (n.type === 2) return '待处理'
+      if (n.type === 1) return '订单'
+      return '未读'
+    },
+    /** 后端时间（Go time.Time → RFC3339 含 T）解析；兼容 'yyyy-MM-dd HH:mm:ss' */
+    parseTime(val) {
+      if (!val) return null
+      const s = String(val)
+      const d = s.includes('T') ? new Date(s) : new Date(s.replace(/-/g, '/'))
+      return Number.isNaN(d.getTime()) ? null : d
+    },
+    async fetchList() {
+      this.loading = true
+      const [listRes, countRes] = await Promise.all([
+        getNotificationList({ page: 1, page_size: 50 }).catch(() => null),
+        getUnreadCount().catch(() => null),
+      ])
+      this.list = Array.isArray(listRes) ? listRes : (listRes && listRes.list) || []
+      this.unread = (countRes && countRes.count) || this.list.filter((n) => !n.is_read).length
+      this.loading = false
+    },
+    async openItem(n) {
+      if (!n.is_read) {
+        await readNotification(n.id).catch(() => null)
+        n.is_read = 1
+        this.unread = Math.max(0, this.unread - 1)
+      }
+      if (n.biz_type === 'order' && n.biz_id) {
+        uni.navigateTo({ url: `/pages/order/detail?id=${n.biz_id}` })
+      }
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/work/index' }) })
     },

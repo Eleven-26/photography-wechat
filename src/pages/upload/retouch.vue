@@ -32,10 +32,6 @@
             <text class="page-ur__add-txt">继续添加精修成品</text>
           </view>
         </view>
-        <!-- 原型演示钮：补齐剩余成品（稿自带此演示钮） -->
-        <view class="page-ur__demo-btn" @click="fillRest">
-          <text class="page-ur__demo-btn-txt">原型演示：补齐剩余 {{ total - done }} 张成品</text>
-        </view>
         <view class="page-ur__tip">
           <text class="page-ur__tip-txt">精修成品建议以 JPEG 高质量导出（8-15MB）· 支持断点续传 · PC 端可整场批量上传</text>
         </view>
@@ -81,48 +77,143 @@
 </template>
 
 <script>
-import { demoOrderById } from '@/utils/demo'
+/**
+ * D16 精修图上传（稿 1:3385）：进度卡 + 上传方式双卡 + 灰提示条 + 双钮。
+ *
+ * 数据源与动作（2026-09-14 接线；:id = **order_id**）：
+ *   /delivery/detail/:id → 交付单（id 作 delivery_id、retouch_target 计划张数、retouched_count 已上传）
+ *   /delivery/items/:id  → 已落库的精修成品（kind=3）
+ *   上传流程：uni.chooseImage → /upload/file → 汇总 items 后
+ *             POST /delivery/upload-retouched/:delivery_id {items:[{url,filename,size}]}
+ *   「完成并发送最终确认」在上传成功后继续调 POST /delivery/send-final/:delivery_id，
+ *   然后把客户引到成片预览页（delivery/final）。
+ *
+ * ⚠️ 路径参数陷阱：detail/items 用 **order_id**，upload-retouched / send-final 用 **delivery_id**。
+ *    2026-09-14 PC 曾把 order_id 传给 upload-retouched 触发 40400，勿重蹈。
+ * ⚠️「暂存」只在本地保留待提交清单（后端无草稿态）：文案如实说明，不做假提交。
+ */
+import { getDeliveryDetail, getDeliveryItems, uploadRetouched, sendFinal } from '@/api/delivery'
+import { uploadFile } from '@/api/upload'
+
+/** DeliveryItem.kind：3-精修成品 */
+const KIND_RETOUCHED = 3
 
 export default {
   data() {
     return {
       orderId: '',
-      total: 24,
-      done: 20,
-      files: [
-        { name: 'IMG_0142_final.jpg', status: '已上传 · 14.2MB', done: true },
-        { name: 'IMG_0143_final.jpg', status: '上传中 · 62%', done: false },
-      ],
+      deliveryId: 0,
+      delivery: null,
+      total: 0,
+      files: [], // 已上传（服务端回显 + 本次已上传）
+      pending: [], // 本次已上传但尚未提交的 items
+      uploading: false,
+      submitting: false,
+      seq: 0,
     }
+  },
+  computed: {
+    done() {
+      return this.files.length
+    },
   },
   onLoad(options) {
     this.orderId = (options && options.id) || ''
-    this.order = demoOrderById(this.orderId) || null
+    this.fetchAll()
   },
   methods: {
+    async fetchAll() {
+      if (!this.orderId) return
+      const [dRes, iRes] = await Promise.all([
+        getDeliveryDetail(this.orderId).catch(() => null),
+        getDeliveryItems(this.orderId).catch(() => null),
+      ])
+      this.delivery = dRes || null
+      this.deliveryId = (dRes && dRes.id) || 0
+      const done = (Array.isArray(iRes) ? iRes : []).filter((it) => it.kind === KIND_RETOUCHED)
+      this.files = done.map((it) => ({
+        key: 's' + it.id,
+        name: it.filename || `成品 ${it.id}`,
+        status: '已上传 · ' + this.sizeText(it.size),
+        done: true,
+      }))
+      // 计划张数：优先交付单计划值，回落已上传张数（避免 0/0）
+      this.total = (dRes && dRes.retouch_target) || this.done
+    },
+    sizeText(size) {
+      const n = Number(size || 0)
+      if (!n) return '已完成'
+      return n >= 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.max(1, Math.round(n / 1024)) + 'KB'
+    },
     goBack() {
       uni.navigateBack()
     },
+    /** 选图 → 逐张上传（串行）→ 入 pending */
     onAdd() {
-      uni.showToast({ title: '选择精修图（演示）', icon: 'none' }) // 联调后接上传
-    },
-    // 原型演示：把剩余张数补齐为已上传
-    fillRest() {
-      this.done = this.total
-      this.files = [{ name: 'IMG_0142_final.jpg', status: '已上传 · 14.2MB', done: true }]
-      uni.showToast({ title: '已补齐 24/24（演示）', icon: 'none' })
+      if (this.uploading) return
+      uni.chooseImage({
+        count: 9,
+        sizeType: ['compressed'],
+        success: async (res) => {
+          const paths = res.tempFilePaths || []
+          if (!paths.length) return
+          this.uploading = true
+          for (const p of paths) {
+            const up = await uploadFile(p, { biz_type: 'delivery', biz_id: this.deliveryId }).catch(() => null)
+            if (up && up.url) {
+              this.pending.push({ url: up.url, filename: up.file_name || '', size: up.size || 0 })
+              this.seq += 1
+              this.files.push({
+                key: 'u' + this.seq,
+                name: up.file_name || `成品 ${this.seq}`,
+                status: '已上传 · ' + this.sizeText(up.size),
+                done: true,
+              })
+            } else {
+              uni.showToast({ title: '部分文件上传失败', icon: 'none' })
+            }
+          }
+          this.uploading = false
+        },
+      })
     },
     pickAlbum() {
-      uni.showToast({ title: '从相册选择（演示）', icon: 'none' })
+      this.onAdd()
     },
     pickPc() {
       uni.showToast({ title: '请在 PC 端打开上传', icon: 'none' })
     },
+    /** 暂存：仅保留本地待提交清单（后端无草稿态，不虚假提示已保存到服务器） */
     onSave() {
-      uni.showToast({ title: '已暂存（演示）', icon: 'none' })
+      uni.showToast({
+        title: this.pending.length ? `已暂存 ${this.pending.length} 张，未提交` : '暂无待提交内容',
+        icon: 'none',
+      })
     },
-    onFinish() {
-      uni.navigateTo({ url: '/pages/delivery/final?id=' + (this.orderId || '90004') })
+    /** 完成：提交精修成品 → 发送最终确认 → 跳成片预览 */
+    async onFinish() {
+      if (this.submitting) return
+      if (!this.deliveryId) return uni.showToast({ title: '交付单尚未创建', icon: 'none' })
+      if (this.uploading) return uni.showToast({ title: '还有文件在上传，请稍候', icon: 'none' })
+      if (!this.files.length) return uni.showToast({ title: '请先上传精修成品', icon: 'none' })
+      this.submitting = true
+      if (this.pending.length) {
+        const ok = await uploadRetouched(this.deliveryId, { items: this.pending })
+          .then(() => true)
+          .catch(() => false)
+        if (!ok) {
+          this.submitting = false
+          return
+        }
+        this.pending = []
+      }
+      // 上传后交付单已进入「待确认交付」，此时发送最终确认合法；失败会 toast 后端原因
+      await sendFinal(this.deliveryId).catch(() => null)
+      this.submitting = false
+      uni.showToast({ title: '已提交并发送最终确认', icon: 'success' })
+      setTimeout(() => {
+        uni.navigateTo({ url: '/pages/delivery/final?id=' + this.orderId })
+      }, 900)
     },
   },
 }

@@ -108,7 +108,6 @@
 import AppButton from '@/components/AppButton.vue'
 import AppTabBar from '@/components/AppTabBar.vue'
 import { getOrderDetail, confirmBooking } from '@/api/order'
-import { demoOrderById, isDemo } from '@/utils/demo'
 
 const WEEKS = ['日', '一', '二', '三', '四', '五', '六']
 
@@ -176,13 +175,11 @@ export default {
     this.fetchOrder()
   },
   methods: {
+    /** 订单详情；失败保持空订单展示空态，不再注入演示订单（掩盖接口故障） */
     async fetchOrder() {
-      if (isDemo()) { this.order = demoOrderById(this.orderId); return }
-      try {
-        const res = await getOrderDetail(this.orderId)
-        const data = res || {}
-        this.order = data.order || data
-      } catch (e) { this.order = demoOrderById(this.orderId) }
+      const res = await getOrderDetail(this.orderId).catch(() => null)
+      const data = res || {}
+      this.order = data.order || data
     },
     prevMonth() {
       if (this.month === 1) { this.year -= 1; this.month = 12 } else { this.month -= 1 }
@@ -201,7 +198,7 @@ export default {
       }
       this.selectedTime = s.time
     },
-    /** 确认锁档：/order/confirm/:id（联调核对）；演示直接成功返回（联调后移除） */
+    /** 确认锁档：员工端走状态机 /order/status/:id（待确认→待定金），由 confirmBooking 封装 */
     async submit() {
       if (this.submitting) return
       if (!this.selectedDate || !this.selectedTime) {
@@ -210,9 +207,7 @@ export default {
       }
       this.submitting = true
       try {
-        if (!isDemo()) {
-          await confirmBooking(this.orderId)
-        }
+        await confirmBooking(this.orderId)
         uni.showToast({ title: '档期已确认', icon: 'success' })
         setTimeout(() => this.goBack(), 600)
       } catch (e) {

@@ -20,7 +20,7 @@
             <text class="page-um__pct">{{ progress }}</text>
             <text class="page-um__pct-sign">%</text>
           </view>
-          <text class="page-um__ring-label">上传中</text>
+          <text class="page-um__ring-label">{{ uploading ? '上传中' : '已完成' }}</text>
         </view>
         <view class="page-um__count">
           <text class="page-um__count-num">{{ done }} / {{ total }} 张</text>
@@ -31,11 +31,18 @@
         </view>
         <!-- 文件列表：白底 r20 描边 9%，行 pad16/13.3 + hairline -->
         <view class="page-um__list">
-          <view v-for="(f, i) in files" :key="f.name" class="page-um__row" :class="{ 'page-um__row--last': i === files.length - 1 }">
+          <view v-for="f in files" :key="f.key" class="page-um__row">
             <AppIcon :name="f.done ? 'check-green-sm' : 'upload-amber'" :size="16" />
             <view class="page-um__row-txt">
               <text class="page-um__row-name">{{ f.name }}</text>
               <text class="page-um__row-status">{{ f.status }}</text>
+            </view>
+          </view>
+          <view class="page-um__row page-um__row--last pressable" @click="pickFiles">
+            <AppIcon name="plus-gray" :size="16" />
+            <view class="page-um__row-txt">
+              <text class="page-um__row-name">继续添加素材</text>
+              <text class="page-um__row-status">已自动压缩为预览图 · 可多选</text>
             </view>
           </view>
         </view>
@@ -58,47 +65,139 @@
 </template>
 
 <script>
-import { demoOrderById } from '@/utils/demo'
+/**
+ * D07 上传素材（稿 1:7639）：进度环卡 + 文件列表卡 + 双钮底栏。
+ *
+ * 数据源与动作（2026-09-14 接线；:id = **order_id**）：
+ *   /delivery/detail/:id → 交付单（取 id 作 delivery_id，后续上传接口都用它）
+ *   /delivery/items/:id  → 已在服务端的样片（kind=1），作为「已完成」列表回显
+ *   上传流程：uni.chooseImage → /upload/file（换 URL）→ 汇总 items 后
+ *             POST /delivery/upload-samples/:delivery_id {items:[{url,filename,size}]}
+ *
+ * ⚠️ 路径参数陷阱：detail/items 用 **order_id**，upload-samples 用 **delivery_id**。
+ *    本页先查交付单拿到 delivery.id 再上传，绝不能把 order_id 传进去（后端 40400）。
+ * ⚠️ 上传是**串行队列**：小程序并发上传易被限流，且串行才能让「暂停/继续」有意义
+ *    （暂停 = 队列停在前一张与后一张之间，不是中断请求本身）。
+ */
+import { getDeliveryDetail, getDeliveryItems, uploadSamples } from '@/api/delivery'
+import { uploadFile } from '@/api/upload'
+
+/** DeliveryItem.kind：1-样片 2-已选 3-精修成品 */
+const KIND_SAMPLE = 1
 
 export default {
   data() {
     return {
-      total: 152,
-      done: 148,
+      orderId: '',
+      deliveryId: 0,
+      delivery: null,
+      files: [], // 已完成（服务端回显 + 本次已上传）
+      pending: [], // 本次已上传但尚未提交给上传接口的 items
+      queue: [], // 待上传的本地临时路径
+      uploading: false,
       paused: false,
-      timer: null,
-      files: [
-        { name: 'IMG_0142.jpg', status: '已完成 · 1.8MB', done: true },
-        { name: 'IMG_0143.jpg', status: '已完成 · 1.6MB', done: true },
-        { name: 'IMG_0144.jpg', status: '上传中 · 64%', done: false },
-      ],
+      seq: 0, // 列表 key 自增序号
     }
   },
   computed: {
-    // 稿内进度环 97%、进度条 282/311≈90.6%，演示统一用 done/total
+    total() {
+      return this.files.length + this.queue.length
+    },
+    done() {
+      return this.files.length
+    },
     progress() {
-      return Math.min(99, Math.round((this.done / this.total) * 100))
+      return this.total ? Math.round((this.done / this.total) * 100) : 0
     },
   },
   onLoad(options) {
-    // 演示模式：订单信息仅用于上下文（联调后走 getOrderDetail）
     this.orderId = (options && options.id) || ''
-    this.order = demoOrderById(this.orderId) || null
-  },
-  onUnload() {
-    if (this.timer) clearTimeout(this.timer)
+    this.fetchAll()
   },
   methods: {
+    async fetchAll() {
+      if (!this.orderId) return
+      const [dRes, iRes] = await Promise.all([
+        getDeliveryDetail(this.orderId).catch(() => null),
+        getDeliveryItems(this.orderId).catch(() => null),
+      ])
+      this.delivery = dRes || null
+      this.deliveryId = (dRes && dRes.id) || 0
+      const samples = (Array.isArray(iRes) ? iRes : []).filter((it) => it.kind === KIND_SAMPLE)
+      this.files = samples.map((it) => ({
+        key: 's' + it.id,
+        name: it.filename || `样片 ${it.id}`,
+        status: '已完成 · ' + this.sizeText(it.size),
+        done: true,
+      }))
+    },
+    sizeText(size) {
+      const n = Number(size || 0)
+      if (!n) return '已完成'
+      return n >= 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.max(1, Math.round(n / 1024)) + 'KB'
+    },
     goBack() {
       uni.navigateBack()
     },
-    goSelect() {
-      uni.navigateTo({ url: '/pages/select/result?id=' + (this.orderId || '90004') })
+    /** 选片 → 入队 → 启动串行上传泵 */
+    pickFiles() {
+      uni.chooseImage({
+        count: 9,
+        sizeType: ['compressed'],
+        success: (res) => {
+          const paths = res.tempFilePaths || []
+          if (!paths.length) return
+          this.queue = this.queue.concat(paths)
+          this.pump()
+        },
+      })
     },
-    // 演示态：暂停/继续只切文案（联调后接上传任务接口）
+    async pump() {
+      if (this.uploading) return
+      this.uploading = true
+      while (this.queue.length) {
+        if (this.paused) {
+          await new Promise((r) => setTimeout(r, 300))
+          continue
+        }
+        const path = this.queue.shift()
+        const up = await uploadFile(path, { biz_type: 'delivery', biz_id: this.deliveryId }).catch(() => null)
+        if (up && up.url) {
+          this.pending.push({ url: up.url, filename: up.file_name || '', size: up.size || 0 })
+          this.seq += 1
+          this.files.push({
+            key: 'u' + this.seq,
+            name: up.file_name || `素材 ${this.seq}`,
+            status: '已完成 · ' + this.sizeText(up.size),
+            done: true,
+          })
+        } else {
+          this.seq += 1
+          this.files.push({ key: 'f' + this.seq, name: '上传失败', status: '请重新选择该文件', done: false })
+        }
+      }
+      this.uploading = false
+      this.paused = false
+    },
     togglePause() {
+      if (!this.queue.length) return uni.showToast({ title: '没有待上传的文件', icon: 'none' })
       this.paused = !this.paused
+      if (!this.paused) this.pump()
       uni.showToast({ title: this.paused ? '已暂停' : '继续上传', icon: 'none' })
+    },
+    /** 进入选片：先把本次新上传的样片提交到交付单（空则跳过） */
+    async goSelect() {
+      if (!this.deliveryId) return uni.showToast({ title: '交付单尚未创建', icon: 'none' })
+      if (!this.files.length) return uni.showToast({ title: '请先选择要上传的素材', icon: 'none' })
+      if (this.queue.length) return uni.showToast({ title: '还有文件在上传，请稍候', icon: 'none' })
+      if (this.pending.length) {
+        const ok = await uploadSamples(this.deliveryId, { items: this.pending })
+          .then(() => true)
+          .catch(() => false)
+        if (!ok) return
+        this.pending = []
+      }
+      uni.navigateTo({ url: '/pages/select/result?id=' + this.orderId })
     },
   },
 }

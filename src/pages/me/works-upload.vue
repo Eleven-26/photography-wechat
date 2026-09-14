@@ -10,7 +10,7 @@
     <!-- 选择图片（y104 标题行 + 右提示 + y154 3x3 格：首张「封面」黑标 + 末格虚加号） -->
     <view class="page-wu__sec-row">
       <text class="page-wu__sec">选择图片</text>
-      <text class="page-wu__sec-hint">已选 6 张 · 首张为封面</text>
+      <text class="page-wu__sec-hint">已选 {{ picks.length }} 张 · 首张为封面</text>
     </view>
     <view class="page-wu__grid">
       <view v-for="(g, i) in picks" :key="i" class="page-wu__cell">
@@ -29,16 +29,20 @@
         <text class="page-wu__label">标题</text>
         <input v-model="title" class="page-wu__input" placeholder="点击输入 · 如「越秀公园 · 秋日」" placeholder-class="page-wu__ph" />
       </view>
-      <view class="info-row page-wu__row pressable" @click="pickDate">
-        <text class="page-wu__label">拍摄日期</text>
-        <text class="page-wu__value">2026/08/20</text>
-        <AppIcon name="chevron-right-gray" :size="16" />
-      </view>
-      <view class="info-row page-wu__row pressable" @click="pickPkg">
-        <text class="page-wu__label">关联套餐</text>
-        <text class="page-wu__value page-wu__value--ph">选填 · 展示在该套餐详情页</text>
-        <AppIcon name="chevron-right-gray" :size="16" />
-      </view>
+      <picker mode="date" :value="shootDate" @change="onDateChange">
+        <view class="info-row page-wu__row">
+          <text class="page-wu__label">拍摄日期</text>
+          <text class="page-wu__value">{{ shootDate || '请选择' }}</text>
+          <AppIcon name="chevron-right-gray" :size="16" />
+        </view>
+      </picker>
+      <picker mode="selector" :range="pkgNames" @change="onPkgChange">
+        <view class="info-row page-wu__row">
+          <text class="page-wu__label">关联套餐</text>
+          <text class="page-wu__value" :class="{ 'page-wu__value--ph': pkgIndex === 0 }">{{ pkgText }}</text>
+          <AppIcon name="chevron-right-gray" :size="16" />
+        </view>
+      </picker>
     </view>
 
     <!-- 分类（y718 标签行 + y771 chips：写真选中 + 全家福/跟拍/证件照/其他） -->
@@ -65,7 +69,7 @@
         <view class="page-wu__auth-icon"><AppIcon name="clock-gold" :size="15" /></view>
         <view class="page-wu__row-main">
           <text class="page-wu__auth-title">待授权</text>
-          <text class="page-wu__auth-sub">{{ '发布后向客户陈雨发送授权请求 · 同意前\n仅自己可见' }}</text>
+          <text class="page-wu__auth-sub">{{ authSub }}</text>
         </view>
         <view class="page-wu__auth-badge"><text>待授权</text></view>
       </view>
@@ -85,48 +89,107 @@
 <script>
 /**
  * ME07 上传作品（稿 1:6587 实测 1:1）
- * 选择图片 3x3（首张封面黑标金字）→ 作品信息三行 → 分类 chips → 客户授权待授权卡（金 #FFF6D6 圆 + #B8860B）→ 底栏存草稿/发布。
- * 稿内「可见性分段（精选展示/公开/未公开 + 说明）」按用户 2026-09-10 指示暂不开发，未实现。
- * 作品图：工程内置演示实拍图 static/img/，联调后换成用户相册选择的本地文件。
+ * 选择图片 3x3（首张封面黑标金字）→ 作品信息三行 → 分类 chips → 客户授权待授权卡 → 底栏存草稿/发布。
+ * 稿内「可见性分段（精选展示/公开/未公开）」按用户 2026-09-10 指示暂不开发，未实现。
  * 区块纵向坐标按 P_ME07-上传作品.png 逐行像素实测校正（2026-09-10）。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   uni.chooseImage + /upload/file → 逐张上传，取回服务端 URL 组成 images（首张作 cover）
+ *   /package/list → 关联套餐（单选；package_ids 为逗号分隔串，此处传单个 id）
+ *   /asset/create → 存草稿(status 1) / 发布(status 2 + authorization 1-待授权)
  */
+import { uploadFile } from '@/api/upload'
+import { getPackageList } from '@/api/package'
+import { createAsset } from '@/api/asset'
+import { formatDate } from '@/utils/format'
+
 export default {
   name: 'MeWorksUpload',
   data() {
     return {
       title: '',
+      shootDate: '',
       chip: '写真',
       chips: ['写真', '全家福', '跟拍', '证件照', '其他'],
-      /* vis（可见性：精选展示/公开/未公开）随可见性分段模块一并下线，暂不开发 */
-      picks: [
-        '/static/img/work-1.jpg',
-        '/static/img/work-2.jpg',
-        '/static/img/work-3.jpg',
-        '/static/img/work-4.jpg',
-        '/static/img/work-5.jpg',
-        '/static/img/work-6.jpg',
-      ],
+      packages: [],
+      pkgIndex: 0,
+      picks: [],
+      uploading: false,
+      submitting: false,
     }
   },
+  computed: {
+    pkgNames() { return ['不关联', ...this.packages.map((p) => p.name)] },
+    pkgText() {
+      return this.pkgIndex > 0 ? this.pkgNames[this.pkgIndex] : '选填 · 展示在该套餐详情页'
+    },
+    authSub() { return '发布后向客户发送授权请求 · 同意前\n仅自己可见' },
+  },
+  onLoad() {
+    this.shootDate = formatDate(new Date())
+    this.fetchPackages()
+  },
   methods: {
+    async fetchPackages() {
+      const res = await getPackageList({ page: 1, page_size: 50 }).catch(() => null)
+      this.packages = (res && res.list) || []
+    },
     goBack() {
       uni.navigateBack()
     },
+    /** 选择图片并逐张上传，成功后追加服务端 URL */
     addPic() {
-      uni.showToast({ title: '选择图片（演示）', icon: 'none' })
+      const remain = 9 - this.picks.length
+      if (remain <= 0) return uni.showToast({ title: '最多 9 张', icon: 'none' })
+      uni.chooseImage({
+        count: remain,
+        success: (res) => this.uploadPicked(res.tempFilePaths || []),
+      })
     },
-    pickDate() {
-      uni.showToast({ title: '选择拍摄日期（演示）', icon: 'none' })
+    async uploadPicked(paths) {
+      if (!paths.length || this.uploading) return
+      this.uploading = true
+      uni.showLoading({ title: '上传中' })
+      const urls = await Promise.all(
+        paths.map((p) =>
+          uploadFile(p)
+            .then((r) => (typeof r === 'string' ? r : (r && (r.url || (r.data && r.data.url))) || ''))
+            .catch(() => '')
+        )
+      )
+      this.picks.push(...urls.filter(Boolean))
+      uni.hideLoading()
+      this.uploading = false
+      if (!this.picks.length) uni.showToast({ title: '上传失败，请重试', icon: 'none' })
     },
-    pickPkg() {
-      uni.showToast({ title: '关联套餐（演示）', icon: 'none' })
+    onDateChange(e) { this.shootDate = e.detail.value },
+    onPkgChange(e) { this.pkgIndex = Number(e.detail.value) },
+    /** 落库：status 1-草稿 / 2-已发布（发布时初始为待授权） */
+    async submit(status) {
+      if (this.submitting) return
+      if (!this.title.trim()) return uni.showToast({ title: '请填写作品标题', icon: 'none' })
+      if (!this.picks.length) return uni.showToast({ title: '请至少上传 1 张图片', icon: 'none' })
+      this.submitting = true
+      const pkg = this.pkgIndex > 0 ? this.packages[this.pkgIndex - 1] : null
+      const ok = await createAsset({
+        title: this.title.trim(),
+        category: this.chip,
+        cover: this.picks[0],
+        images: this.picks.join(','),
+        shoot_date: this.shootDate,
+        package_ids: pkg ? String(pkg.id) : '',
+        status,
+        authorization: status === 2 ? 1 : 0,
+      })
+        .then(() => true)
+        .catch(() => false)
+      this.submitting = false
+      if (!ok) return
+      uni.showToast({ title: status === 2 ? '已发布，授权请求已发送' : '已存草稿', icon: 'none' })
+      setTimeout(() => this.goBack(), 800)
     },
-    draft() {
-      uni.showToast({ title: '已存草稿（演示）', icon: 'success' })
-    },
-    publish() {
-      uni.showToast({ title: '已发布，授权请求已发送（演示）', icon: 'none' })
-    },
+    draft() { this.submit(1) },
+    publish() { this.submit(2) },
   },
 }
 </script>

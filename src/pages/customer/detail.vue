@@ -11,12 +11,12 @@
 
     <!-- 客户头卡：头像+名+统计+右 32 黑圆电话（1:41 Group 153 实测 343×72） -->
     <view class="page-cd__head">
-      <view class="page-cd__avatar" :style="{ backgroundColor: customer.avatar }">
-        <text>{{ customer.name[0] }}</text>
+      <view class="page-cd__avatar" :style="{ backgroundColor: avatarColor }">
+        <text>{{ (customer.name || '')[0] }}</text>
       </view>
       <view class="page-cd__head-main">
         <text class="page-cd__name">{{ customer.name }}</text>
-        <text class="page-cd__stat">累计 {{ customer.total }} · {{ customer.count }} 单 · 最近 {{ customer.last }}</text>
+        <text class="page-cd__stat">{{ statText }}</text>
       </view>
       <!-- 呼叫客户：黑底圆内为白色听筒（原误用 phone-gray＝手机外框形状，语义不符；2026-09-10 修正） -->
       <view class="page-cd__call pressable" @click="call">
@@ -24,49 +24,53 @@
       </view>
     </view>
 
-    <!-- 待跟进黑卡（1:52 实测 343×60：金点+状态+金钮发选片链接） -->
-    <view class="page-cd__follow">
+    <!-- 待跟进黑卡（仅潜在客户展示；1:52 实测 343×60：金点+状态+金钮发选片链接） -->
+    <view v-if="isPending" class="page-cd__follow">
       <view class="page-cd__follow-dot" />
       <view class="page-cd__follow-main">
-        <text class="page-cd__follow-t1">待跟进 · 拍摄后 3 天未选片</text>
+        <text class="page-cd__follow-t1">待跟进 · {{ followHint }}</text>
         <text class="page-cd__follow-t2">来自今日待跟进提醒</text>
       </view>
       <view class="page-cd__follow-btn pressable" @click="sendLink"><text>发选片链接</text></view>
     </view>
 
     <text class="page-cd__sec">全部订单</text>
-    <!-- 订单卡（1:60 Group 157 实测 343×74） -->
-    <view class="page-cd__order pressable" @click="goOrder">
+    <!-- 订单卡（1:60 Group 157 实测 343×74；多单纵向排列） -->
+    <view v-for="o in orders" :key="o.id" class="page-cd__order pressable" @click="goOrder(o)">
       <view class="page-cd__order-head">
-        <text class="page-cd__order-name">家庭纪念写真</text>
+        <text class="page-cd__order-name">{{ o.package_name || o.code }}</text>
         <view class="page-cd__status">
           <view class="page-cd__status-dot" />
-          <text>进行中</text>
+          <text>{{ o.status_text }}</text>
         </view>
       </view>
       <view class="page-cd__order-row2">
-        <text class="page-cd__order-sub">婚礼跟拍 · 8/10 · 24张精修</text>
-        <text class="page-cd__order-price">￥2680</text>
+        <text class="page-cd__order-sub">{{ orderSub(o) }}</text>
+        <text class="page-cd__order-price">￥{{ formatAmount(o.total_amt) }}</text>
       </view>
     </view>
+    <AppEmpty v-if="!loading && !orders.length" text="暂无订单" />
 
     <text class="page-cd__sec">客户资料</text>
     <!-- 资料卡 r20：手机/微信/渠道（1:67 实测） -->
     <view class="page-cd__card">
-      <view class="page-cd__cell" @click="noop">
+      <view class="page-cd__cell" @click="call">
         <text class="page-cd__cell-label">手机</text>
-        <text class="page-cd__cell-val">138****2546</text>
+        <text class="page-cd__cell-val">{{ maskedMobile }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="page-cd__cell page-cd__cell--line" @click="fillWechat">
         <text class="page-cd__cell-label">微信</text>
-        <text class="page-cd__cell-val page-cd__cell-val--dim">未填写</text>
-        <text class="page-cd__cell-fill">填补</text>
+        <text
+          class="page-cd__cell-val"
+          :class="{ 'page-cd__cell-val--dim': !customer.wechat }"
+        >{{ customer.wechat || '未填写' }}</text>
+        <text v-if="!customer.wechat" class="page-cd__cell-fill">填补</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="page-cd__cell">
         <text class="page-cd__cell-label">渠道</text>
-        <text class="page-cd__cell-val">小红书</text>
+        <text class="page-cd__cell-val">{{ customer.source || '—' }}</text>
       </view>
     </view>
 
@@ -80,42 +84,99 @@
  * CU02 客户档案（稿 1:7027 实测 1:1）
  * 客户头卡（统计+电话圆钮）→ 待跟进黑卡（发选片链接金钮）→ 全部订单 → 客户资料（手机/微信/渠道）。
  * 微信未填写行带「填补」入口（稿实测）；手机脱敏展示。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /customer/detail/:id → 客户档案（name/mobile/wechat/source/status/order_count/total_amount…）
+ *   /customer/orders/:id → 客户名下订单（package_name/code/status/shoot_date/total_amt…）
+ * 待跟进黑卡仅对「潜在（status=1）」客户展示。
  */
+import { getCustomerDetail, getCustomerOrders } from '@/api/customer'
+import { formatAmount, contactPhotographer } from '@/utils/format'
+
+/** 头像底色（与客户列表同一族色，按姓名哈希取色） */
+const AVATAR_COLORS = ['#F89494', '#08A4FF', '#EFA803', '#00CB8E', '#699EFF', '#FF6ABE']
+/** 订单状态文案（biz_order.status 0-7） */
+const ORDER_STATUS = {
+  0: '待确认', 1: '待定金', 2: '待拍摄', 3: '拍摄中',
+  4: '精修中', 5: '待交付', 6: '已完成', 7: '已取消',
+}
+
 export default {
   name: 'CustomerDetail',
   data() {
     return {
-      customer: {
-        name: '姜浩然',
-        avatar: '#699EFF',
-        total: '¥2,680',
-        count: 1,
-        last: '8/8',
-      },
+      customerId: '',
+      customer: {},
+      orders: [],
+      loading: false,
     }
+  },
+  computed: {
+    avatarColor() {
+      const name = this.customer.name || ''
+      let h = 0
+      for (let i = 0; i < name.length; i += 1) h = (h * 31 + name.charCodeAt(i)) % 997
+      return AVATAR_COLORS[h % AVATAR_COLORS.length]
+    },
+    /** 头卡统计行：累计金额 · 单数 · 最近拍摄日 */
+    statText() {
+      const last = this.orders[0] && this.orders[0].shoot_date
+      return [
+        `累计 ¥${formatAmount(this.customer.total_amount || 0)}`,
+        `${this.customer.order_count || 0} 单`,
+        last ? `最近 ${String(last).slice(5).replace('-', '/')}` : '',
+      ]
+        .filter(Boolean)
+        .join(' · ')
+    },
+    isPending() { return Number(this.customer.status) === 1 },
+    followHint() { return this.customer.remark || '待回访确认拍摄意向' },
+    maskedMobile() { return this.maskMobile(this.customer.mobile) },
   },
   onLoad(query) {
-    if (query && query.name) {
-      this.customer.name = decodeURIComponent(query.name)
-    }
+    this.customerId = (query && query.id) || ''
+    this.fetchAll()
   },
   methods: {
+    formatAmount,
+    async fetchAll() {
+      if (!this.customerId) return
+      this.loading = true
+      try {
+        const [c, orders] = await Promise.all([
+          getCustomerDetail(this.customerId).catch(() => null),
+          getCustomerOrders(this.customerId).catch(() => null),
+        ])
+        this.customer = c || {}
+        const list = Array.isArray(orders) ? orders : (orders && orders.list) || []
+        this.orders = list.map((o) => ({ ...o, status_text: ORDER_STATUS[Number(o.status)] || '' }))
+      } finally {
+        this.loading = false
+      }
+    },
+    /** 手机号脱敏：138****2546 */
+    maskMobile(mobile) {
+      const m = String(mobile || '')
+      return m.length === 11 ? `${m.slice(0, 3)}****${m.slice(7)}` : m || '—'
+    },
+    orderSub(o) {
+      const d = String(o.shoot_date || '')
+      return [o.package_name, d.slice(5).replace('-', '/'), o.photographer].filter(Boolean).join(' · ')
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/customer/list' }) })
     },
-    call() {
-      uni.showToast({ title: '呼叫客户（演示）', icon: 'none' })
-    },
+    call() { contactPhotographer(this.customer.mobile) },
+    /** 发选片链接：跳该客户最近订单的选片结果页 */
     sendLink() {
-      uni.navigateTo({ url: '/pages/select/result' })
+      const first = this.orders[0]
+      if (!first) return uni.showToast({ title: '该客户暂无订单', icon: 'none' })
+      uni.navigateTo({ url: `/pages/select/result?id=${first.id}` })
     },
-    goOrder() {
-      uni.navigateTo({ url: '/pages/order/detail' })
-    },
+    goOrder(o) { uni.navigateTo({ url: `/pages/order/detail?id=${o.id}` }) },
     fillWechat() {
-      uni.showToast({ title: '填写客户微信（演示）', icon: 'none' })
+      uni.showToast({ title: '微信号请在管理端完善', icon: 'none' })
     },
-    noop() {},
   },
 }
 </script>

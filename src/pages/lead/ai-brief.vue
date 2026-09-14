@@ -13,18 +13,23 @@
     <view class="page-ai__hero">
       <view class="page-ai__hero-top">
         <text class="page-ai__hero-title">AI 已整理 简报</text>
-        <view class="page-ai__hero-time"><text>2分钟前</text></view>
+        <view v-if="updatedText" class="page-ai__hero-time"><text>{{ updatedText }}</text></view>
       </view>
-      <text class="page-ai__hero-sub">从对话中识别 12 项关键信息 · 3 项待追问</text>
+      <text class="page-ai__hero-sub">{{ heroSub }}</text>
       <view class="page-ai__dots">
-        <view v-for="i in 12" :key="i" class="page-ai__dot" :class="{ 'page-ai__dot--off': i > 9 }" />
+        <view
+          v-for="i in dots.total"
+          :key="i"
+          class="page-ai__dot"
+          :class="{ 'page-ai__dot--off': i > dots.confirmed }"
+        />
       </view>
       <view class="page-ai__hero-btns">
         <view class="page-ai__hbtn page-ai__hbtn--gold pressable" @click="goAsk">
-          <text>继续追问 3 项</text>
+          <text>继续追问 {{ pendingCount }} 项</text>
         </view>
         <view class="page-ai__hbtn page-ai__hbtn--gray pressable" @click="scrollConfirmed">
-          <text>查看已确认 9 项</text>
+          <text>查看已确认 {{ confirmedCount }} 项</text>
         </view>
       </view>
     </view>
@@ -32,7 +37,7 @@
     <text class="page-ai__sec">待追问 · 按影响排序</text>
 
     <!-- 三张问题卡：序号+标题+影响徽章+说明+AI问题框+双钮（1:36 Group 61 实测 343×232） -->
-    <view v-for="(q, idx) in questions" :key="q.title" class="page-ai__qcard">
+    <view v-for="(q, idx) in questions" :key="q.id" class="page-ai__qcard">
       <view class="page-ai__qhead">
         <view class="page-ai__qnum"><text>{{ idx + 1 }}</text></view>
         <text class="page-ai__qtitle">{{ q.title }}</text>
@@ -58,10 +63,12 @@
       </view>
     </view>
 
+    <AppEmpty v-if="!loading && !questions.length" text="暂无待追问项" />
+
     <!-- 已确认信息条（1:93 实测 343×50） -->
     <view id="confirmed" class="page-ai__confirmed pressable" @click="goDetail">
       <text class="page-ai__confirmed-title">已确认信息</text>
-      <text class="page-ai__confirmed-count">9项</text>
+      <text class="page-ai__confirmed-count">{{ confirmedCount }}项</text>
       <view class="page-ai__arrow"><AppIcon name="chevron-right-gray" :size="16" /></view>
     </view>
 
@@ -87,36 +94,103 @@
 <script>
 /**
  * L03 AI 简报（稿 1:7703 实测 1:1）
- * 黑卡概览（12 点进度：9 金确认 / 3 灰待追问）→ 待追问三卡（编辑/单发）→ 已确认信息 → 安全绿框 → 一键全部追问。
+ * 黑卡概览（进度点：金=已确认 / 灰=待追问）→ 待追问卡（编辑/单发）→ 已确认信息 → 安全绿框 → 一键全部追问。
  * 业务口径：无拒绝报价；追问通过客户端站点发给客户。
  * 稿内错字「产看已确认 9 项」按语义改「查看」（联调评审时与用户核对）。
+ *
+ * 数据源（2026-09-14 接线）：/brief/list/:lead_id
+ *   status 3-已确认（计入金点与「已确认」条）/ 1-待追问（渲染成可发送的卡片）。
+ *   卡片说明行 desc 取 ai_suggestion（AI 建议话术）—— 后端无独立的「分析说明」字段。
+ *   单条发送走 /brief/send/:id；「编辑问题」跳追问页（本页只读展示）。
+ *   首次进入若无简报数据，调用 /brief/generate/:lead_id 让后端重建一次（幂等覆盖）。
  */
+import { listBriefs, generateBrief, sendBrief } from '@/api/lead'
+import { fromNow } from '@/utils/format'
+
 export default {
   name: 'LeadAiBrief',
   data() {
     return {
-      questions: [
-        { title: '具体日期', impact: 'quote', desc: '客户说"周末"但未指定哪天，档期锁定依赖此项', question: '您希望安排在哪个周末？8月还有 17-18、24-25 两档可选。' },
-        { title: '儿童作息', impact: 'sched', desc: '5岁儿童午休时间影响当天拍摄时段安排', question: '孩子平时午休是几点到几点？我们会避开午睡时间安排拍摄。' },
-        { title: '妆造需求', impact: 'quote', desc: '是否需要化妆造型服务，直接影响套餐加项', question: '需要为大人或孩子安排化妆造型吗？可单加也可含在套餐内。' },
-      ],
+      leadId: '',
+      briefs: [],
+      loading: false,
+      sending: false,
     }
   },
+  computed: {
+    pending() { return this.briefs.filter((b) => Number(b.status) === 1) },
+    confirmed() { return this.briefs.filter((b) => Number(b.status) === 3) },
+    pendingCount() { return this.pending.length },
+    confirmedCount() { return this.confirmed.length },
+    /** 追问卡（按 sort 升序；缺省保持后端顺序） */
+    questions() {
+      return [...this.pending]
+        .sort((a, b) => Number(a.sort || 0) - Number(b.sort || 0))
+        .map((b) => ({
+          id: b.id,
+          title: b.title,
+          impact: Number(b.affects_pricing) === 1 ? 'quote' : 'sched',
+          desc: b.ai_suggestion || '',
+          question: b.question || b.ai_suggestion || '',
+        }))
+    },
+    heroSub() {
+      return `从对话中识别 ${this.briefs.length} 项关键信息 · ${this.pendingCount} 项待追问`
+    },
+    dots() {
+      return { total: Math.max(this.briefs.length, 1), confirmed: this.confirmedCount }
+    },
+    /** 最近一次简报活动时间（sent_at / confirmed_at 取最新） */
+    updatedText() {
+      const times = this.briefs.map((b) => b.confirmed_at || b.sent_at).filter(Boolean)
+      if (!times.length) return ''
+      return fromNow(times.sort().slice(-1)[0])
+    },
+  },
+  onLoad(query) {
+    this.leadId = (query && query.id) || ''
+    this.fetchBriefs()
+  },
   methods: {
+    async fetchBriefs() {
+      if (!this.leadId) return
+      this.loading = true
+      try {
+        const items = await listBriefs(this.leadId).catch(() => [])
+        let list = Array.isArray(items) ? items : (items && items.list) || []
+        if (!list.length) {
+          const built = await generateBrief(this.leadId).catch(() => [])
+          list = Array.isArray(built) ? built : (built && built.list) || []
+        }
+        this.briefs = list
+      } finally {
+        this.loading = false
+      }
+    },
     goBack() {
       uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/lead/detail' }) })
     },
     goAsk() {
-      uni.navigateTo({ url: '/pages/lead/ask' })
+      uni.navigateTo({ url: `/pages/lead/ask?id=${this.leadId}` })
     },
+    /** 已确认信息：弹层列出「标题：值」 */
     goDetail() {
-      uni.navigateBack({ fail: () => {} })
+      const lines = this.confirmed.map((b) => `${b.title}：${b.value || '已确认'}`)
+      if (!lines.length) return uni.showToast({ title: '暂无已确认项', icon: 'none' })
+      uni.showModal({ title: `已确认 ${lines.length} 项`, content: lines.join('\n'), showCancel: false })
     },
-    editQuestion() {
-      uni.showToast({ title: '点击文本可编辑（演示）', icon: 'none' })
-    },
-    sendOne(i) {
-      uni.showToast({ title: `「${this.questions[i].title}」已发送给客户（演示）`, icon: 'none' })
+    /** 编辑问题：本页只读，编辑在追问页完成 */
+    editQuestion() { this.goAsk() },
+    async sendOne(i) {
+      const q = this.questions[i]
+      if (!q || this.sending) return
+      this.sending = true
+      const ok = await sendBrief(q.id).then(() => true).catch(() => false)
+      this.sending = false
+      if (!ok) return
+      uni.showToast({ title: `「${q.title}」已发送给客户`, icon: 'none' })
+      /* 发送后该条不再待追问（状态变 2-已发送），从列表移除 */
+      this.briefs = this.briefs.filter((b) => b.id !== q.id)
     },
     scrollConfirmed() {
       uni.pageScrollTo({ scrollTop: 99999, duration: 300 })

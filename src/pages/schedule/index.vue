@@ -25,58 +25,52 @@
     <!-- ======== 今日 ======== -->
     <template v-if="tab === 'today'">
       <view class="page-sc__day-row">
-        <text class="page-sc__day">8月8日 周六 · 今日</text>
-        <view class="page-sc__count"><text>2场拍摄</text></view>
+        <text class="page-sc__day">{{ todayLabel }}</text>
+        <view class="page-sc__count"><text>{{ todayShoots.length }}场拍摄</text></view>
       </view>
-      <!-- 拍摄卡 1：即将开始（1:28 实测 343×172 r16、双钮 导航/开始拍摄） -->
-      <view class="page-sc__shoot">
+      <view
+        v-for="it in todayShoots"
+        :key="it.id"
+        class="page-sc__shoot pressable"
+        @click="openOrder(it)"
+      >
         <view class="page-sc__shoot-head">
-          <text class="page-sc__shoot-time">09:00-11:00</text>
-          <view class="page-sc__badge page-sc__badge--soon"><text>即将开始</text></view>
+          <text class="page-sc__shoot-time">{{ it.timeText }}</text>
+          <view class="page-sc__badge" :class="'page-sc__badge--' + it.tone"><text>{{ it.badge }}</text></view>
         </view>
-        <text class="page-sc__shoot-name">陈雨 · 家庭纪念写真</text>
-        <text class="page-sc__shoot-place">越秀公园 · 2.5h</text>
+        <text class="page-sc__shoot-name">{{ it.name }}</text>
+        <text class="page-sc__shoot-place">{{ it.place }}</text>
         <view class="page-sc__shoot-btns">
-          <view class="page-sc__sbtn page-sc__sbtn--ghost pressable" @click="nav"><text>导航</text></view>
-          <view class="page-sc__sbtn page-sc__sbtn--dark pressable" @click="start"><text>开始拍摄</text></view>
+          <view class="page-sc__sbtn page-sc__sbtn--ghost pressable" @click.stop="nav(it)"><text>导航</text></view>
+          <view class="page-sc__sbtn page-sc__sbtn--dark pressable" @click.stop="contact(it)"><text>联系客户</text></view>
         </view>
       </view>
-      <!-- 拍摄卡 2：待开始（1:45 实测、单钮 联系客户） -->
-      <view class="page-sc__shoot">
-        <view class="page-sc__shoot-head">
-          <text class="page-sc__shoot-time">14:00-16:00</text>
-          <view class="page-sc__badge page-sc__badge--wait"><text>待开始</text></view>
+      <AppEmpty v-if="!todayShoots.length" text="今天没有拍摄安排" />
+
+      <template v-if="todayIdle.length">
+        <view class="page-sc__tip">
+          <AppIcon name="info-gray-sm" :size="13" />
+          <text class="page-sc__tip-text">今天还有 {{ todayIdle.length }} 段空闲 · 可约时段在「档期管理」里调整</text>
         </view>
-        <text class="page-sc__shoot-name">蓝桥 · 家庭纪念写真</text>
-        <text class="page-sc__shoot-place">越秀公园 · 2.5h</text>
-        <view class="page-sc__shoot-btns">
-          <view class="page-sc__sbtn page-sc__sbtn--ghost page-sc__sbtn--wide pressable" @click="contact"><text>联系客户</text></view>
+        <text class="page-sc__sec">空闲时段</text>
+        <view v-for="(t, i) in todayIdle" :key="i" class="page-sc__idle">
+          <view class="page-sc__idle-main">
+            <text class="page-sc__idle-t1">{{ t.range }} 空闲</text>
+            <text class="page-sc__idle-t2">可临时接单或处理后期</text>
+          </view>
+          <view class="page-sc__badge page-sc__badge--free"><text>可约</text></view>
         </view>
-      </view>
-      <!-- 转场提示（1:59 实测 343×61 #E6E7EB r14） -->
-      <view class="page-sc__tip">
-        <AppIcon name="info-gray-sm" :size="13" />
-        <text class="page-sc__tip-text">两场间隔 1.5h · 越秀公园→天河工作室转场约 40 分钟，时间可控</text>
-      </view>
-      <text class="page-sc__sec">空闲时段</text>
-      <!-- 空闲卡（1:65 实测 343×70） -->
-      <view class="page-sc__idle">
-        <view class="page-sc__idle-main">
-          <text class="page-sc__idle-t1">16:00 - 18:00 空闲</text>
-          <text class="page-sc__idle-t2">可临时接单或处理后期</text>
-        </view>
-        <view class="page-sc__badge page-sc__badge--free"><text>可约</text></view>
-      </view>
+      </template>
     </template>
 
     <!-- ======== 本周 ======== -->
     <template v-if="tab === 'week'">
-      <text class="page-sc__day page-sc__day--top">8月5日 - 8月11日</text>
-      <!-- 周历条（1:24 Group 117 实测 343×80：7 格 40×60，选中黑块，下方状态点；可点选联动当日任务） -->
+      <text class="page-sc__day page-sc__day--top">{{ weekRangeLabel }}</text>
+      <!-- 周历条：7 格，选中黑块，下方状态点；点选联动当日任务 -->
       <view class="page-sc__weekbar">
         <view
           v-for="(d, i) in weekDays"
-          :key="d.n"
+          :key="d.date"
           class="page-sc__wday pressable"
           :class="{ 'page-sc__wday--on': selWeekIdx === i }"
           @click="selWeekIdx = i"
@@ -87,11 +81,10 @@
         </view>
       </view>
       <text class="page-sc__day">{{ selWeekLabel }}</text>
-      <!-- 当日任务卡：随周历点选联动（数据驱动，今日=稿原样） -->
-      <template v-for="(it, i) in selWeekSchedule" :key="i">
-        <view v-if="it.type === 'shoot'" class="page-sc__shoot page-sc__shoot--slim">
+      <template v-for="it in selWeekItems" :key="it.key">
+        <view v-if="it.type === 'shoot'" class="page-sc__shoot page-sc__shoot--slim pressable" @click="openOrder(it)">
           <view class="page-sc__shoot-head">
-            <text class="page-sc__shoot-time">{{ it.time }}</text>
+            <text class="page-sc__shoot-time">{{ it.timeText }}</text>
             <view class="page-sc__badge" :class="'page-sc__badge--' + it.tone"><text>{{ it.badge }}</text></view>
           </view>
           <text class="page-sc__shoot-name">{{ it.name }}</text>
@@ -99,33 +92,33 @@
         </view>
         <view v-else class="page-sc__idle page-sc__idle--slim">
           <view class="page-sc__idle-main">
-            <text class="page-sc__idle-t1">{{ it.time }}</text>
-            <text class="page-sc__idle-t2">{{ it.desc }}</text>
+            <text class="page-sc__idle-t1">{{ it.range }} 空闲</text>
+            <text class="page-sc__idle-t2">可临时接单或处理后期</text>
           </view>
           <view class="page-sc__badge page-sc__badge--free"><text>可约</text></view>
         </view>
       </template>
-      <!-- 本周概况（1:81 实测：三行 kv，可约日期绿字） -->
+      <AppEmpty v-if="!selWeekItems.length" text="当天暂无拍摄安排" />
+
       <text class="page-sc__sec">本周概况</text>
       <view class="page-sc__card">
         <view class="page-sc__kv">
           <text class="page-sc__kv-label">本周拍摄</text>
-          <text class="page-sc__kv-val">5 场 · 2 场已完成</text>
+          <text class="page-sc__kv-val">{{ weekSummary.shoots }}</text>
         </view>
         <view class="page-sc__kv page-sc__kv--line">
           <text class="page-sc__kv-label">待修图任务</text>
-          <text class="page-sc__kv-val">1 个 · 婚礼跟拍 24 张</text>
+          <text class="page-sc__kv-val">{{ weekSummary.retouch }}</text>
         </view>
         <view class="page-sc__kv">
           <text class="page-sc__kv-label">可约日期</text>
-          <text class="page-sc__kv-val page-sc__kv-val--green">8/10 · 8/16 · 8/23</text>
+          <text class="page-sc__kv-val page-sc__kv-val--green">{{ weekSummary.free }}</text>
         </view>
       </view>
     </template>
 
     <!-- ======== 可约档期 ======== -->
     <template v-if="tab === 'avail'">
-      <!-- 月历（1:22 Group 123 实测：月份头+星期头+40×40 格+图例） -->
       <view class="page-sc__cal">
         <view class="page-sc__month-nav">
           <view class="page-sc__month-btn pressable" @click="prevMonth"><AppIcon name="chevron-left-gray" :size="20" /></view>
@@ -154,23 +147,18 @@
           <view class="page-sc__lg"><view class="page-sc__lg-dot page-sc__lg-dot--sel" /><text>选中</text></view>
         </view>
       </view>
-      <!-- 选中日时段（点击月历联动：标题+档态徽章+时段 chips，红 chip 带「订单」角标） -->
       <template v-if="selDay">
         <view class="page-sc__day-row page-sc__day-row--mt">
           <text class="page-sc__day page-sc__day--nomargin">{{ selLabel }}</text>
           <view class="page-sc__badge" :class="'page-sc__badge--' + selBadge.tone"><text>{{ selBadge.text }}</text></view>
         </view>
-        <view class="page-sc__slots">
-          <view
-            v-for="(s, i) in selSlots"
-            :key="i"
-            class="page-sc__slot"
-            :class="'page-sc__slot--' + s.tone"
-          >
+        <view v-if="selSlots.length" class="page-sc__slots">
+          <view v-for="(s, i) in selSlots" :key="i" class="page-sc__slot" :class="'page-sc__slot--' + s.tone">
             <text>{{ s.range }}</text>
             <view v-if="s.tag" class="page-sc__slot-tag"><text>{{ s.tag }}</text></view>
           </view>
         </view>
+        <AppEmpty v-else text="当天未开放可约时段" />
       </template>
       <view v-else class="page-sc__day-row page-sc__day-row--mt">
         <text class="page-sc__day page-sc__day--nomargin">点击日期查看当天可约时段</text>
@@ -195,11 +183,42 @@
 <script>
 /**
  * SC01-03 日程（稿三板同构 tab 页一页化：1:3960 今日 / 1:4047 本周 / 1:4152 可约档期）
- * 今日：拍摄卡（导航/开始拍摄、联系客户）+ 转场提示 + 空闲时段。
- * 本周：周历条（今日黑块+状态点）+ 当日卡 + 本周概况 kv。
- * 可约档期：月历（40×40 格、图例五色）+ 选中日时段 chips（红 chip 订单角标）。
- * 周历状态点实测：灰 #C3C3C3 已过 / 金 #B66E00 部分 / 绿 #20845C 可约 / 白 今日。
+ *
+ * 数据源（2026-09-14 接线）：
+ *   /order/list        → 全部订单（今日/本周的拍摄卡；shoot_date + shoot_time + status）
+ *   /schedule/list     → 档期锁 biz_calendar_block（start_date~end_date 区间查询），
+ *                        用于「某天已被占用」与状态点/档态判定
+ *   /slot-template/list→ 档期时段模板 biz_slot_template（按**星期几**开放的可约时段）
+ *
+ * ⚠️ 后端没有"某天可约/已关闭"这种按日期的开放表：可约性 = 模板（按周几）× 档期锁（按日期）。
+ *    本页据此推导三种档态：可约（当天周几有模板且无锁）/ 部分可约（有锁但未占满）/
+ *    已占或关闭（无模板，或模板时段全被锁）。
+ * ⚠️ 拍摄卡的后端事实只有一个"状态"（enum.OrderStatus：2-待拍摄 3-拍摄中 4-精修中 5-待交付
+ *    6-已完成 7-已取消）：稿内"即将开始/待开始"的细分是"当前时间 vs 拍摄时段"的展示层推导，
+ *    本页按状态映射为「拍摄中 / 待开始 / 已取消」，不做无后端支撑的伪状态。
  */
+import { getScheduleList, listSlotTemplates } from '@/api/schedule'
+import { getOrderList } from '@/api/order'
+import { contactPhotographer } from '@/utils/format'
+
+const WEEK = ['日', '一', '二', '三', '四', '五', '六']
+/** 订单状态 → 徽章色调 / 文案（enum.OrderStatus） */
+const ORDER_TONE = { 1: 'wait', 2: 'soon', 3: 'soon', 4: 'wait', 5: 'wait', 6: 'wait', 7: 'wait' }
+const ORDER_BADGE = { 1: '待定金', 2: '待开始', 3: '拍摄中', 4: '精修中', 5: '待交付', 6: '已完成', 7: '已取消' }
+/** 生效中的订单状态（已取消不计入日程） */
+const ACTIVE_STATUS = [1, 2, 3, 4, 5, 6]
+const DOT_OK = '#76D596'
+const DOT_PART = '#FFDA08'
+const DOT_OFF = '#FF8181'
+const DOT_TODAY = '#FFFFFF'
+
+function ymd(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+function hm(t) {
+  return String(t || '').slice(0, 5)
+}
+
 export default {
   name: 'ScheduleIndex',
   data() {
@@ -210,85 +229,116 @@ export default {
         { key: 'week', label: '本周' },
         { key: 'avail', label: '可约档期' },
       ],
-      weekDays: [
-        { w: '一', n: '5', dot: '#C3C3C3' },
-        { w: '二', n: '6', dot: '#C2C2C2' },
-        { w: '三', n: '7', dot: 'transparent' }, /* 稿 7/11 无状态点 */
-        { w: '四', n: '8', dot: '#FFFFFF', today: true },
-        { w: '五', n: '9', dot: '#B66E00' },
-        { w: '六', n: '10', dot: '#20845C' },
-        { w: '日', n: '11', dot: 'transparent' },
-      ],
-      selWeekIdx: 3, /* 默认选中今日（周四 8） */
-      /* 周历点选联动的当日任务演示数据（今日=稿原样；过去日=已完成，未来日=待开始/空闲） */
-      weekSchedules: [
-        [
-          { type: 'shoot', time: '09:00-11:00', badge: '已完成', tone: 'wait', name: '陈雨 · 家庭纪念写真', place: '越秀公园 · 2.5h' },
-          { type: 'shoot', time: '14:00-16:00', badge: '已完成', tone: 'wait', name: '王浩 · 结婚登记照', place: '天河工作室 · 1.5h' },
-        ],
-        [
-          { type: 'shoot', time: '10:00-12:00', badge: '已完成', tone: 'wait', name: '林七月 · 亲子写真', place: '流花湖公园 · 2h' },
-        ],
-        [
-          { type: 'shoot', time: '09:00-12:00', badge: '已完成', tone: 'wait', name: '孟川 · 商务形象照', place: '天河工作室 · 3h' },
-          { type: 'idle', time: '14:00 - 18:00 空闲', desc: '可临时接单或处理后期' },
-        ],
-        [
-          { type: 'shoot', time: '09:00-11:00', badge: '即将开始', tone: 'soon', name: '陈雨 · 家庭纪念写真', place: '越秀公园 · 2.5h' },
-          { type: 'shoot', time: '14:00-16:00', badge: '待开始', tone: 'wait', name: '蓝桥 · 商务形象', place: '越秀公园 · 2.5h' },
-          { type: 'idle', time: '16:00 - 18:00 空闲', desc: '可临时接单或处理后期' },
-        ],
-        [
-          { type: 'shoot', time: '10:00-12:00', badge: '待开始', tone: 'wait', name: '蓝桥 · 商务形象照', place: '天河工作室 · 2h' },
-          { type: 'idle', time: '14:00 - 18:00 空闲', desc: '可临时接单或处理后期' },
-        ],
-        [
-          { type: 'idle', time: '09:00 - 18:00 空闲', desc: '全天空闲 · 可接单或约拍' },
-        ],
-        [
-          { type: 'idle', time: '09:00 - 18:00 空闲', desc: '全天空闲 · 可接单或约拍' },
-        ],
-      ],
-      monthOffset: 0,
-      selDay: 17, /* 默认选中 17（与稿 SC03 时段卡一致），切月清空 */
+      orders: [],
+      blocks: [],
+      templates: [],
       weekHeads: ['一', '二', '三', '四', '五', '六', '日'],
-      /* SC03 实测 8 月格色（稿 1:50-92）：1,4,6 红 / 9,17 黄 / 10,16,23?,30 绿 / 12 灰今日（推导）/ 23 红已占 */
-      availTones: { 1: 'off', 4: 'off', 6: 'off', 9: 'part', 10: 'ok', 12: 'today', 16: 'ok', 17: 'part', 23: 'off', 30: 'ok' },
+      selWeekIdx: 0,
+      monthOffset: 0,
+      selDay: null,
+      baseYear: 0,
+      baseMonth: 0,
+      loading: false,
     }
   },
   computed: {
-    /* 周历选中日标题：8月8日 周四 · 今日 */
+    today() {
+      return new Date()
+    },
+    todayStr() {
+      return ymd(this.today)
+    },
+    todayLabel() {
+      const d = this.today
+      return `${d.getMonth() + 1}月${d.getDate()}日 周${WEEK[d.getDay()]} · 今日`
+    },
+    /** 当天有排期的订单（已取消不计） */
+    todayShoots() {
+      return this.shootsOn(this.todayStr)
+    },
+    /** 今天空闲时段（模板时段 - 已锁时段） */
+    todayIdle() {
+      return this.idleRanges(this.todayStr)
+    },
+    /** 本周一 */
+    weekStart() {
+      const d = new Date(this.today)
+      const wd = d.getDay() || 7
+      d.setDate(d.getDate() - wd + 1)
+      return d
+    },
+    weekDays() {
+      return Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(this.weekStart)
+        d.setDate(d.getDate() + i)
+        const date = ymd(d)
+        return { w: WEEK[d.getDay()], n: String(d.getDate()), date, dot: this.dotFor(date) }
+      })
+    },
+    weekRangeLabel() {
+      const s = this.weekStart
+      const e = new Date(s)
+      e.setDate(e.getDate() + 6)
+      return `${s.getMonth() + 1}月${s.getDate()}日 - ${e.getMonth() + 1}月${e.getDate()}日`
+    },
+    selWeekDate() {
+      return (this.weekDays[this.selWeekIdx] || {}).date || this.todayStr
+    },
     selWeekLabel() {
       const d = this.weekDays[this.selWeekIdx]
-      return `8月${d.n}日 周${d.w}${this.selWeekIdx === 3 ? ' · 今日' : ''}`
+      if (!d) return ''
+      return `${Number(d.date.slice(5, 7))}月${Number(d.date.slice(8, 10))}日 周${d.w}${d.date === this.todayStr ? ' · 今日' : ''}`
     },
-    /* 周历选中日任务卡 */
-    selWeekSchedule() {
-      return this.weekSchedules[this.selWeekIdx] || []
+    /** 选中日的任务卡（拍摄卡 + 空闲卡） */
+    selWeekItems() {
+      const date = this.selWeekDate
+      const shoots = this.shootsOn(date).map((it) => ({ ...it, type: 'shoot', key: 's' + it.id }))
+      const idles = this.idleRanges(date).map((t, i) => ({ ...t, type: 'idle', key: 'i' + i }))
+      return [...shoots, ...idles]
+    },
+    weekSummary() {
+      const dates = this.weekDays.map((d) => d.date)
+      const inWeek = this.orders.filter((o) => o.shoot_date && dates.includes(o.shoot_date) && o.status !== 7)
+      const doneCount = inWeek.filter((o) => o.status === 6).length
+      const retouch = this.orders.filter((o) => o.status === 4).length
+      const free = dates
+        .filter((d) => d >= this.todayStr && this.dotFor(d) === DOT_OK)
+        .slice(0, 3)
+        .map((d) => `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}`)
+      return {
+        shoots: inWeek.length ? `${inWeek.length} 场 · ${doneCount} 场已完成` : '暂无安排',
+        retouch: retouch ? `${retouch} 个 · 精修中订单` : '暂无',
+        free: free.length ? free.join(' · ') : '暂无',
+      }
+    },
+    monthDate() {
+      return new Date(this.baseYear, this.baseMonth + this.monthOffset, 1)
     },
     monthLabel() {
-      const m = (8 + this.monthOffset + 12) % 12 || 12
-      const y = 2026 + Math.floor((8 - 1 + this.monthOffset) / 12)
-      return `${y}年${m}月`
+      return `${this.monthDate.getFullYear()}年${this.monthDate.getMonth() + 1}月`
     },
     availCells() {
-      const m = (8 + this.monthOffset + 12) % 12 || 12
-      const days = new Date(2026, m, 0).getDate()
-      const first = new Date(2026, m - 1, 1).getDay() || 7
-      const cells = Array(first - 1).fill(null)
+      const first = this.monthDate
+      const days = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate()
+      const lead = (first.getDay() + 6) % 7 // 周一为首列
+      const cells = Array(lead).fill(null)
       for (let d = 1; d <= days; d++) {
-        cells.push({ day: d, tone: this.monthOffset === 0 ? (this.availTones[d] || 'plain') : 'plain' })
+        const date = ymd(new Date(first.getFullYear(), first.getMonth(), d))
+        cells.push({ day: d, date, tone: this.toneFor(date) })
       }
       return cells
     },
-    /* 选中日标题：8月17日 周一（星期几实算，稿「周二」系笔误不沿用） */
+    selDate() {
+      if (!this.selDay) return ''
+      return ymd(new Date(this.monthDate.getFullYear(), this.monthDate.getMonth(), this.selDay))
+    },
     selLabel() {
-      const m = (8 + this.monthOffset + 12) % 12 || 12
-      const w = '日一二三四五六'[new Date(2026, m - 1, this.selDay).getDay()]
-      return `${m}月${this.selDay}日 周${w}`
+      if (!this.selDate) return ''
+      const d = new Date(this.monthDate.getFullYear(), this.monthDate.getMonth(), this.selDay)
+      return `${d.getMonth() + 1}月${d.getDate()}日 周${WEEK[d.getDay()]}`
     },
     selTone() {
-      return this.monthOffset === 0 ? (this.availTones[this.selDay] || 'plain') : 'plain'
+      return this.selDate ? this.toneFor(this.selDate) : 'plain'
     },
     selBadge() {
       const map = {
@@ -300,65 +350,130 @@ export default {
       }
       return map[this.selTone]
     },
-    /* 选中日时段 chips：17 为稿原样数据，其余按档态生成演示 */
+    /** 选中日时段 chips（模板时段 × 档期锁） */
     selSlots() {
-      if (this.monthOffset === 0 && this.selDay === 17) {
-        return [
-          { range: '09:00-11:00', tone: 'off', tag: '订单' },
-          { range: '11:00-14:00', tone: 'ok' },
-          { range: '14:00-16:00', tone: 'ok' },
-          { range: '16:00-18:00', tone: 'plain' },
-        ]
-      }
-      const t = this.selTone
-      if (t === 'ok') {
-        return [
-          { range: '09:00-11:00', tone: 'ok' },
-          { range: '11:00-14:00', tone: 'ok' },
-          { range: '14:00-16:00', tone: 'ok' },
-          { range: '16:00-18:00', tone: 'ok' },
-        ]
-      }
-      if (t === 'part') {
-        return [
-          { range: '09:00-11:00', tone: 'off', tag: '订单' },
-          { range: '11:00-14:00', tone: 'ok' },
-          { range: '14:00-16:00', tone: 'plain' },
-          { range: '16:00-18:00', tone: 'plain' },
-        ]
-      }
-      if (t === 'off') {
-        return [
-          { range: '09:00-11:00', tone: 'off' },
-          { range: '11:00-14:00', tone: 'off' },
-          { range: '14:00-16:00', tone: 'off' },
-          { range: '16:00-18:00', tone: 'off' },
-        ]
-      }
-      return [
-        { range: '09:00-11:00', tone: 'plain' },
-        { range: '11:00-14:00', tone: 'plain' },
-        { range: '14:00-16:00', tone: 'plain' },
-        { range: '16:00-18:00', tone: 'plain' },
-      ]
+      if (!this.selDate) return []
+      const locked = this.blocksOn(this.selDate)
+      return this.templatesFor(this.selDate).map((t) => {
+        const range = `${hm(t.start_time)}-${hm(t.end_time)}`
+        const hit = locked.find((b) => b.time_range === range)
+        return hit ? { range, tone: 'off', tag: '订单' } : { range, tone: 'ok' }
+      })
     },
   },
+  onLoad() {
+    const now = new Date()
+    this.baseYear = now.getFullYear()
+    this.baseMonth = now.getMonth()
+    this.selWeekIdx = (now.getDay() || 7) - 1
+    this.fetchAll()
+  },
   methods: {
+    async fetchAll() {
+      this.loading = true
+      // 档期锁：拉一个足够宽的区间（本月前后各 3 个月）覆盖月历翻页
+      const start = ymd(new Date(this.baseYear, this.baseMonth - 3, 1))
+      const end = ymd(new Date(this.baseYear, this.baseMonth + 4, 0))
+      const [ordersRes, blocksRes, tplRes] = await Promise.all([
+        getOrderList({ page: 1, page_size: 100 }).catch(() => null),
+        getScheduleList({ start_date: start, end_date: end }).catch(() => null),
+        listSlotTemplates().catch(() => null),
+      ])
+      const orders = ordersRes && ordersRes.list ? ordersRes.list : Array.isArray(ordersRes) ? ordersRes : []
+      this.orders = orders.filter((o) => o.shoot_date)
+      this.blocks = Array.isArray(blocksRes) ? blocksRes : []
+      this.templates = (Array.isArray(tplRes) ? tplRes : []).filter((t) => t.status !== 0)
+      this.loading = false
+    },
+    /** 指定日期的拍摄卡 */
+    shootsOn(date) {
+      return this.orders
+        .filter((o) => o.shoot_date === date && ACTIVE_STATUS.includes(o.status))
+        .map((o) => ({
+          id: o.id,
+          orderId: o.id,
+          timeText: o.shoot_time ? String(o.shoot_time) : '全天',
+          badge: ORDER_BADGE[o.status] || '进行中',
+          tone: ORDER_TONE[o.status] || 'wait',
+          name: [o.customer_name, o.package_name].filter(Boolean).join(' · ') || o.code || '未命名订单',
+          place: [o.shoot_address, o.people_count].filter(Boolean).join(' · ') || '地点待定',
+          mobile: o.customer_mobile || '',
+          address: o.shoot_address || '',
+        }))
+        .sort((a, b) => String(a.timeText).localeCompare(String(b.timeText)))
+    },
+    /** 指定日期的档期锁 */
+    blocksOn(date) {
+      return this.blocks.filter((b) => b.date === date)
+    },
+    /** 指定日期的可用模板（按星期几） */
+    templatesFor(date) {
+      if (!date) return []
+      const wd = new Date(`${date}T00:00:00`).getDay()
+      return this.templates.filter((t) => Number(t.weekday) === wd)
+    },
+    /** 模板时段 - 已锁时段 = 空闲时段 */
+    idleRanges(date) {
+      const locked = this.blocksOn(date)
+      return this.templatesFor(date)
+        .filter((t) => !locked.some((b) => b.time_range === `${hm(t.start_time)}-${hm(t.end_time)}`))
+        .map((t) => ({ range: `${hm(t.start_time)}-${hm(t.end_time)}` }))
+        .sort((a, b) => a.range.localeCompare(b.range))
+    },
+    /** 周历/月历状态点与档态 */
+    dotFor(date) {
+      if (date === this.todayStr) return DOT_TODAY
+      if (date < this.todayStr) return '#C3C3C3'
+      const tone = this.toneFor(date)
+      if (tone === 'ok') return DOT_OK
+      if (tone === 'part') return DOT_PART
+      if (tone === 'off') return DOT_OFF
+      return 'transparent'
+    },
+    toneFor(date) {
+      if (!date) return 'plain'
+      if (date < this.todayStr) return 'plain'
+      if (date === this.todayStr) return 'today'
+      const tpls = this.templatesFor(date)
+      if (!tpls.length) return 'off'
+      const locked = this.blocksOn(date)
+      if (!locked.length) return 'ok'
+      return locked.length >= tpls.length ? 'off' : 'part'
+    },
     goManage() {
       uni.navigateTo({ url: '/pages/schedule/manage' })
     },
-    prevMonth() { this.monthOffset -= 1; this.selDay = null },
-    nextMonth() { this.monthOffset += 1; this.selDay = null },
+    prevMonth() {
+      this.monthOffset -= 1
+      this.selDay = null
+    },
+    nextMonth() {
+      this.monthOffset += 1
+      this.selDay = null
+    },
     pickDay(c) {
       if (!c) return
       this.selDay = c.day
     },
-    nav() { uni.showToast({ title: '唤起地图导航（演示）', icon: 'none' }) },
-    start() { uni.navigateTo({ url: '/pages/order/detail' }) },
-    contact() { uni.showToast({ title: '联系客户（演示）', icon: 'none' }) },
+    openOrder(it) {
+      if (!it.orderId) return
+      uni.navigateTo({ url: `/pages/order/detail?id=${it.orderId}` })
+    },
+    /** 导航：无经纬度可用，退化为复制地址（不伪造 map 跳转） */
+    nav(it) {
+      if (!it.address) return uni.showToast({ title: '暂无拍摄地址', icon: 'none' })
+      uni.setClipboardData({
+        data: it.address,
+        success: () => uni.showToast({ title: '地址已复制', icon: 'none' }),
+      })
+    },
+    contact(it) {
+      contactPhotographer(it.mobile)
+    },
   },
 }
 </script>
+
 
 <style lang="scss" scoped>
 .page-sc {
