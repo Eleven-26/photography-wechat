@@ -121,7 +121,7 @@ import { getStudioSettings } from '@/api/settings'
  * 行图标均从画板导出（me-pkg/me-works/me-booking/me-wallet/me-bell/me-shield/me-help）。
  *
  * 预约主页链接由**服务端**下发（studio/get 的 homepage_url =
- * share.homepage_base_url + ?slug=xxx&staff_id=<我的账号id>），前端不拼域名；
+ * share.h5_base_url + ?slug=xxx&staff_id=<我的账号id>），前端不拼域名；
  * 未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
  * staff_id 即分享人：客户从这条链接进来下单，订单就归到我名下（biz_order.photographer_id），
  * 因此在员工端「我的订单」里能直接看到自己的客户单。

@@ -26,6 +26,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''), // 剥前缀：后端注册的是 /wechat/staff/...、/wechat/...
       },
+      // 公开作品图（后端 /media，不剥前缀）：作品集封面/图集是站内相对路径，
+      // dev 下不代理会打到 devServer 上 404 → 员工端「作品」页图片全空白
+      '/media': {
+        target: backendUrl,
+        changeOrigin: true,
+      },
     },
   },
 })
