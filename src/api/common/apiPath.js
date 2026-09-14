@@ -10,7 +10,9 @@
  * 因此这里也维护两张表：API_PATHS（员工端）与 CLIENT_API_PATHS（客户区）。
  *
  * ⚠️ 路径口径（2026-09-12 按后端真实路由逐条核对，见 internal/router/endpoints.go 的 staffInclude/staffExtra）：
- * 1. 所有接口一律 **POST + JSON body**，路径参数走 URL、业务参数走 body（后端不读 query，见 internal/pkg/params）；
+ * 1. 所有接口一律 **POST + JSON body**（后端不读 query，见 internal/pkg/params）；
+ *    **create / update 的主键（id / order_id / lead_id）走 body**，不再拼进 URL
+ *    （2026-09-14 契约变更，与 PC 端 apiPath.ts 同口径）；detail / status / delete 等仍走 URL 路径参数；
  * 2. **员工端没有 `/order/confirm/:id`** ——「确认档期」走状态机 `/order/status/:id`，
  *    待确认(0) 的合法流转只有 待定金(1) / 已取消(7)（见 internal/domain/order.go）；
  * 3. 退款审核的员工端字段是 **approve**（bool），与 PC 的 approved 不同（有意保留的端差异）。

@@ -3,7 +3,7 @@
  *
  * 后端路由：
  *   POST /wechat/staff/payment/list/:order_id
- *   POST /wechat/staff/payment/create/:order_id
+ *   POST /wechat/staff/payment/create            （order_id 在 body）
  *   POST /wechat/staff/payment/confirm/:id      确认到账（客户登记后的核验闭环）
  *   POST /wechat/staff/refund/list/:order_id
  *   POST /wechat/staff/refund/audit/:id         退款审核
@@ -19,7 +19,7 @@ export const getPaymentList = (orderId) => rpc(API_PATHS.finance.paymentList, {}
 
 /** 登记一笔收款 @param {number} orderId @param {Object} payload */
 export const createPayment = (orderId, payload) =>
-  rpc(API_PATHS.finance.paymentCreate, payload, orderId)
+  rpc(API_PATHS.finance.paymentCreate, { ...payload, order_id: orderId })
 
 /**
  * 确认到账（客户在客户端「登记转账」后的核验动作，写 status=2 并联动订单收款状态）

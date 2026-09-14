@@ -2,7 +2,7 @@
  * 交付模块 —— 交付单 / 样片与成品上传 / 客户反馈处理
  *
  * 后端路由：
- *   POST /wechat/staff/delivery/create/:order_id        创建交付单（**不收 body**，真实端差异）
+ *   POST /wechat/staff/delivery/create                 创建交付单（order_id 在 body）
  *   POST /wechat/staff/delivery/detail/:id              :id = **order_id**（与 PC 同口径）
  *   POST /wechat/staff/delivery/upload-samples/:id      :id = 交付单 ID
  *   POST /wechat/staff/delivery/upload-retouched/:id    :id = 交付单 ID
@@ -14,10 +14,10 @@ import { rpc } from '@/api/common/http'
 import { API_PATHS } from '@/api/common/apiPath'
 
 /**
- * 创建交付单（后端不收 body，真实端差异 —— 不要传参数）
+ * 创建交付单（order_id 走 body，不再拼 URL 路径参数）
  * @param {number} orderId
  */
-export const createDelivery = (orderId) => rpc(API_PATHS.delivery.create, {}, orderId)
+export const createDelivery = (orderId) => rpc(API_PATHS.delivery.create, { order_id: orderId })
 
 /**
  * 交付单详情 @param {number} id **订单 ID**（按订单反查交付单）

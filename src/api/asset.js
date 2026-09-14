@@ -6,7 +6,7 @@
  *   POST /wechat/staff/asset/list           body 分页 { page, page_size, keyword?, category?, status?, featured? } → PageOK
  *   POST /wechat/staff/asset/detail/:id
  *   POST /wechat/staff/asset/create         dto.AssetCreateReq
- *   POST /wechat/staff/asset/update/:id     dto.AssetUpdateReq
+ *   POST /wechat/staff/asset/update         dto.AssetUpdateReq（id 在 body）
  *   POST /wechat/staff/asset/status/:id     dto.AssetFlagsReq（局部开关，见下）
  *   POST /wechat/staff/asset/delete/:id     （权限点 asset:delete）
  *
@@ -36,7 +36,7 @@ export const getAssetDetail = (id) => rpc(API_PATHS.asset.detail, {}, id)
 export const createAsset = (payload) => rpc(API_PATHS.asset.create, payload)
 
 /** 更新作品（全字段回传） @param {number} id @param {Object} payload dto.AssetUpdateReq */
-export const updateAsset = (id, payload) => rpc(API_PATHS.asset.update, payload, id)
+export const updateAsset = (id, payload) => rpc(API_PATHS.asset.update, { ...payload, id })
 
 /**
  * 发布状态 / 可见性 / 精选开关（局部更新，不要求回传全字段）

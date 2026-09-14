@@ -5,7 +5,7 @@
  *   POST /wechat/staff/package/list           body 分页 { page, page_size, category?, status? } → PageOK
  *   POST /wechat/staff/package/detail/:id
  *   POST /wechat/staff/package/create         dto.PackageReq
- *   POST /wechat/staff/package/update/:id     dto.PackageReq
+ *   POST /wechat/staff/package/update         dto.PackageReq（id 在 body）
  *   POST /wechat/staff/package/status/:id     body { status }（上下架，权限点 package:publish）
  *   POST /wechat/staff/package/delete/:id     （权限点 package:delete）
  *
@@ -32,7 +32,7 @@ export const getPackageDetail = (id) => rpc(API_PATHS.package.detail, {}, id)
 export const createPackage = (payload) => rpc(API_PATHS.package.create, payload)
 
 /** 更新套餐 @param {number} id @param {Object} payload dto.PackageReq */
-export const updatePackage = (id, payload) => rpc(API_PATHS.package.update, payload, id)
+export const updatePackage = (id, payload) => rpc(API_PATHS.package.update, { ...payload, id })
 
 /** 上下架 @param {number} id @param {number} status 1草稿/2已上架/3已下线 */
 export const setPackageStatus = (id, status) => rpc(API_PATHS.package.status, { status }, id)

@@ -54,10 +54,10 @@ export const cancelOrder = (id, payload = {}) => rpc(API_PATHS.order.cancel, pay
 export const listAddons = (orderId) => rpc(API_PATHS.order.addonList, {}, orderId)
 
 /** @param {number} orderId @param {Object} payload */
-export const createAddon = (orderId, payload) => rpc(API_PATHS.order.addonCreate, payload, orderId)
+export const createAddon = (orderId, payload) => rpc(API_PATHS.order.addonCreate, { ...payload, order_id: orderId })
 
 /** @param {number} id 加项 ID */
-export const updateAddon = (id, payload) => rpc(API_PATHS.order.addonUpdate, payload, id)
+export const updateAddon = (id, payload) => rpc(API_PATHS.order.addonUpdate, { ...payload, id })
 
 /** @param {number} id 加项 ID */
 export const deleteAddon = (id) => rpc(API_PATHS.order.addonDelete, {}, id)

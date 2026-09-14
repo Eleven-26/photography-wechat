@@ -37,7 +37,7 @@ export const createPaymentMethod = (payload) => rpc(API_PATHS.settings.paymentMe
 
 /** 更新收款方式 @param {number} id @param {Object} payload dto.PaymentMethodReq */
 export const updatePaymentMethod = (id, payload) =>
-  rpc(API_PATHS.settings.paymentMethodUpdate, payload, id)
+  rpc(API_PATHS.settings.paymentMethodUpdate, { ...payload, id })
 
 /** 删除收款方式 @param {number} id */
 export const deletePaymentMethod = (id) => rpc(API_PATHS.settings.paymentMethodDelete, {}, id)
