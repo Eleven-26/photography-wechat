@@ -47,6 +47,15 @@ export const API_PATHS = {
   },
   // 工作台
   dashboard: { overview: 'overview' },
+  // 账号自助（登录者本人；后端 routes 表即无权限点）
+  user: {
+    profile: 'user/profile',
+    changePassword: 'user/change-password',
+    logout: 'user/logout'
+  },
+  // 通用上传（multipart/form-data：file + store_id + biz_type + biz_id）
+  // 被收款凭证、交付样片/成品等多条链路共用（见 routes/user.go → /upload/file）
+  upload: { file: 'upload/file' },
   // 订单
   order: {
     list: 'order/list',
@@ -81,6 +90,8 @@ export const API_PATHS = {
   customer: {
     list: 'customer/list',
     detail: 'customer/detail',
+    /** 客户建档（权限点沿用 PC 的 customer:create） */
+    create: 'customer/create',
     mobile: 'customer/mobile',
     todayFollow: 'customer/today-follow'
   },
@@ -98,7 +109,10 @@ export const API_PATHS = {
   // 交付
   delivery: {
     create: 'delivery/create',
+    /** :id = order_id（按订单反查交付单） */
     detail: 'delivery/detail',
+    /** :id = order_id，返回交付文件明细数组 */
+    items: 'delivery/items',
     uploadSamples: 'delivery/upload-samples',
     uploadRetouched: 'delivery/upload-retouched',
     feedbackList: 'delivery/feedback/list',
@@ -122,7 +136,37 @@ export const API_PATHS = {
   // 工作室设置
   settings: {
     get: 'studio/get',
-    update: 'studio/update'
+    update: 'studio/update',
+    // 收款方式（list 归 settings:view、增删改归 settings:update，与 PC 同权）
+    paymentMethodList: 'settings/payment-method/list',
+    paymentMethodCreate: 'settings/payment-method/create',
+    paymentMethodUpdate: 'settings/payment-method/update',
+    paymentMethodDelete: 'settings/payment-method/delete'
+  },
+  // 套餐（2026-09-14 第四批补开；status 即上下架，权限点 package:publish）
+  // ⚠️ 客户区有同名 package 键（CLIENT_API_PATHS），但**只有公开的 list/detail**，勿混用。
+  package: {
+    list: 'package/list',
+    detail: 'package/detail',
+    create: 'package/create',
+    update: 'package/update',
+    status: 'package/status',
+    delete: 'package/delete'
+  },
+  // 作品集（2026-09-14 第四批补开；status 归 asset:audit，见 internal/router/endpoints.go 第四批说明）
+  asset: {
+    list: 'asset/list',
+    detail: 'asset/detail',
+    create: 'asset/create',
+    update: 'asset/update',
+    status: 'asset/status',
+    delete: 'asset/delete'
+  },
+  // 报价（2026-09-14 第四批补开；路径参数是**线索 ID**，见 internal/presentation/routes/customer.go）
+  quote: {
+    create: 'quote/create',
+    list: 'quote/list',
+    status: 'quote/status'
   },
   // 登录设备
   device: {

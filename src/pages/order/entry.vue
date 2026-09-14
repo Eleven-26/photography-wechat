@@ -307,14 +307,21 @@
  * D16 录入订单·一页化（主屏画板 1:4403 + 6 个弹层画板 1:4539/4713/4862/5026/5264/5402）
  *
  * 业务：摄影师代客下单（S3 仅此入口为手动，其余系统自动生成）。创建后：占用档期 +
- * 进订单列表 + 客户端站点可见。定金比例 30%/50%/自定义；尾款 = 总价 - 定金。
+ * 进订单列表 + 客户端站点可见。定金比例 30%/50%/自定义仅为本地预览，尾款 = 总价 - 定金。
  * 稿内 7 屏在稿库为独立画板，工程上一页化：差异仅为弹层状态，避免 7 个路由。
- * 金额单位为「元」（formatAmount 口径），联调提交时转 *_cents 分并对齐后端字段名。
- * 演示数据：联调后移除。
+ * 真实接口：客户接 POST /wechat/staff/customer/list（+ create 建档）；
+ *          下单接 POST /wechat/staff/order/create，payload 严格按 dto.OrderCreateReq
+ *          （customer_id / package_id / shoot_date / shoot_time / shoot_address / remark 等）。
+ * ⚠️ 套餐库无员工端列表接口（后端 endpoints 已注明 package 员工端无能力），本页套餐选择暂用
+ *    静态目录，package_id 暂为占位；档期/可用时段无员工端接口，日期弹层仅作日期选择。
  */
 import AppTabBar from '@/components/AppTabBar.vue'
 import { formatAmount } from '@/utils/format'
-import { isDemo } from '@/utils/demo'
+import { createOrder } from '@/api/order'
+import { getCustomerList, createCustomer } from '@/api/customer'
+
+// 客户头像占位色（真实客户无头像色字段，按序号轮询）
+const AVATAR_COLORS = ['#FFB508', '#6BABFF', '#FB79FF', '#00CB8E', '#FF8181', '#9B8CFF']
 
 export default {
   components: { AppTabBar },
@@ -322,67 +329,60 @@ export default {
     return {
       sheet: '',            // 当前弹层：customer/newCustomer/package/date/location/remark
       submitting: false,
-      /* 表单（演示初值 = 稿 1:4403 稿值） */
       form: {
-        customerName: '王浩',
-        customerMobile: '138****5241',
-        pkgName: '亲自写真 · 基础',
-        dateText: '8月20日 周四 · 16:00-18:00',
+        customerId: 0,
+        customerName: '',
+        customerMobile: '',
+        pkgId: 0,
+        pkgName: '',
+        dateText: '',
+        shootDate: '',       // yyyy-MM-dd（提交用）
         location: '',
         remark: '',
         depositPaid: '已收',
         ratio: '30%',
         channel: '银行转账',
-        slot: '',
-        selDay: { month: 8, day: 17 },  // 弹层内选中日期格（非提交字段；稿 1:5026 示例选中 17）
+        slot: '',            // 拍摄时段（提交用 shoot_time）
+        selDay: {},          // 弹层内选中日期 { year, month, day }
       },
-      totalFen: 2680,
+      totalFen: 0,           // 套餐总价（元，来自选中套餐；仅预览）
       customDepositFen: 0,  // 「自定义」比例时的定金
       depositStates: ['已收', '未收'],
       ratioOptions: ['30%', '50%', '自定义'],
       payChannels: ['银行转账', '微信', '支付宝'],
-      /* 客户列表（稿 1:4539 四行：头像色/姓名/手机/标签；演示数据联调后移除） */
-      customers: [
-        { name: '王浩', mobile: '138****5210', lastTag: '上次8/亲子', vipText: '老客户·第3单', color: '#FFB508' },
-        { name: '陈雨', mobile: '138****5210', lastTag: '上次8/亲子', vipText: '老客户·第3单', color: '#6BABFF' },
-        { name: '李婷婷', mobile: '138****5210', lastTag: '上次8/亲子', vipText: '老客户·第3单', color: '#FB79FF' },
-        { name: '柳神', mobile: '138****5210', lastTag: '上次8/亲子', vipText: '老客户·第3单', color: '#00CB8E' },
-      ],
+      customers: [],         // 真实客户（POST /customer/list）
       custKeyword: '',
       newCust: { name: '', mobile: '', source: '' },
-      /* 稿 pills 文本实测（1:4846-1:4854：朋友介绍 选中/小红书/抖音/老客户转介绍/其他） */
       sourceOptions: ['朋友介绍', '小红书', '抖音', '老客户转介绍', '其他'],
       quickLocations: ['合作影棚', '外拍'],
-      /* 套餐库（稿 1:4862 四行实测） */
+      /* 套餐目录（员工端无套餐列表接口，暂静态；package_id 为占位，待后端补齐） */
       packages: [
-        { name: '亲自写真 · 基础', spec: '2人 · 精修20张 · 约2h', priceFen: 2680 },
-        { name: '亲自写真 · 轻奢', spec: '2人 · 约2h · 精修30张 · 含相册', priceFen: 3980 },
-        { name: '家庭纪实', spec: '不限人数 · 约3h · 精修40张', priceFen: 4580 },
-        { name: '个人写真', spec: '1人 · 约1.5h · 精修20张', priceFen: 1580 },
+        { id: 0, name: '亲自写真 · 基础', spec: '2人 · 精修20张 · 约2h', priceFen: 2680 },
+        { id: 0, name: '亲自写真 · 轻奢', spec: '2人 · 约2h · 精修30张 · 含相册', priceFen: 3980 },
+        { id: 0, name: '家庭纪实', spec: '不限人数 · 约3h · 精修40张', priceFen: 4580 },
+        { id: 0, name: '个人写真', spec: '1人 · 约1.5h · 精修20张', priceFen: 1580 },
       ],
       weekHeads: ['一', '二', '三', '四', '五', '六', '日'],
-      /* 月历（稿 1:5026 实测 2026年8月：1,4,6,23 已占 / 9,17 部分可约 / 10,16,30 可约 / 12 今日 / 17 选中示例，余普通） */
       calCells: [],
-      monthYear: 2026,
-      monthNum: 8,
-      monthLabel: '2026年8月',
-      /* 时段 chips（稿 Group 141 逐节点实测，禁自造）：09:00-11:00 已占+「订单」角标 / 11:00-14:00 可约 / 14:00-16:00 可约 / 16:00-18:00 灭 */
+      monthYear: new Date().getFullYear(),
+      monthNum: new Date().getMonth() + 1,
+      monthLabel: '',
       slotOptions: [
-        { label: '09:00-11:00', tone: 'off', badge: '订单' },
-        { label: '11:00-14:00', tone: 'ok' },
-        { label: '14:00-16:00', tone: 'ok' },
+        { label: '09:00-11:00', tone: 'plain' },
+        { label: '11:00-14:00', tone: 'plain' },
+        { label: '14:00-16:00', tone: 'plain' },
         { label: '16:00-18:00', tone: 'plain' },
       ],
     }
   },
   computed: {
-    /** 定金（分）：30%→804 / 50%→1340 / 自定义→手输 */
+    /** 定金（元预览）：30% / 50% / 自定义 */
     depositFen() {
       if (this.form.ratio === '30%') return Math.round(this.totalFen * 0.3)
       if (this.form.ratio === '50%') return Math.round(this.totalFen * 0.5)
       return this.customDepositFen
     },
-    /** 尾款 = 总价 - 定金（加选差价联调后由后端并入，此处前端演示口径） */
+    /** 尾款（元预览）= 总价 - 定金 */
     finalFen() {
       return Math.max(this.totalFen - this.depositFen, 0)
     },
@@ -393,56 +393,89 @@ export default {
     },
   },
   created() {
+    this.monthLabel = `${this.monthYear}年${this.monthNum}月`
     this.buildCalendar()
   },
   methods: {
     formatAmount,
     openSheet(name) {
       this.sheet = name
-      if (name === 'customer') this.custKeyword = ''
+      if (name === 'customer') this.loadCustomers()
     },
     closeSheet() { this.sheet = '' },
+    /** 真实客户列表（POST /customer/list → PageOK.list） */
+    async loadCustomers() {
+      try {
+        const res = await getCustomerList({ page: 1, page_size: 50 })
+        const list = (res && res.list) || []
+        this.customers = list.map((c, i) => ({
+          id: c.id,
+          name: c.name,
+          mobile: c.mobile,
+          color: AVATAR_COLORS[i % AVATAR_COLORS.length],
+          lastTag: this.levelText(c.level),
+          vipText: c.tags || '新客',
+        }))
+      } catch (e) {
+        this.customers = []
+      }
+    },
+    levelText(level) {
+      return ({ 1: '普通', 2: '黄金', 3: '铂金', 4: '钻石' })[level] || '普通'
+    },
     pickCustomer(c) {
+      this.form.customerId = c.id
       this.form.customerName = c.name
       this.form.customerMobile = c.mobile
       this.closeSheet()
     },
-    /** 新建客户：演示态本地入列（联调接 POST /customer，联调核对） */
-    saveNewCustomer() {
+    /** 新建客户：POST /customer/create（dto.CustomerCreateReq：name + mobile） */
+    async saveNewCustomer() {
       if (!this.newCust.name || !this.newCust.mobile) {
         return uni.showToast({ title: '请填写姓名与联系电话', icon: 'none' })
       }
-      const colors = ['#FFB508', '#6BABFF', '#FB79FF', '#00CB8E']
-      this.customers.unshift({
-        name: this.newCust.name,
-        mobile: this.newCust.mobile.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2'),
-        lastTag: '新客户',
-        vipText: '首次下单',
-        color: colors[this.customers.length % colors.length],
-      })
-      this.pickCustomer(this.customers[0])
+      try {
+        const c = await createCustomer({ name: this.newCust.name, mobile: this.newCust.mobile })
+        this.form.customerId = c.id
+        this.form.customerName = c.name
+        this.form.customerMobile = c.mobile
+        this.customers.unshift({
+          id: c.id,
+          name: c.name,
+          mobile: c.mobile,
+          color: AVATAR_COLORS[this.customers.length % AVATAR_COLORS.length],
+          lastTag: '新客户',
+          vipText: '首次建档',
+        })
+        this.closeSheet()
+      } catch (e) {
+        /* request 已统一 toast */
+      }
     },
     pickPackage(p) {
+      this.form.pkgId = p.id
       this.form.pkgName = p.name
       this.totalFen = p.priceFen
     },
     /**
-     * 选日期：已占/关闭拦截 + 即时高亮（原版点后无反馈被用户点名）。
-     * 注意：uni-app 模板编译把方法编译为 $options.method()（this≠实例），
-     * 因此模板里的选中判断直接内联比较 $data.selDay，不抽方法（isSel 已移除）。
+     * 选日期：即时高亮（原版点后无反馈被用户点名）。
+     * 模板里的选中判断直接内联比较 $data.selDay，不抽方法。
      */
     pickDate(cell) {
-      if (cell.tone === 'off') return uni.showToast({ title: '该日期已占用/关闭', icon: 'none' })
-      this.form.selDay = { month: cell.month, day: cell.day }
+      this.form.selDay = { year: this.monthYear, month: cell.month, day: cell.day }
       this.form.dateText = `${cell.month}月${cell.day}日`
       this.form.slot = ''
     },
     confirmDate() {
       if (!this.form.dateText) return uni.showToast({ title: '请先选择日期', icon: 'none' })
       if (this.form.slot) this.form.dateText = `${this.form.dateText} · ${this.form.slot}`
+      const d = this.form.selDay
+      if (d && d.year && d.day) {
+        this.form.shootDate = `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`
+      }
       this.closeSheet()
     },
-    /** 套餐总价手动改价（稿提示「点击可手动改价」） */
+    /** 套餐总价手动改价（稿提示「点击可手动改价」，仅本地预览） */
     editTotal() {
       uni.showModal({
         title: '手动改价',
@@ -456,7 +489,7 @@ export default {
         },
       })
     },
-    /** 定金金额编辑（仅自定义比例开放；联调口径：定金即时线下支付不并入尾款） */
+    /** 定金金额编辑（仅自定义比例开放） */
     editDeposit() {
       if (this.form.ratio !== '自定义') {
         return uni.showToast({ title: '切换「自定义」比例后可改定金', icon: 'none' })
@@ -477,29 +510,17 @@ export default {
       this.form.ratio = opt
       if (opt === '自定义') this.editDeposit()
     },
-    /**
-     * 月历静态稿值复刻（稿 1:5026：2026年8月整月 1-31；1,4,6,23 已占 / 9,17 部分 / 10,16,30 可约 / 12 今日）
-     * tone: ok 可约 / part 部分可约 / off 已占关闭 / today 今日 / plain 普通
-     * 联调后改走 /calendar/:month 档期接口（联调核对）
-     */
+    /** 月历：按真实年月推导星期（无档期接口，全部普通格） */
     buildCalendar() {
-      const { monthYear: y, monthNum: m } = this
-      if (y === 2026 && m === 8) {
-        /* 稿面原样：8/1 落「日」列（稿内即如此，1:1 还原不做日历纠正） */
-        const tones = { 1: 'off', 4: 'off', 6: 'off', 9: 'part', 10: 'ok', 12: 'today', 16: 'ok', 17: 'part', 23: 'off', 30: 'ok' }
-        const cells = [null, null, null, null, null, null]
-        for (let d = 1; d <= 31; d++) cells.push({ day: d, month: m, tone: tones[d] || 'plain' })
-        this.calCells = cells
-        return
-      }
-      /* 其他月份：真实星期推导，档期接口未联调前全部普通格 */
+      const y = this.monthYear
+      const m = this.monthNum
       const firstDow = (new Date(y, m - 1, 1).getDay() + 6) % 7 // 周一=0
       const days = new Date(y, m, 0).getDate()
       const cells = Array(firstDow).fill(null)
       for (let d = 1; d <= days; d++) cells.push({ day: d, month: m, tone: 'plain' })
       this.calCells = cells
     },
-    /** 月份切换（稿左右箭头）：档期数据联调后接入，非 8 月暂全普通格 */
+    /** 月份切换（稿左右箭头） */
     shiftMonth(dir) {
       let m = this.monthNum + dir
       let y = this.monthYear
@@ -510,22 +531,32 @@ export default {
       this.monthLabel = `${y}年${m}月`
       this.buildCalendar()
     },
-    /** 时段选择（稿：仅可约绿 chip 可选；已占/灰 chip 点选拦截） */
+    /** 时段选择 */
     pickSlot(s) {
-      if (s.tone !== 'ok') return uni.showToast({ title: s.tone === 'off' ? '该时段已被占用' : '该时段未开放', icon: 'none' })
       this.form.slot = s.label
     },
-    /** 创建/保存草稿：/order（联调核对）；演示态提示（联调后移除） */
+    /** 创建/保存草稿：POST /order/create，payload 按 OrderCreateReq */
     async submit(create) {
-      if (create && !this.form.customerName) return uni.showToast({ title: '请选择客户', icon: 'none' })
-      if (create && !this.form.pkgName) return uni.showToast({ title: '请选择套餐', icon: 'none' })
+      if (create && !this.form.customerId) return uni.showToast({ title: '请选择客户', icon: 'none' })
+      if (create && !this.form.pkgId) return uni.showToast({ title: '请选择套餐', icon: 'none' })
       if (this.submitting) return
       this.submitting = true
       try {
-        if (isDemo()) {
-          return uni.showToast({ title: create ? '订单已创建（演示）' : '草稿已保存（演示）', icon: 'none' })
+        const payload = {
+          customer_id: this.form.customerId,
+          package_id: this.form.pkgId,
+          shoot_date: this.form.shootDate,
+          shoot_time: this.form.slot || '',
+          shoot_address: this.form.location,
+          remark: this.form.remark || '',
         }
-        /* 联调：createOrder({ ...this.form, total_fen, deposit_fen, final_fen, channel }) */
+        await createOrder(payload)
+        uni.showToast({ title: create ? '订单已创建' : '草稿已保存', icon: 'none' })
+        setTimeout(() => {
+          uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/order/list' }) })
+        }, 600)
+      } catch (e) {
+        /* request 已统一 toast；失败保留空态，不回落演示数据 */
       } finally {
         this.submitting = false
       }

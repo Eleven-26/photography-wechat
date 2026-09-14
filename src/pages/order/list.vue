@@ -79,13 +79,12 @@
  *   code/package_name/customer/shoot_date/total_amt/status/payment_status）。
  * Tab 过滤（稿口径）：进行中=status 0-5 / 待付款=payment_status=1 / 已完成=status 6。
  * 收款态文案（右列）：未收款/定金已收/尾款待收/已收齐（D01 稿内样例，映射联调核对）。
- * 演示兜底：接口失败用 DEMO_ORDERS（联调后移除）。
  */
 import AppTabBar from '@/components/AppTabBar.vue'
 import AppEmpty from '@/components/AppEmpty.vue'
 import { getOrderList } from '@/api/order'
+import { getLeadList } from '@/api/lead'
 import { formatAmount } from '@/utils/format'
-import { DEMO_ORDERS, isDemo } from '@/utils/demo'
 
 export default {
   components: { AppTabBar, AppEmpty },
@@ -99,8 +98,8 @@ export default {
       ],
       orders: [],
       loading: false,
-      /* 待报价线索数（演示兜底；联调后取 /api/lead/list?status=pending 的 total） */
-      leadCount: 2,
+      /* 待报价线索数（lead/list?status=1 的 total） */
+      leadCount: 0,
     }
   },
   computed: {
@@ -120,6 +119,7 @@ export default {
   },
   onShow() {
     this.fetchOrders()
+    this.fetchLeadCount()
   },
   methods: {
     formatAmount,
@@ -128,21 +128,21 @@ export default {
       uni.navigateTo({ url: '/pages/lead/list' })
     },
     async fetchOrders() {
-      /* 演示模式（联调后移除）：直接读本地演示订单 */
-      if (isDemo()) {
-        this.orders = DEMO_ORDERS
-        return
-      }
       this.loading = true
       try {
         const res = await getOrderList({ page: 1, page_size: 20 })
         this.orders = (res && res.list) || []
       } catch (e) {
-        /* 接口未联调：降级演示数据（联调后移除） */
-        this.orders = DEMO_ORDERS
+        /* request 层已 toast；保持空态，不注入演示订单 */
+        this.orders = []
       } finally {
         this.loading = false
       }
+    },
+    /** 待处理线索数（status=1 待回复）；失败静默，保持 0 */
+    async fetchLeadCount() {
+      const res = await getLeadList({ page: 1, page_size: 1, status: 1 }).catch(() => null)
+      this.leadCount = Number((res && res.total) || 0)
     },
     /** 徽章色调：映射 enums 订单状态 → D01 稿内四族（金/灰/绿/红） */
     badgeTone(o) {

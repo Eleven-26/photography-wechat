@@ -8,14 +8,14 @@
       <view class="page-work__status" />
       <!-- Header：大日期数字 80 + 日期/问候 + 两个 44 白圆钮（1:2874 实测 y44 pad16 gap12） -->
       <view class="page-work__head">
-        <text class="page-work__big">08</text>
+        <text class="page-work__big">{{ bigDay }}</text>
         <view class="page-work__head-mid">
           <view class="page-work__head-date">
-            <text class="page-work__date">8月8日</text>
-            <text class="page-work__date">星期六</text>
+            <text class="page-work__date">{{ dateText }}</text>
+            <text class="page-work__date">{{ weekText }}</text>
           </view>
-          <text class="page-work__hello">早上好，路先生</text>
-          <text class="page-work__sub">今天有 2 场拍摄安排</text>
+          <text class="page-work__hello">{{ hello }}</text>
+          <text class="page-work__sub">今天有 {{ todayShoot }} 场拍摄安排</text>
         </view>
         <view class="page-work__head-btns">
           <view class="page-work__rbtn pressable" @click="goEntry">
@@ -34,7 +34,7 @@
       <view class="page-work__section">
       <view class="page-work__sec-head">
         <text class="page-work__sec-title">今日拍摄</text>
-        <text class="page-work__sec-extra">2场</text>
+        <text class="page-work__sec-extra">{{ shots.length }}场</text>
       </view>
       <scroll-view class="page-work__shots" scroll-x :show-scrollbar="false" @scroll="onShotsScroll">
         <view
@@ -84,7 +84,7 @@
     <view class="page-work__todo">
       <view class="page-work__sec-head page-work__sec-head--pad">
         <text class="page-work__sec-title page-work__sec-title--md">现在需要处理</text>
-        <text class="page-work__sec-extra page-work__sec-extra--sm">2项</text>
+        <text class="page-work__sec-extra page-work__sec-extra--sm">{{ todos.length }}项</text>
       </view>
       <view class="page-work__hairline" />
       <view
@@ -112,7 +112,7 @@
       <!-- ④ 其他待办（1:2992：行 343×64、黄胶囊紧急、chevron 灰） -->
       <view class="page-work__sec-head page-work__sec-head--pad">
         <text class="page-work__sec-title page-work__sec-title--md">其他待办</text>
-        <text class="page-work__sec-extra page-work__sec-extra--sm">5项</text>
+        <text class="page-work__sec-extra page-work__sec-extra--sm">{{ others.length }}项</text>
       </view>
       <view class="page-work__hairline" />
       <view
@@ -144,30 +144,44 @@
 /**
  * W01 工作台（稿 1:2874 实测 1:1）
  * 结构：深色 Hero（大日期数字+问候+新建/通知钮）→ 今日拍摄横滑卡 → 现在需要处理 → 其他待办 → 底部导航。
- * 演示数据 utils/demo.js 口径：路先生 / 陈雨·家庭纪念写真·越秀公园·¥804 定金 / 蓝桥科技·商务形象照。
- * Hero 稿内为 #22252A+实拍图 HARD_LIGHT 叠加，H5 演示以深色渐变替代（标注：联调后换图）。
+ * 真实接口：
+ *   - 问候摄影师名：POST /wechat/staff/user/profile（SysUser.nickname / username）
+ *   - 待办统计：POST /wechat/staff/overview（dto.StaffOverview：pending_* / today_shoot）
+ *   - 今日拍摄：POST /wechat/staff/order/list 按 shoot_date == 今日 过滤。
+ * 无数据的项显示 0（空态）。
  */
-import { photographer } from '@/utils/demo.js'
+import { getProfile } from '@/api/user'
+import { getOverview } from '@/api/dashboard'
+import { getOrderList } from '@/api/order'
 
 export default {
   name: 'WorkIndex',
   data() {
     return {
-      name: photographer.name,
+      name: '',
       dotIdx: 0,
-      shots: [
-        { time: '10:00', title: '家庭纪念写真', customer: '陈雨', place: '越秀公园', duration: '预计 3 小时', orderId: 'o1' },
-        { time: '14:00', title: '商务形象照', customer: '蓝桥科技', place: '天河工作室', duration: '预计 2 小时', orderId: 'o2' },
-      ],
-      todos: [
-        { title: '收款待确认', sub: '陈雨 · 微信转账 · ¥804', icon: 'money-dark', iconBg: '#FFDA08', btn: '立即确认', btnDark: true, go: () => this.goPay() },
-        { title: '客户待回复', sub: '蓝桥科技 · 商务形象照 · 8分钟前', icon: 'bubble-dark', iconBg: '#E9EAEB', btn: '回复', btnDark: false, go: () => this.goLead() },
-      ],
-      others: [
-        { title: '3 位客户待回复', sub: '含 1 条今日截止', urgent: true, go: () => this.goLead() },
-        { title: '2 个后期任务', sub: '林柚负责 · 8月24日截止', urgent: false, go: () => this.goRetouch() },
-      ],
+      bigDay: '',        // 今日日期（日）
+      dateText: '',      // 月日，如 9月14日
+      weekText: '',      // 星期
+      greet: '你好',
+      todayIso: '',      // yyyy-MM-dd，用于过滤今日拍摄
+      todayShoot: 0,     // overview.today_shoot
+      shots: [],         // 今日拍摄（真实订单）
+      todos: [],         // 现在需要处理（overview 派生）
+      others: [],        // 其他待办（overview 派生）
+      overview: {},
     }
+  },
+  computed: {
+    hello() {
+      return this.name ? `${this.greet}，${this.name}` : this.greet
+    },
+  },
+  onLoad() {
+    this.initDate()
+    this.fetchProfile()
+    this.fetchOverview()
+    this.fetchShots()
   },
   methods: {
     // 横滑拍摄卡与分页点联动：卡 614rpx + 间距 32rpx = pitch 646rpx，按比例取整判当前卡
@@ -177,6 +191,74 @@ export default {
       const idx = Math.min(this.shots.length - 1, Math.max(0, Math.round((e.detail.scrollLeft || 0) / pitch)))
       if (idx !== this.dotIdx) this.dotIdx = idx
     },
+    initDate() {
+      const d = new Date()
+      const days = ['日', '一', '二', '三', '四', '五', '六']
+      const pad = (n) => String(n).padStart(2, '0')
+      this.bigDay = String(d.getDate())
+      this.dateText = `${d.getMonth() + 1}月${d.getDate()}日`
+      this.weekText = `星期${days[d.getDay()]}`
+      this.todayIso = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+      const h = d.getHours()
+      this.greet = h < 11 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好'
+    },
+    /** 本人资料（POST /user/profile） */
+    async fetchProfile() {
+      try {
+        const res = await getProfile()
+        this.name = (res && (res.nickname || res.username)) || ''
+      } catch (e) {
+        this.name = ''
+      }
+    },
+    /** 待办统计（POST /overview）→ 派生待办列表 */
+    async fetchOverview() {
+      try {
+        const res = await getOverview()
+        this.overview = res || {}
+        this.todayShoot = Number(res && res.today_shoot) || 0
+        this.todos = this.buildTodos(res || {})
+        this.others = this.buildOthers(res || {})
+      } catch (e) {
+        this.overview = {}
+        this.todos = []
+        this.others = []
+      }
+    },
+    buildTodos(o) {
+      const t = []
+      if (o.pending_deposit) t.push({ title: '收款待确认', sub: `${o.pending_deposit} 笔待核验`, icon: 'money-dark', iconBg: '#FFDA08', btn: '立即确认', btnDark: true, go: () => this.goPay() })
+      if (o.pending_confirm) t.push({ title: '档期待确认', sub: `${o.pending_confirm} 个待确认`, icon: 'clock-white-full', iconBg: '#E9EAEB', btn: '去确认', btnDark: false, go: () => this.goOrderList() })
+      if (o.pending_shoot) t.push({ title: '待拍摄', sub: `${o.pending_shoot} 个待拍摄`, icon: 'user-white', iconBg: '#E9EAEB', btn: '查看', btnDark: false, go: () => this.goOrderList() })
+      return t
+    },
+    buildOthers(o) {
+      const a = []
+      if (o.pending_delivery) a.push({ title: `${o.pending_delivery} 笔待交付`, sub: '成片待上传/交付', go: () => this.goOrderList() })
+      if (o.pending_reschedule) a.push({ title: `${o.pending_reschedule} 个待改期`, sub: '客户申请改期待处理', go: () => this.goReschedule() })
+      if (o.pending_refund) a.push({ title: `${o.pending_refund} 笔待退款`, sub: '退款申请待审核', urgent: true, go: () => this.goRefund() })
+      if (o.pending_custom_request) a.push({ title: `${o.pending_custom_request} 个定制需求`, sub: '客户定制待回应', go: () => this.goCustom() })
+      return a
+    },
+    /** 今日拍摄（POST /order/list → PageOK.list，按 shoot_date == 今日） */
+    async fetchShots() {
+      try {
+        const res = await getOrderList({ page: 1, page_size: 50 })
+        const list = (res && res.list) || []
+        this.shots = list
+          .filter((o) => String(o.shoot_date) === this.todayIso)
+          .map((o) => ({
+            time: String(o.shoot_time || '').split('-')[0],
+            title: o.package_name || '拍摄',
+            customer: o.customer_name || '',
+            place: o.shoot_address || '',
+            duration: o.shoot_time || '',
+            orderId: o.id,
+          }))
+      } catch (e) {
+        this.shots = []
+      }
+    },
     goEntry() {
       uni.navigateTo({ url: '/pages/order/entry' })
     },
@@ -185,6 +267,18 @@ export default {
     },
     goPay() {
       uni.navigateTo({ url: '/pages/pay/verify' })
+    },
+    goOrderList() {
+      uni.navigateTo({ url: '/pages/order/list' })
+    },
+    goReschedule() {
+      uni.navigateTo({ url: '/pages/reschedule/list' })
+    },
+    goRefund() {
+      uni.navigateTo({ url: '/pages/refund/review' })
+    },
+    goCustom() {
+      uni.navigateTo({ url: '/pages/custom/list' })
     },
     goLead() {
       uni.navigateTo({ url: '/pages/lead/list' })
@@ -233,7 +327,7 @@ export default {
     z-index: 1; /* 浮在 Hero 背景图上 */
     display: flex;
     align-items: center;
-    gap: 16rpx; /* 稿单行问候：收紧间距防"路先生"换行 */
+    gap: 16rpx; /* 稿单行问候：收紧间距防止长姓名换行 */
     padding: 0 32rpx;
   }
   &__big {

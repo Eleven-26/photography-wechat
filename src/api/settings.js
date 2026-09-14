@@ -22,3 +22,22 @@ export const getStudioSettings = (extra = {}) => rpc(API_PATHS.settings.get, {},
 
 /** 更新工作室设置 @param {Object} payload */
 export const updateStudioSettings = (payload) => rpc(API_PATHS.settings.update, payload)
+
+/* ──── 收款方式（settings/payment-method/*；list 归 settings:view、增删改归 settings:update） ──── */
+
+/** 收款方式列表 → model.PaymentMethod[]（含 status/sort，员工端可维护） */
+export const listPaymentMethods = () => rpc(API_PATHS.settings.paymentMethodList, {})
+
+/**
+ * 新建收款方式
+ * @param {Object} payload dto.PaymentMethodReq
+ *   { name, type(alipay/wechat/bank/cash), account_name?, account_no?, qrcode?, status(1启用/0禁用), sort }
+ */
+export const createPaymentMethod = (payload) => rpc(API_PATHS.settings.paymentMethodCreate, payload)
+
+/** 更新收款方式 @param {number} id @param {Object} payload dto.PaymentMethodReq */
+export const updatePaymentMethod = (id, payload) =>
+  rpc(API_PATHS.settings.paymentMethodUpdate, payload, id)
+
+/** 删除收款方式 @param {number} id */
+export const deletePaymentMethod = (id) => rpc(API_PATHS.settings.paymentMethodDelete, {}, id)

@@ -18,8 +18,16 @@ import { API_PATHS } from '@/api/common/apiPath'
  */
 export const createDelivery = (orderId) => rpc(API_PATHS.delivery.create, {}, orderId)
 
-/** 交付单详情 @param {number} id **订单 ID**（按订单反查交付单） */
+/** 交付单详情 @param {number} id **订单 ID**（按订单反查交付单） → { delivery, items } */
 export const getDeliveryDetail = (id) => rpc(API_PATHS.delivery.detail, {}, id)
+
+/**
+ * 交付文件明细 @param {number} id **订单 ID**（按订单反查交付单）
+ * 返回 model.DeliveryItem[]：{ id, delivery_id, order_id, url, file_type(1图/2视频/3文件),
+ *   kind(1样片/2已选/3精修成品), filename, size, is_selected, feedback_content,
+ *   feedback_types, feedback_priority, feedback_status, handled_at, handle_remark }
+ */
+export const getDeliveryItems = (id) => rpc(API_PATHS.delivery.items, {}, id)
 
 /**
  * 上传样片 @param {number} id 交付单 ID

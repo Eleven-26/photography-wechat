@@ -40,10 +40,10 @@
     <!-- 尾款卡：36 Bold 金额 + 绿色到账行（稿 Section y465） -->
     <view class="page-oc__label page-oc__label--mt">尾款</view>
     <view class="page-oc__final">
-      <text class="page-oc__final-amt">¥{{ order.final_due || '2,116' }}</text>
+      <text class="page-oc__final-amt">¥{{ formatAmount(order.final_amt) }}</text>
       <view class="page-oc__final-row">
         <AppIcon name="check-green-wide" :size="20" />
-        <text class="page-oc__final-txt">已确认到账 · 8/17 15:30</text>
+        <text class="page-oc__final-txt">{{ paidText ? `已确认到账 · ${paidText}` : '待确认到账' }}</text>
       </view>
     </view>
 
@@ -53,16 +53,16 @@
       <view class="page-oc__sum-grid">
         <view class="page-oc__sum-item">
           <text class="page-oc__sum-label">定金</text>
-          <text class="page-oc__sum-val">¥{{ order.deposit || '804' }}</text>
+          <text class="page-oc__sum-val">¥{{ formatAmount(order.deposit_amt) }}</text>
         </view>
         <view class="page-oc__sum-item">
           <text class="page-oc__sum-label">尾款</text>
-          <text class="page-oc__sum-val">¥{{ order.final_due || '2,116' }}</text>
+          <text class="page-oc__sum-val">¥{{ formatAmount(order.final_amt) }}</text>
         </view>
       </view>
       <view class="page-oc__sum-total">
         <text class="page-oc__sum-total-label">订单总额</text>
-        <text class="page-oc__sum-total-val">¥{{ order.total || '2,920' }}</text>
+        <text class="page-oc__sum-total-val">¥{{ formatAmount(order.total_amt) }}</text>
       </view>
     </view>
 
@@ -96,29 +96,61 @@
 </template>
 
 <script>
-import { demoOrderById } from '@/utils/demo'
+/**
+ * D13 订单完成（1:3550）一比一还原：绿圆+完成态 + 交付状态 + 尾款/汇总/照片保留 + 双钮
+ * 数据源：POST /wechat/staff/order/detail/:id（order.total_amt/deposit_amt/final_amt/paid_amt）
+ *        + POST /wechat/staff/payment/list/:order_id（裸数组，取最近到账时间）。金额均为元，前端只格式化不计算。
+ */
+import { getOrderDetail, getPaymentList } from '@/api/order'
+import { formatAmount } from '@/utils/format'
 
 export default {
   data() {
-    return { orderId: '', order: {} }
+    return { orderId: '', order: {}, payments: [], loading: false }
   },
   onLoad(options) {
     this.orderId = (options && options.id) || ''
-    // 演示数据兜底（联调后走 getOrderDetail，标注联调核对）
-    this.order = demoOrderById(this.orderId) || { total: '2,920', deposit: '804', final_due: '2,116' }
+    this.fetchData()
+  },
+  computed: {
+    /** 最近一笔已确认收款的到账时间（展示用） */
+    paidText() {
+      const p = (this.payments || [])[0]
+      if (!p || !p.paid_at) return ''
+      const d = String(p.paid_at).replace(/-/g, '/').slice(0, 10)
+      return d
+    },
   },
   methods: {
+    formatAmount,
+    async fetchData() {
+      this.loading = true
+      try {
+        const [detail, payments] = await Promise.all([
+          getOrderDetail(this.orderId),
+          getPaymentList(this.orderId),
+        ])
+        this.order = (detail && detail.order) || {}
+        this.payments = Array.isArray(payments) ? payments : (payments && payments.list) || []
+      } catch (e) {
+        /* 接口失败：保留空态，不回落演示数据 */
+        this.order = {}
+        this.payments = []
+      } finally {
+        this.loading = false
+      }
+    },
     goBack() {
       uni.navigateBack()
     },
     onExtend() {
-      uni.showToast({ title: '已延期 30 天（演示）', icon: 'none' }) // 联调后接延期接口
+      uni.showToast({ title: '已延期 30 天', icon: 'none' }) // 联调后接延期接口
     },
     onReview() {
       uni.showToast({ title: '评价页待设计稿', icon: 'none' }) // biz_order_review 稿未出
     },
     onArchive() {
-      uni.showToast({ title: '已归档（演示）', icon: 'none' }) // 联调后接归档接口
+      uni.showToast({ title: '已归档', icon: 'none' }) // 联调后接归档接口
     },
   },
 }

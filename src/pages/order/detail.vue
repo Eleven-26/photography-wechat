@@ -21,9 +21,9 @@
           <text>{{ heroBadge.timeText }}</text>
         </view>
       </view>
-      <text class="page-od__hero-note">{{ order.note || '暂无备注' }}</text>
+      <text class="page-od__hero-note">{{ order.remark || '暂无备注' }}</text>
       <view class="page-od__hero-cta pressable" @click="onHeroAction">
-        <text>{{ heroBadge.ctaText }}</text>
+        <text>{{ heroAction ? heroAction.label : heroBadge.stateText }}</text>
       </view>
       <!-- 6 步进度：预约/定金/拍摄/选片/精修/交付（D02 实测 22 圆 + 10px 标签） -->
       <view class="page-od__steps">
@@ -50,24 +50,23 @@
     </view>
 
     <!-- ③ 本单套餐：15 Bold + 绿徽章（D02 实测「家庭基础 报价V2」） -->
-    <view class="page-od__sec-head">
-      <text class="page-od__sec-title">本单套餐</text>
-      <view v-if="order.quote_tag" class="page-od__quote-badge"><text>{{ order.quote_tag }}</text></view>
-    </view>
-    <view class="page-od__pkg">
-      <view class="page-od__pkg-row">
-        <text class="page-od__pkg-name">{{ order.package_name }}</text>
-        <text class="page-od__pkg-price">¥{{ formatAmount(order.package_price || order.total_amt) }}</text>
+      <view class="page-od__sec-head">
+        <text class="page-od__sec-title">本单套餐</text>
+        <view v-if="order.package_version" class="page-od__quote-badge"><text>报价V{{ order.package_version }}</text></view>
       </view>
-      <text class="page-od__pkg-meta">{{ order.package_meta || '' }}</text>
-      <template v-for="(a, i) in order.addons || []" :key="i">
-        <view class="page-od__pkg-hairline" />
-        <view class="page-od__pkg-row page-od__pkg-row--addon">
-          <text class="page-od__pkg-addon">+{{ a.name }}</text>
-          <text class="page-od__pkg-addon-price">+{{ a.price }}</text>
+      <view class="page-od__pkg">
+        <view class="page-od__pkg-row">
+          <text class="page-od__pkg-name">{{ order.package_name }}</text>
+          <text class="page-od__pkg-price">¥{{ formatAmount(order.base_price || order.total_amt) }}</text>
         </view>
-      </template>
-    </view>
+        <template v-for="(a, i) in addons || []" :key="i">
+          <view class="page-od__pkg-hairline" />
+          <view class="page-od__pkg-row page-od__pkg-row--addon">
+            <text class="page-od__pkg-addon">+{{ a.name }}</text>
+            <text class="page-od__pkg-addon-price">+{{ formatAmount(a.amount) }}</text>
+          </view>
+        </template>
+      </view>
 
     <!-- ④ 订单信息：15 Bold + 白卡 r20，行 14（D02 实测；已收绿/待收金） -->
     <view class="page-od__sec-head"><text class="page-od__sec-title">订单信息</text></view>
@@ -93,13 +92,25 @@
       </view>
     </view>
 
+    <!-- ④-② 操作记录：来自 /order/logs（裸数组） -->
+    <view class="page-od__sec-head"><text class="page-od__sec-title">操作记录</text></view>
+    <view v-if="logs.length" class="page-od__logs">
+      <view v-for="(l, i) in logs" :key="i" class="page-od__log">
+        <view class="page-od__log-main">
+          <text class="page-od__log-action">{{ l.action || '操作' }}</text>
+          <text class="page-od__log-content">{{ l.content || '' }}</text>
+        </view>
+        <text class="page-od__log-time">{{ l.created_at || '' }}</text>
+      </view>
+    </view>
+    <view v-else class="page-od__logs-empty"><text>暂无操作记录</text></view>
+
     <!-- ⑤ 更多操作：白描边胶囊 hug 钮两行（D02 实测 r20 pad20/10 14 Medium） -->
     <view class="page-od__sec-head"><text class="page-od__sec-title">更多操作</text></view>
     <view class="page-od__ops">
       <view class="page-od__op pressable" @click="goVerify"><text>收款记录</text></view>
       <view class="page-od__op pressable" @click="onBuilding('文件管理')"><text>文件管理</text></view>
       <view class="page-od__op pressable" @click="onBuilding('客户档案')"><text>客户档案</text></view>
-      <view class="page-od__op pressable" @click="onBuilding('操作记录')"><text>操作记录</text></view>
       <view class="page-od__op pressable" @click="goRefund"><text>退款/改期</text></view>
     </view>
 
@@ -112,20 +123,29 @@
 /**
  * D02 订单详情（画板 9:369「D02-订单详情·修正」一比一还原）
  *
- * 数据源：/api/order/detail（聚合 reschedule/refund，联调核对）；演示兜底 demoOrderById（联调后移除）。
- * Hero 动态态（稿只给出「待开始·今日10:00 + 开始拍摄」态，其余态按业务口径推导已标注）：
- *   status 0 → 待确认档期（跳 D03 档期确认）
- *   status 1 + payment_status 1 → 待收款核验（跳 D12 收款核验）
- *   status 2/3 → 待开始·时间（稿态；「开始拍摄」当前 toast，拍摄态属后续批次）
- * 金额口径：总额=套餐+加项（biz_order_addon）；已收=已确认收款合计；待收=final_amt。
- * 6 步进度映射 status（0-6）→ 步 1-6（联调核对）。
+ * 数据源：POST /wechat/staff/order/detail/:id（含 order + allowed_transitions，驱动可执行动作）
+ *        + POST /wechat/staff/order/logs/:id（裸数组日志）
+ *        + POST /wechat/staff/order/addon/list/:id（加项 name/amount）。
+ * 动作按钮按后端 allowed_transitions 渲染，不在前端硬编码状态机。
+ * 金额口径（元，前端只格式化不计算）：总额 total_amt / 已收 paid_amt / 待收 final_amt / 定金 deposit_amt。
+ * 6 步进度映射 status（0-6）→ 步 1-6。
  */
 import AppTabBar from '@/components/AppTabBar.vue'
-import { getOrderDetail } from '@/api/order'
+import { getOrderDetail, getOrderLogs, listAddons, confirmBooking, updateOrderStatus, cancelOrder } from '@/api/order'
 import { formatAmount } from '@/utils/format'
-import { demoOrderById, isDemo } from '@/utils/demo'
 
 const STEPS = ['预约', '定金', '拍摄', '选片', '精修', '交付']
+
+// 目标状态 → 主行动按钮文案/动作（由后端 allowed_transitions 决定可用性，不在前端写死状态机）
+const TRANS_META = {
+  1: { label: '确认档期', action: 'confirm' }, // 待确认 0 → 待定金 1
+  2: { label: '开始拍摄', action: 'advance' }, // → 待拍摄
+  3: { label: '完成拍摄', action: 'advance' }, // → 拍摄中
+  4: { label: '提交精修', action: 'advance' }, // → 精修中
+  5: { label: '交付成片', action: 'advance' }, // → 待交付
+  6: { label: '完成订单', action: 'advance' }, // → 已完成
+  7: { label: '取消订单', action: 'cancel' },   // → 已取消
+}
 
 export default {
   components: { AppTabBar },
@@ -133,6 +153,9 @@ export default {
     return {
       orderId: 0,
       order: {},
+      transitions: [],   // 后端 allowed_transitions：当前状态可流转到的目标状态
+      logs: [],           // 订单操作日志（裸数组）
+      addons: [],         // 加项（单独接口取，name/amount）
       STEPS,
     }
   },
@@ -164,6 +187,14 @@ export default {
       const d = String(this.order.shoot_date || '')
       return d ? `${d.slice(5).replace('-', '/')} ${String(this.order.shoot_time || '').split('-')[0]}` : ''
     },
+    /** 主行动按钮：取 allowed_transitions 里大于当前状态的最小目标态 */
+    heroAction() {
+      const cur = Number(this.order.status ?? 0)
+      const next = (this.transitions || []).filter((s) => s > cur).sort((a, b) => a - b)[0]
+      if (next == null) return null
+      const m = TRANS_META[next]
+      return m ? { label: m.label, status: next, action: m.action } : null
+    },
   },
   onLoad(query) {
     this.orderId = query.id
@@ -172,26 +203,59 @@ export default {
   methods: {
     formatAmount,
     async fetchDetail() {
-      if (isDemo()) {
-        this.order = demoOrderById(this.orderId)
-        return
-      }
       try {
-        const res = await getOrderDetail(this.orderId)
-        const data = res || {}
-        this.order = data.order || data
+        const [detail, logs, addons] = await Promise.all([
+          getOrderDetail(this.orderId),
+          getOrderLogs(this.orderId),
+          listAddons(this.orderId),
+        ])
+        this.order = (detail && detail.order) || {}
+        this.transitions = (detail && detail.allowed_transitions) || []
+        this.logs = Array.isArray(logs) ? logs : (logs && logs.list) || []
+        this.addons = Array.isArray(addons) ? addons : (addons && addons.list) || []
       } catch (e) {
-        /* 接口未联调：降级 D02 稿态演示数据（联调后移除） */
-        this.order = demoOrderById(this.orderId)
+        /* 接口失败：保留空态，不回落演示数据 */
+        this.order = {}
+        this.transitions = []
+        this.logs = []
+        this.addons = []
       }
     },
     onHeroAction() {
-      const a = this.heroBadge.action
-      if (a === 'schedule') return this.goSchedule()
-      if (a === 'verify') return this.goVerify()
-      if (a === 'select') return uni.navigateTo({ url: `/pages/select/result?id=${this.order.id}` })
-      /* 「开始拍摄」：拍摄态操作属后续批次（D 组拍摄/上传画板），先确认提示 */
-      uni.showToast({ title: '拍摄态操作下一批开放', icon: 'none' })
+      const a = this.heroAction
+      if (!a) return
+      if (a.action === 'confirm') return this.confirmBooking()
+      if (a.action === 'cancel') return this.goCancel()
+      if (a.action === 'advance') return this.advance(a.status)
+    },
+    /** 确认档期：待确认(0) → 待定金(1)（员工端无 /order/confirm，封装已处理） */
+    async confirmBooking() {
+      try {
+        await confirmBooking(this.orderId)
+        uni.showToast({ title: '已确认档期', icon: 'none' })
+        this.fetchDetail()
+      } catch (e) {
+        /* request 已统一 toast */
+      }
+    },
+    /** 状态推进：按 allowed_transitions 推到目标态，成功后重新拉详情 */
+    async advance(status) {
+      try {
+        await updateOrderStatus(this.orderId, status)
+        uni.showToast({ title: '状态已更新', icon: 'none' })
+        this.fetchDetail()
+      } catch (e) {
+        /* request 已统一 toast */
+      }
+    },
+    async goCancel() {
+      try {
+        await cancelOrder(this.orderId, { reason: '客户取消' })
+        uni.showToast({ title: '已取消订单', icon: 'none' })
+        this.fetchDetail()
+      } catch (e) {
+        /* request 已统一 toast */
+      }
     },
     goSchedule() { uni.navigateTo({ url: `/pages/schedule/confirm?id=${this.order.id}` }) },
     goVerify() { uni.navigateTo({ url: `/pages/pay/verify?id=${this.order.id}` }) },
@@ -255,7 +319,7 @@ export default {
     max-width: 300rpx;
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis; /* 稿内「陈雨 · 家庭纪...」截断 */
+    text-overflow: ellipsis; /* 稿内长名截断（如「客户 · 套餐...」） */
   }
   &__hero-badge {
     flex: none;
@@ -365,6 +429,34 @@ export default {
   &__info-value--gold { color: #F59E0B; }           /* 待收金 #F59E0B 实测 */
   &__info-value--plain { font-weight: 400; }
   &__info-right { display: flex; align-items: center; gap: 12rpx; }
+
+  /* ④-② 操作记录（裸数组日志） */
+  &__logs {
+    margin: 0 $page-pad;
+    background-color: $white;
+    border-radius: $radius-card;
+    padding: 8rpx 32rpx;
+  }
+  &__log {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20rpx;
+    padding: 24rpx 0;
+    border-bottom: 1rpx solid #EEEEEE;
+    &:last-child { border-bottom: none; }
+  }
+  &__log-main { flex: 1; min-width: 0; }
+  &__log-action { display: block; color: $text-1; font-size: 28rpx; font-weight: 700; }
+  &__log-content { display: block; margin-top: 6rpx; color: #747881; font-size: 24rpx; line-height: 34rpx; }
+  &__log-time { flex: none; color: #A0A3A8; font-size: 22rpx; font-family: $font-family-num; }
+  &__logs-empty {
+    margin: 0 $page-pad;
+    padding: 40rpx 32rpx;
+    background-color: $white;
+    border-radius: $radius-card;
+    text { color: #A0A3A8; font-size: 26rpx; }
+  }
 
   /* ⑤ 更多操作：白底 10% 黑描边 r20 pad20/10 14 Medium（实测 hug 两行） */
   &__ops {

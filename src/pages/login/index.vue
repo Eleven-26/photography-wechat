@@ -38,11 +38,6 @@
 
       <!-- 账号说明：员工账号由管理员在后台创建，无自助注册 / 找回密码入口 -->
       <text class="login__agreement">账号由工作室管理员创建；忘记密码请联系管理员重置</text>
-
-      <!-- 演示模式：后端未启动时跳过登录看 UI（联调稳定后移除） -->
-      <view class="login__demo pressable" @click="onDemo">
-        <text class="login__demo-text">演示模式进入（跳过登录）</text>
-      </view>
     </view>
   </view>
 </template>
@@ -57,7 +52,6 @@
  *   将来与「微信授权登录」一并接入，届时本页需加登录方式切换。
  * 摄影师身份由后端 token 角色区分（响应含 role_code / permissions）。
  * 错误处理：校验失败仅提示，绝不清空已输入内容。
- * 演示模式：写入 demo-token 直达订单列表（联调稳定后移除）。
  * 接口：api/auth.js（loginByPassword）。
  */
 import { loginByPassword } from '@/api/auth'
@@ -88,11 +82,6 @@ export default {
       } finally {
         this.submitting = false
       }
-    },
-    /** 演示模式：写入本地假 token 直接进入（后端未启动时用，联调稳定后移除） */
-    onDemo() {
-      useUserStore().login('demo-token', { id: 0, username: 'demo', nickname: '路先生', mobile: '' })
-      uni.reLaunch({ url: '/pages/order/list' })
     },
   },
 }
@@ -140,19 +129,6 @@ export default {
     font-size: $fs-xs;
     text-align: center;
     line-height: 1.7;
-  }
-  /* 演示模式入口（后端联调稳定后随 onDemo 一并移除） */
-  &__demo {
-    margin-top: 48rpx;
-    display: flex;
-    justify-content: center;
-    min-height: 88rpx; /* 触摸目标 >= 44px */
-    align-items: center;
-  }
-  &__demo-text {
-    color: $text-2;
-    font-size: $fs-sm;
-    text-decoration: underline;
   }
 }
 </style>
