@@ -13,9 +13,14 @@ export default {
 </script>
 
 <style lang="scss">
-/* 全局样式：tokens + common（具体变量见 styles/tokens.scss） */
-@import '@/styles/tokens.scss';
-@import '@/styles/common.scss';
+/* 全局样式：tokens + common（具体变量见 styles/tokens.scss）
+ * ⚠️ 用 @use 而非已废弃的 @import（sass 1.104 会刷 deprecation 警告）。
+ *    @use 同样会把 common.scss 的类样式输出到全局，位置/顺序与 @import 一致；
+ *    common.scss 内部自带 @use tokens，其变量不继承本文件作用域。
+ *    这里显式 @use tokens（h5 端 App.vue 靠 uni.scss 注入而省略）—— 两种写法等价，
+ *    显式写法不依赖注入机制；同单元重复 @use 同一模块不报错，已实测。 */
+@use '@/styles/tokens.scss' as *;
+@use '@/styles/common.scss' as *;
 
 /* uni-app 全局默认文字色与字体（摄影师端浅色） */
 page {

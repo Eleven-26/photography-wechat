@@ -100,8 +100,11 @@
  * D13 订单完成（1:3550）一比一还原：绿圆+完成态 + 交付状态 + 尾款/汇总/照片保留 + 双钮
  * 数据源：POST /wechat/staff/order/detail/:id（order.total_amt/deposit_amt/final_amt/paid_amt）
  *        + POST /wechat/staff/payment/list/:order_id（裸数组，取最近到账时间）。金额均为元，前端只格式化不计算。
+ * ⚠️ getPaymentList 属**财务模块**（api/finance.js），不在 api/order.js —— 收款/退款整组接口
+ *    都以 finance.js 为入口，不要因「发生在订单页」就误从 order 导入（会构建失败）。
  */
-import { getOrderDetail, getPaymentList } from '@/api/order'
+import { getOrderDetail } from '@/api/order'
+import { getPaymentList } from '@/api/finance'
 import { formatAmount } from '@/utils/format'
 
 export default {
