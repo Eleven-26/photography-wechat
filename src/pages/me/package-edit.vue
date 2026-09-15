@@ -10,6 +10,13 @@
     <!-- 基础信息（y115 标题 + y146 三行） -->
     <text class="page-pe__sec">基础信息</text>
     <view class="page-pe__card page-pe__card--first">
+      <!-- 封面图：独立成行（需唤起选图，不走 basicRows 的统一 edit 提示） -->
+      <view class="info-row page-pe__row pressable" @click="changeCover">
+        <text class="page-pe__label">封面图</text>
+        <text class="page-pe__value">{{ coverText }}</text>
+        <image v-if="coverThumb" class="page-pe__cover-thumb" :src="coverThumb" mode="aspectFill" />
+        <AppIcon name="chevron-right-gray" :size="16" />
+      </view>
       <view v-for="r in basicRows" :key="r.label" class="info-row page-pe__row pressable" @click="edit(r.label)">
         <text class="page-pe__label">{{ r.label }}</text>
         <text class="page-pe__value">{{ r.value }}</text>
@@ -128,7 +135,9 @@
  */
 import { getPackageDetail, createPackage, updatePackage, setPackageStatus, deletePackage } from '@/api/package'
 import { getStudioSettings } from '@/api/settings'
+import { uploadFile } from '@/api/upload'
 import { formatAmount } from '@/utils/format'
+import { mediaUrl } from '@/utils/url'
 
 const EMPTY_FORM = {
   name: '', cover: '', category: '', base_price: 0, deposit_rate: 0, deposit_amt: 0,
@@ -154,6 +163,8 @@ export default {
         { title: '越秀公园 · 秋日家庭写真', sub: '家庭写真 · 精选', tag: '写真', color: '#3E5C76' },
         { title: '室内亲子时光', sub: '家庭写真 · 精选', tag: '亲子', color: '#7C6BA8' },
       ],
+      /** 封面上传中（防连点） */
+      uploadingCover: false,
     }
   },
   computed: {
@@ -161,9 +172,16 @@ export default {
       const f = this.form
       return [
         { label: '套餐名称', value: f.name || '未填写' },
-        { label: '封面', value: f.cover ? `${f.cover} 已设` : '未设置' },
         { label: '简介', value: f.content_desc || '未填写' },
       ]
+    },
+    /** 封面缩略图可加载地址（后端 /media 相对路径，小程序无 origin 须补 API_BASE） */
+    coverThumb() {
+      return mediaUrl(this.form.cover)
+    },
+    /** 封面行右值文案 */
+    coverText() {
+      return this.uploadingCover ? '上传中…' : (this.form.cover ? '已设置' : '未设置')
     },
     priceRows() {
       const f = this.form
@@ -229,6 +247,49 @@ export default {
             return acc
           }, {}),
         }
+      }
+    },
+    /* ──── 套餐封面（biz_package.cover）────────────────────────────────
+       客户在 H5 首页「精选服务」与套餐详情页看到的头图，属**对外物料**：
+       上传必须 public=true 落免鉴权 /media，否则未登录的浏览者看到空白。
+       选图后只写进 form，随「保存并上架 / 保存修改」一起落库。 */
+    /** 已设置则先问「更换 / 移除」，未设置直接选图 */
+    changeCover() {
+      if (!this.form.cover) {
+        this.pickCover()
+        return
+      }
+      uni.showActionSheet({
+        itemList: ['更换封面图', '移除封面图'],
+        success: (r) => {
+          if (r.tapIndex === 0) this.pickCover()
+          else if (r.tapIndex === 1) this.form.cover = ''
+        },
+      })
+    },
+    pickCover() {
+      if (this.uploadingCover) return
+      uni.chooseImage({
+        count: 1,
+        success: (res) => this.uploadCover((res.tempFilePaths || [])[0]),
+      })
+    },
+    async uploadCover(path) {
+      if (!path || this.uploadingCover) return
+      this.uploadingCover = true
+      try {
+        const up = await uploadFile(path, { biz_type: 'package', public: true })
+        const url = (up && up.url) || ''
+        if (!url) {
+          uni.showToast({ title: '上传失败，请重试', icon: 'none' })
+          return
+        }
+        this.form.cover = url
+        uni.showToast({ title: '封面已上传，保存后生效', icon: 'none' })
+      } catch {
+        // uploadFile 内部已 toast，这里兜底网络异常
+      } finally {
+        this.uploadingCover = false
       }
     },
     goBack() {
@@ -363,6 +424,15 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  /* 封面行尾部缩略图（3:2，与 H5 卡片头图同比例） */
+  &__cover-thumb {
+    box-sizing: border-box;
+    width: 108rpx;
+    height: 72rpx;
+    border-radius: 12rpx;
+    background-color: #F1F1F3;
+    flex-shrink: 0;
   }
   &__row--add {
     flex-direction: column;

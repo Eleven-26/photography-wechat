@@ -1,8 +1,13 @@
 <template>
   <view class="page-pv page-wrap page-pv--dark">
     <view class="status-bar" />
-    <!-- Hero：360 高图区（稿 studio-space 实拍图 HARD_LIGHT，H5 演示深色渐变替代，联调换图） -->
+    <!-- Hero：360 高图区。图源 = biz_studio_setting.cover_url —— 工作室在
+         「我的 → 我的预约主页 → 主页封面图」上传的分享封面图，与 H5 客户端首页（C01）
+         Hero 用的是**同一张图**。未设置时不渲染 image，仅留底色渐变 + 压暗遮罩，
+         避免空 src 触发一次无意义的图片请求。 -->
     <view class="page-pv__hero">
+      <image v-if="coverUrl" class="page-pv__hero-img" :src="coverUrl" mode="aspectFill" />
+      <view class="page-pv__hero-mask" />
       <view class="page-pv__nav">
         <view class="page-pv__nav-btn pressable" @click="goBack"><view class="page-pv__nav-arrow" /></view>
         <view class="page-pv__nav-btn pressable" @click="share"><AppIcon name="me-share" :size="18" /></view>
@@ -98,11 +103,14 @@
 <script>
 /**
  * ME03b 客户视角预览（稿 11:623 实测 1:1）——客户端暗色沉浸样式
- * Hero 360（实拍图→渐变替代，联调换图）→ 数据条 → 精选服务横滑 → 精选作品双列 → 服务流程 4+3 → 常见问题 → 白胶囊「定制需求」底栏。
+ * Hero 360（图源 cover_url，未设置回退深色渐变）→ 数据条 → 精选服务横滑 → 精选作品双列
+ * → 服务流程 4+3 → 常见问题 → 白胶囊「定制需求」底栏。
  *
  * ⚠️ 2026-09-15：本页原为**整页样例数据**（店名「路先生摄影」、数据条 100+/326/98%、
  * 2 个写死套餐、6 个灰块「作品」、3 条写死 FAQ），现已改接真实数据，口径与 H5 客户端首页（C01）一致：
- *   - 店名 / 简介   → /studio/get 的 slogan / intro（工作室封面后端无字段，Hero 维持深色渐变）
+ *   - Hero 封面图   → /studio/get 的 cover_url（2026-09-15 新增列；与 H5 首页顶部大图同一张），
+ *                     未设置时不渲染 image，回退底色渐变
+ *   - 店名 / 简介   → /studio/get 的 slogan / intro
  *   - 原创作品数    → POST /asset/list 的 **total**
  *   - 精选服务      → POST /package/list?status=2（已上架套餐，最多 6 个）
  *   - 精选作品      → POST /asset/list?featured=1（封面取 cover，缺省回退 images 首图）
@@ -152,6 +160,15 @@ export default {
   computed: {
     heroTitle() {
       return this.studio.slogan || '工作室主页'
+    },
+    /**
+     * Hero 封面图（biz_studio_setting.cover_url）—— 与 H5 客户端首页顶部大图同一张。
+     * ⚠️ 小程序无 origin：后端下发的是 `/media/…` 站内相对路径，必须经 `mediaUrl()` 补
+     * API_BASE 才能加载，否则会出现「上传成功、预览页却是灰底」的假故障。
+     * 未设置时返回空串 → 模板 `v-if` 不渲染 image，走底色渐变兜底。
+     */
+    coverUrl() {
+      return mediaUrl(this.studio.cover_url)
     },
     statWorks() {
       return this.assetTotal === null ? '—' : String(this.assetTotal)
@@ -244,9 +261,32 @@ export default {
     /* #ifdef MP-WEIXIN */
     margin-top: calc(-1 * var(--status-bar-height));
     /* #endif */
-    background:
-      linear-gradient(180deg, rgba(23, 24, 28, 0.1) 0%, rgba(23, 24, 28, 0.55) 55%, #17181C 100%),
-      linear-gradient(135deg, #3A3D44 0%, #22252A 60%, #1A1B1F 100%);
+    /* 底层：未设封面图时的深色斜向渐变兜底（原为 background 的下层，拆分后保留同样观感）。
+       设了封面图时该层被 __hero-img 完全覆盖，不影响成品视觉 */
+    background: linear-gradient(135deg, #3A3D44 0%, #22252A 60%, #1A1B1F 100%);
+  }
+  /* 封面图：绝对铺满 Hero，位于底色之上、压暗遮罩之下 */
+  &__hero-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* 压暗遮罩：顶部轻压、底部融入页面底色 #17181C，保证标题在任意封面上都可读。
+     原为 __hero 自身 background 的上层渐变，拆出独立一层才能叠在封面图之上 */
+  &__hero-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(23, 24, 28, 0.1) 0%,
+      rgba(23, 24, 28, 0.55) 55%,
+      #17181C 100%
+    );
   }
   &__nav {
     position: absolute;

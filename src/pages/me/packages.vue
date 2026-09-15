@@ -28,7 +28,9 @@
         class="info-row page-pk__row pressable"
         @click="goEdit(p)"
       >
-        <view class="page-pk__thumb" :style="{ backgroundColor: p.color }">
+        <!-- 有封面图则显真图（3:2 裁剪）；未设置才回落到设计稿的色块占位 -->
+        <image v-if="p.cover" class="page-pk__thumb-img" :src="p.cover" mode="aspectFill" />
+        <view v-else class="page-pk__thumb" :style="{ backgroundColor: p.color }">
           <text>{{ p.tag }}</text>
         </view>
         <view class="page-pk__main">
@@ -70,6 +72,7 @@
  */
 import { getPackageList, setPackageStatus } from '@/api/package'
 import { formatAmount } from '@/utils/format'
+import { mediaUrl } from '@/utils/url'
 
 const THUMB_COLORS = ['#3E5C76', '#7C6BA8', '#B0654A', '#6E8A5B', '#9AA0A6']
 
@@ -114,6 +117,8 @@ export default {
         price: p.base_price ? `¥${formatAmount(p.base_price)}` : '—',
         color: pickColor(p.category || p.name),
         tag: String(p.category || '套餐').slice(0, 2),
+        /** 套餐封面（后端 /media 相对路径，小程序无 origin 须补 API_BASE） */
+        cover: mediaUrl(p.cover),
         live: Number(p.status) === 2,
         draft: Number(p.status) === 1,
       }))
@@ -241,6 +246,14 @@ export default {
     justify-content: center;
     flex-shrink: 0;
     text { font-size: 20rpx; color: #FFFFFF; }
+  }
+  /* 真实封面图：与色块占位同尺寸同圆角，列表行不会因有无封面而错位 */
+  &__thumb-img {
+    width: 76rpx;
+    height: 76rpx;
+    border-radius: 20rpx;
+    background-color: #F1F1F3;
+    flex-shrink: 0;
   }
   &__main { flex: 1; min-width: 0; }
   &__name-row { display: flex; align-items: center; gap: 12rpx; }

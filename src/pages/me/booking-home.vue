@@ -40,6 +40,16 @@
         </view>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
+      <!-- 主页封面图：分享出去后 H5 预约主页顶部的大图（biz_studio_setting.cover_url） -->
+      <view class="info-row page-bh__row pressable" @click="changeCover">
+        <view class="page-bh__row-icon"><AppIcon name="image-plus" :size="17" /></view>
+        <view class="page-bh__row-main">
+          <text class="page-bh__row-label">主页封面图</text>
+          <text class="page-bh__row-sub">{{ uploadingCover ? '上传中…' : coverRowHint }}</text>
+        </view>
+        <image v-if="coverThumb" class="page-bh__row-thumb" :src="coverThumb" mode="aspectFill" />
+        <AppIcon name="chevron-right-gray" :size="16" />
+      </view>
       <view class="info-row page-bh__row pressable" @click="goPackages">
         <view class="page-bh__row-icon"><AppIcon name="me-pkg2" :size="17" /></view>
         <view class="page-bh__row-main">
@@ -115,9 +125,11 @@
 </template>
 
 <script>
-import { getStudioSettings, listPaymentMethods } from '@/api/settings'
+import { getStudioSettings, updateStudioSettings, listPaymentMethods } from '@/api/settings'
 import { getPackageList } from '@/api/package'
 import { getAssetList } from '@/api/asset'
+import { uploadFile } from '@/api/upload'
+import { mediaUrl } from '@/utils/url'
 
 /** 收款方式类型 → 展示名（后端 type 枚举：wechat/alipay/bank/cash/other） */
 const PAY_TYPE_LABELS = {
@@ -143,6 +155,11 @@ const PAY_TYPE_LABELS = {
  * ⚠️ 2026-09-15（同日）：**收款功能未上线，「收款方式」整段已隐藏**（模板中以注释包裹），
  * loadAll 亦不再调用 loadPayMethods；pay* computed / loadPayMethods / goPay 代码全部保留，仅断入口。
  *
+ * ⚠️ 2026-09-15（同日）：新增「主页封面图」上传行 —— 对应后端新增列 biz_studio_setting.cover_url，
+ * 即客户分享出去后 H5 预约主页（C01）顶部的大图。上传走 uploadFile(public=true) 落**免鉴权**
+ * /media 目录（分享页浏览者未登录，走 /uploads 会整片 401），选图后立即写库，与接单开关同口径，
+ * 不做「先暂存再统一保存」。点击已设置的封面弹 ActionSheet 提供「更换 / 移除」。
+ *
  * 预约主页链接由**服务端**下发（studio/get 的 homepage_url =
  * share.h5_base_url + ?slug=xxx&staff_id=<我的账号id>），前端不拼域名；
  * 未设 slug 或服务端未配基址时为空串，链接条给兜底文案。
@@ -164,6 +181,8 @@ export default {
       /** 收款方式（/settings/payment-method/list） */
       payMethods: [],
       payLoaded: false,
+      /** 主页封面图上传中（防连点重复上传） */
+      uploadingCover: false,
     }
   },
   computed: {
@@ -183,6 +202,14 @@ export default {
     },
     pkgCountText() {
       return this.pkgCount === null ? '—' : `${this.pkgCount} 个`
+    },
+    /** 主页封面图缩略图的可加载地址（后端给 /media/… 相对路径，小程序无 origin 须补 API_BASE） */
+    coverThumb() {
+      return mediaUrl(this.studio.cover_url)
+    },
+    /** 封面行副文案：未设置时说明兜底表现，避免用户以为坏了 */
+    coverRowHint() {
+      return this.studio.cover_url ? '分享出去的主页顶部大图' : '未设置 · 分享页顶部用纯色底'
     },
     workCountText() {
       return this.workCount === null ? '—' : `${this.workCount} 个`
@@ -230,6 +257,71 @@ export default {
       this.studio = st
       this.shareUrl = st.homepage_url || ''
       this.slug = st.homepage_slug || ''
+    },
+    /* ──── 主页封面图（biz_studio_setting.cover_url）────────────────────
+       即客户分享出去后 H5 预约主页顶部的头图。选图 → 上传 → 立即写库，
+       与「接收新预约」开关同口径（不做暂存/统一保存：本页没有保存按钮）。 */
+    /** 点击封面行：未设置直接选图；已设置先问「更换 / 移除」 */
+    changeCover() {
+      if (!this.studio.cover_url) {
+        this.pickCover()
+        return
+      }
+      uni.showActionSheet({
+        itemList: ['更换封面图', '移除封面图'],
+        success: (r) => {
+          if (r.tapIndex === 0) this.pickCover()
+          else if (r.tapIndex === 1) this.saveCover('')
+        },
+      })
+    },
+    pickCover() {
+      if (this.uploadingCover) return
+      uni.chooseImage({
+        count: 1,
+        success: (res) => this.uploadCover((res.tempFilePaths || [])[0]),
+        // 用户主动取消不打扰；其余（相册/相机权限被拒、选图失败）必须如实告知，
+        // 否则表现为「点了一下但什么都没发生」
+        fail: (err) => {
+          if ((err && err.errMsg ? err.errMsg : '').indexOf('cancel') >= 0) return
+          uni.showToast({ title: '打开相册失败，请检查相册/相机权限', icon: 'none' })
+        },
+      })
+    },
+    /** 上传：public=true 落免鉴权 /media —— 分享页访客未登录，走 /uploads 会 401 全裂 */
+    async uploadCover(path) {
+      if (!path || this.uploadingCover) return
+      this.uploadingCover = true
+      try {
+        const up = await uploadFile(path, { biz_type: 'studio', public: true })
+        const url = (up && up.url) || ''
+        if (!url) {
+          uni.showToast({ title: '上传失败，请重试', icon: 'none' })
+          return
+        }
+        await this.saveCover(url)
+      } catch {
+        // uploadFile 内部已 toast，这里兜底网络异常
+      } finally {
+        this.uploadingCover = false
+      }
+    },
+    /**
+     * 写库：成功才回写本地（失败保留原值，界面不撒谎）。
+     *
+     * ⚠️ 失败**必须提示**：早前这里 `.catch(() => false)` 直接 return，用户点完选图、
+     * 上传也成功，却只看到封面毫无变化，无从判断是"没生效"还是"网络问题"
+     * （2026-09-15 排查：后端从未收到过本端保存请求，前端却零反馈）。
+     */
+    async saveCover(url) {
+      try {
+        await updateStudioSettings({ cover_url: url })
+      } catch (e) {
+        uni.showToast({ title: (e && e.message) || '封面保存失败，请重试', icon: 'none' })
+        return
+      }
+      this.studio = { ...this.studio, cover_url: url }
+      uni.showToast({ title: url ? '封面已更新' : '封面已移除', icon: 'none' })
     },
     /** 两处计数：page_size=1 只取分页 total，不拉整页列表 */
     async loadCounts() {
@@ -472,6 +564,15 @@ export default {
     text-overflow: ellipsis;
   }
   &__row-count { font-size: 24rpx; color: #8E8E93; flex-shrink: 0; }
+
+  /* 主页封面图行尾缩略图（3:2 与 H5 顶部大图同比例，预览即所得） */
+  &__row-thumb {
+    width: 108rpx;
+    height: 72rpx;
+    border-radius: 12rpx;
+    background-color: #F1F1F3;
+    flex-shrink: 0;
+  }
 
   &__badge-ok {
     box-sizing: border-box;
