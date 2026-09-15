@@ -96,6 +96,7 @@
  *    预览水印 ← 样片是否已上传（sample_count>0）；文件校验 ← 精修成品是否已落库。
  */
 import { getDeliveryDetail, getDeliveryItems, sendFinal } from '@/api/delivery'
+import { mediaUrl } from '@/utils/url'
 
 /** DeliveryItem.kind：1-样片 2-已选 3-精修成品 */
 const KIND_RETOUCHED = 3
@@ -118,8 +119,10 @@ export default {
     photoCount() {
       return this.retouched.length
     },
+    /** 九宫格：交付文件落库的是站内相对路径（/uploads/…），
+     *  小程序无 origin，须经 mediaUrl 补 API_BASE 才加载得到，否则整格空白 */
     photos() {
-      return this.retouched.slice(0, GRID_MAX)
+      return this.retouched.slice(0, GRID_MAX).map((it) => ({ ...it, url: mediaUrl(it.url) }))
     },
     retouchVersion() {
       return (this.delivery && this.delivery.retouch_version) || 1

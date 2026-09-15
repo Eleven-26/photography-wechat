@@ -54,7 +54,7 @@
       </view>
       <view class="info-row page-hp__row info-row--last">
         <text class="page-hp__label">版本</text>
-        <text class="page-hp__value">V2.0.0</text>
+        <text class="page-hp__value">V{{ appVersion }}</text>
       </view>
     </view>
     <view class="page-hp__safe" />
@@ -64,10 +64,18 @@
 <script>
 /**
  * ME12 帮助与关于（稿 1:6344 实测 1:1）
- * 帮助（常见问题）→ 联系（客服电话/意见反馈）→ 关于（用户协议/隐私政策/版本 V2.0.0）。
+ * 帮助（常见问题）→ 联系（客服电话/意见反馈）→ 关于（用户协议/隐私政策/版本）。
+ *
+ * 版本号取 `@/config/env` 的 APP_VERSION（.env 的 VITE_APP_VERSION 注入 + 兜底），
+ * 与「我的」页行尾同源；原先两处各写死 `V2.0.0`，发版时容易只改一处而漂移。
  */
+import { APP_VERSION } from '@/config/env'
+
 export default {
   name: 'MeHelp',
+  data() {
+    return { appVersion: APP_VERSION }
+  },
   methods: {
     goBack() {
       uni.navigateBack()

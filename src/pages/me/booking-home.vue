@@ -11,8 +11,8 @@
     <view class="page-bh__hero">
       <view class="page-bh__hero-head">
         <view class="page-bh__hero-dot" />
-        <text class="page-bh__hero-title">主页已就绪</text>
-        <text class="page-bh__hero-hint">客户可直接下单</text>
+        <text class="page-bh__hero-title">{{ heroTitle }}</text>
+        <text class="page-bh__hero-hint">{{ heroHint }}</text>
       </view>
       <text class="page-bh__hero-desc">客户在微信里打开链接：看作品 → 选套餐 → 挑档期 → 线下付款 → 系统记档</text>
       <view class="page-bh__hero-link" @click="copyLink">
@@ -46,7 +46,7 @@
           <text class="page-bh__row-label">套餐报价</text>
           <text class="page-bh__row-sub">客户在主页选择并下单</text>
         </view>
-        <text class="page-bh__row-count">4 个</text>
+        <text class="page-bh__row-count">{{ pkgCountText }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-bh__row pressable" @click="goWorks">
@@ -55,7 +55,7 @@
           <text class="page-bh__row-label">作品展示</text>
           <text class="page-bh__row-sub">主页顶部轮播</text>
         </view>
-        <text class="page-bh__row-count">86 张</text>
+        <text class="page-bh__row-count">{{ workCountText }}</text>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
       <view class="info-row page-bh__row pressable" @click="goSchedule">
@@ -68,7 +68,9 @@
       </view>
     </view>
 
-    <!-- 收款方式（y563 标题 + 提示 + y613 一行卡） -->
+    <!-- ⚠️ 收款方式整段 —— 2026-09-15 起隐藏：收款功能尚未上线（biz_payment_method 配置链路未开放），
+         原样保留代码，仅用注释包裹。恢复步骤：① 去掉本注释包裹；② 放开 loadAll 中被注释的
+         this.loadPayMethods()。
     <view class="page-bh__sec-row">
       <text class="page-bh__sec">收款方式</text>
       <text class="page-bh__sec-hint">客户下单后按此转账</text>
@@ -78,31 +80,32 @@
         <view class="page-bh__row-icon page-bh__row-icon--round"><AppIcon name="me-wallet2" :size="17" /></view>
         <view class="page-bh__row-main">
           <text class="page-bh__row-label">收款设置</text>
-          <text class="page-bh__row-sub">银行卡 · 微信收款码 · 支付宝收款码</text>
+          <text class="page-bh__row-sub">{{ paySubText }}</text>
         </view>
-        <view class="page-bh__badge-ok"><text>已设</text></view>
+        <view
+          v-if="payLoaded"
+          class="page-bh__badge-ok"
+          :class="{ 'page-bh__badge-ok--off': !paySet }"
+        >
+          <text>{{ paySet ? '已设' : '未设置' }}</text>
+        </view>
         <AppIcon name="chevron-right-gray" :size="16" />
       </view>
     </view>
+    -->
 
-    <!-- 最近分享（y678 标题 + y733 两行卡） -->
-    <view class="page-bh__sec page-bh__sec--mt">最近分享</view>
+    <!-- 分享给客户 -->
+    <!-- 原「最近分享」为**纯虚构的活动记录**（写死「保存主页二维码 · 3天前」「发给微信好友「王浩」· 昨天 16:20」），
+         而后端并没有分享记录/埋点接口，无法取真；故整段改为真实可用的分享入口，不再展示任何伪造记录。 -->
+    <view class="page-bh__sec page-bh__sec--mt">分享给客户</view>
     <view class="page-bh__card">
-      <view class="info-row page-bh__row pressable" @click="saveQrcode">
-        <view class="page-bh__row-icon page-bh__row-icon--round"><AppIcon name="me-qrcode" :size="17" /></view>
-        <view class="page-bh__row-main">
-          <text class="page-bh__row-label">保存主页二维码</text>
-          <text class="page-bh__row-sub">打印放店里 · 3 天前</text>
-        </view>
-        <view class="page-bh__badge-gray"><text>二维码</text></view>
-      </view>
       <view class="info-row page-bh__row pressable" @click="share">
         <view class="page-bh__row-icon page-bh__row-icon--round page-bh__row-icon--alt"><AppIcon name="me-send" :size="17" /></view>
         <view class="page-bh__row-main">
-          <text class="page-bh__row-label">发给微信好友「王浩」</text>
-          <text class="page-bh__row-sub">昨天 16:20</text>
+          <text class="page-bh__row-label">复制主页链接</text>
+          <text class="page-bh__row-sub">发到微信给客户；客户凭链接下单会归到你名下</text>
         </view>
-        <view class="page-bh__badge-gray"><text>微信</text></view>
+        <view class="page-bh__badge-gray"><text>复制</text></view>
       </view>
     </view>
 
@@ -112,11 +115,33 @@
 </template>
 
 <script>
-import { getStudioSettings } from '@/api/settings'
+import { getStudioSettings, listPaymentMethods } from '@/api/settings'
+import { getPackageList } from '@/api/package'
+import { getAssetList } from '@/api/asset'
+
+/** 收款方式类型 → 展示名（后端 type 枚举：wechat/alipay/bank/cash/other） */
+const PAY_TYPE_LABELS = {
+  wechat: '微信',
+  alipay: '支付宝',
+  bank: '银行卡',
+  cash: '现金',
+  other: '其他',
+}
 
 /**
  * ME03 我的预约主页（稿 1:5940 实测 1:1）
- * 状态黑卡（主页已就绪+链接条+分享/预览双钮）→ 主页内容三行 → 收款方式（已设）→ 最近分享两行。
+ * 状态黑卡（主页状态+链接条+分享/预览双钮）→ 主页内容四行 → ~~收款方式~~ → 分享给客户。
+ *
+ * ⚠️ 2026-09-15：本页原有四处写死样例值（「主页已就绪」「4 个」「86 张」「已设」）
+ * 与一整段虚构的「最近分享」活动记录，现已全部改接后端真实数据：
+ *   - 主页状态   → /studio/get 的 homepage_slug（是否已设标识）+ accept_new（是否接单）
+ *   - 套餐报价   → POST /package/list?status=2 的 **total**
+ *   - 作品展示   → POST /asset/list 的 total
+ *   - 最近分享   → 后端**无分享记录接口**，整段改为真实可用的「复制主页链接」入口
+ * 计数一律取**分页 total** 而非列表长度（列表页固定 page_size=50，超过 50 会截断算错）。
+ *
+ * ⚠️ 2026-09-15（同日）：**收款功能未上线，「收款方式」整段已隐藏**（模板中以注释包裹），
+ * loadAll 亦不再调用 loadPayMethods；pay* computed / loadPayMethods / goPay 代码全部保留，仅断入口。
  *
  * 预约主页链接由**服务端**下发（studio/get 的 homepage_url =
  * share.h5_base_url + ?slug=xxx&staff_id=<我的账号id>），前端不拼域名；
@@ -131,11 +156,56 @@ export default {
       shareUrl: '',
       /** 预约主页短链标识（租户级；服务端在为空时会按公司 ID 兜底生成） */
       slug: '',
+      /** 工作室设置（/studio/get：accept_new 接单开关） */
+      studio: {},
+      /** 已上架套餐数 / 作品数；null = 尚未取到（渲染占位符，不显示假数字） */
+      pkgCount: null,
+      workCount: null,
+      /** 收款方式（/settings/payment-method/list） */
+      payMethods: [],
+      payLoaded: false,
     }
   },
+  computed: {
+    /** 是否接收新预约（accept_new 默认 1）；设置未拉到时按默认口径 */
+    acceptOn() {
+      const v = this.studio.accept_new
+      if (v === undefined || v === null) return true
+      return Number(v) === 1
+    },
+    heroTitle() {
+      if (!this.slug) return '主页标识未设置'
+      return this.acceptOn ? '主页已就绪' : '已暂停接单'
+    },
+    heroHint() {
+      if (!this.slug) return '设置标识后客户才能访问'
+      return this.acceptOn ? '客户可直接下单' : '客户暂无法下单'
+    },
+    pkgCountText() {
+      return this.pkgCount === null ? '—' : `${this.pkgCount} 个`
+    },
+    workCountText() {
+      return this.workCount === null ? '—' : `${this.workCount} 个`
+    },
+    /** 已启用（status=1）的收款方式展示名（去重） */
+    payTypes() {
+      const names = this.payMethods
+        .filter((m) => Number(m.status) === 1)
+        .map((m) => PAY_TYPE_LABELS[m.type] || m.type)
+        .filter(Boolean)
+      return [...new Set(names)]
+    },
+    paySet() {
+      return this.payTypes.length > 0
+    },
+    paySubText() {
+      if (!this.payLoaded) return ''
+      return this.paySet ? this.payTypes.join(' · ') : '未配置收款方式'
+    },
+  },
   onShow() {
-    // 从「个人资料」改完资料返回时即时刷新；静默不弹 loading
-    this.loadShareUrl()
+    // 从「个人资料 / 收款设置 / 套餐管理」等子页返回时即时刷新；全部静默，不弹 loading
+    this.loadAll()
     this.enableShareMenu()
   },
   /** 转发小程序卡片 → web-view 承接页打开 H5 预约主页（需在小程序后台配业务域名） */
@@ -147,14 +217,41 @@ export default {
     return { title: s.title, query: s.path ? s.path.split('?')[1] : '' }
   },
   methods: {
-    async loadShareUrl() {
-      try {
-        const st = await getStudioSettings({ loading: false, silent: true })
-        this.shareUrl = (st && st.homepage_url) || ''
-        this.slug = (st && st.homepage_slug) || ''
-      } catch {
-        // 静默失败：保留原值，不打断页面
-      }
+    /** 并发拉取本页全部数据；各 loader 内部已吞错，互不影响（失败项保留「—」占位而非假数据） */
+    loadAll() {
+      // 2026-09-15：收款功能未上线，「收款方式」整段已隐藏 → 不再拉取收款方式
+      return Promise.all([this.loadStudio(), this.loadCounts() /* , this.loadPayMethods() */])
+    },
+    /** 工作室设置：主页链接 + 标识（主页状态）+ 接单开关 */
+    async loadStudio() {
+      const st = await getStudioSettings({ loading: false, silent: true }).catch(() => null)
+      // 静默失败：保留原值，不打断页面
+      if (!st) return
+      this.studio = st
+      this.shareUrl = st.homepage_url || ''
+      this.slug = st.homepage_slug || ''
+    },
+    /** 两处计数：page_size=1 只取分页 total，不拉整页列表 */
+    async loadCounts() {
+      const quiet = { loading: false, silent: true }
+      const [pkg, all] = await Promise.all([
+        getPackageList({ page: 1, page_size: 1, status: '2' }, quiet).catch(() => null),
+        getAssetList({ page: 1, page_size: 1 }, quiet).catch(() => null),
+      ])
+      if (pkg) this.pkgCount = Number(pkg.total) || 0
+      if (all) this.workCount = Number(all.total) || 0
+    },
+    /**
+     * 收款方式配置情况（决定「已设 / 未设置」徽章与渠道文案）
+     *
+     * ⚠️ 2026-09-15：收款功能尚未上线，「收款方式」整段已在模板中以注释隐藏，
+     *    故本方法当前**无调用方**（loadAll 中的调用已一并注释）。代码保留，功能上线后接回即可。
+     */
+    async loadPayMethods() {
+      const res = await listPaymentMethods({ loading: false, silent: true }).catch(() => null)
+      if (!res) return
+      this.payMethods = Array.isArray(res) ? res : res.list || []
+      this.payLoaded = true
     },
     goBack() {
       uni.navigateBack()
@@ -232,9 +329,6 @@ export default {
     },
     goPay() {
       uni.navigateTo({ url: '/pages/me/pay-settings' })
-    },
-    saveQrcode() {
-      uni.showToast({ title: '保存主页二维码（演示）', icon: 'none' })
     },
   },
 }
@@ -386,6 +480,11 @@ export default {
     padding: 8rpx 20rpx;
     flex-shrink: 0;
     text { font-size: 22rpx; color: #00A860; }
+    /* 未配置收款方式：灰底灰字，与「已设」的绿底绿字区分（不给假绿） */
+    &--off {
+      background-color: #F0F0F2;
+      text { color: #8E8E93; }
+    }
   }
   &__badge-gray {
     box-sizing: border-box;

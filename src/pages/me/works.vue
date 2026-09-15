@@ -80,6 +80,7 @@
  *   分类 chips 由数据聚合（全部 + 实际存在的 category），不再写死。
  */
 import { getAssetList } from '@/api/asset'
+import { mediaUrl } from '@/utils/url'
 
 export default {
   name: 'MeWorks',
@@ -87,6 +88,11 @@ export default {
     return {
       chip: '全部',
       assets: [],
+      /** 服务端总数（不受分页影响）；null = 未取到 → 显示占位符而非错值 */
+      assetTotal: null,
+      /** 精选作品单独取（列表页只加载 50 条，从里筛精选会漏） */
+      featuredAssets: [],
+      featuredTotal: null,
       loading: false,
     }
   },
@@ -95,18 +101,18 @@ export default {
       const set = new Set(this.assets.map((a) => a.category).filter(Boolean))
       return ['全部', ...set]
     },
+    /** 统计条：总数/精选用**服务端 total**（列表只加载 50 条，用 length 会被截断算错）；
+     *  分类数后端无分类字典接口，仍由已加载列表聚合 */
     stats() {
       const cats = new Set(this.assets.map((a) => a.category).filter(Boolean))
       return {
-        total: this.assets.length,
-        featured: this.assets.filter((a) => Number(a.featured) === 1).length,
+        total: this.assetTotal === null ? '—' : this.assetTotal,
+        featured: this.featuredTotal === null ? '—' : this.featuredTotal,
         categories: cats.size,
       }
     },
     featuredList() {
-      return this.assets
-        .filter((a) => Number(a.featured) === 1)
-        .map((a) => ({ id: a.id, cover: this.coverOf(a) }))
+      return this.featuredAssets.map((a) => ({ id: a.id, cover: this.coverOf(a) }))
     },
     gridList() {
       const list =
@@ -118,14 +124,22 @@ export default {
     this.fetchAssets()
   },
   methods: {
-    /** 封面：优先 cover，否则取 images（逗号分隔）首图 */
+    /** 封面：优先 cover，否则取 images（逗号分隔）首图；经 mediaUrl 补成可加载地址 */
     coverOf(a) {
-      return a.cover || String(a.images || '').split(',')[0] || ''
+      return mediaUrl(a.cover || String(a.images || '').split(',')[0] || '')
     },
     async fetchAssets() {
       this.loading = true
-      const res = await getAssetList({ page: 1, page_size: 50 }).catch(() => null)
-      this.assets = (res && res.list) || []
+      const [all, featured] = await Promise.all([
+        getAssetList({ page: 1, page_size: 50 }).catch(() => null),
+        // 精选单独取（静默，避免第二条请求再闪一次 loading）
+        getAssetList({ page: 1, page_size: 50, featured: '1' }, { loading: false, silent: true })
+          .catch(() => null),
+      ])
+      this.assets = (all && all.list) || []
+      if (all) this.assetTotal = Number(all.total) || 0
+      this.featuredAssets = (featured && featured.list) || []
+      if (featured) this.featuredTotal = Number(featured.total) || 0
       this.loading = false
     },
     goBack() {

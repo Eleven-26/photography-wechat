@@ -14,8 +14,12 @@
 import { rpc } from '@/api/common/http'
 import { API_PATHS } from '@/api/common/apiPath'
 
-/** 读取本人资料 */
-export const getProfile = () => rpc(API_PATHS.user.profile, {})
+/**
+ * 读取本人资料
+ * @param {Object} [extra] 透传 { loading, silent }。「我的」等 tab 页 onShow 刷新传
+ *                         { loading: false, silent: true }，避免每次切 tab 弹「加载中」
+ */
+export const getProfile = (extra = {}) => rpc(API_PATHS.user.profile, {}, null, extra)
 
 /**
  * 修改密码

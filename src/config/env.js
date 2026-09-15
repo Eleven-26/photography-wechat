@@ -46,3 +46,11 @@ export const IS_WECHAT = (() => {
   return true // 小程序端视为微信生态，走订阅消息
   // #endif
 })()
+
+/**
+ * 应用版本号（「我的」行尾、「帮助与关于 → 版本」等处展示）。
+ *
+ * 由 `.env.[mode]` 的 VITE_APP_VERSION 注入，缺省与产品版本对齐。
+ * 收敛到这里的理由：原先两处各写死一个 `V2.0.0` 字面量，发版时极易只改一处而漂移。
+ */
+export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '2.0.0'

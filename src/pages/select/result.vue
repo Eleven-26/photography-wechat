@@ -85,6 +85,7 @@
 import AppTabBar from '@/components/AppTabBar.vue'
 import AppIcon from '@/components/AppIcon.vue'
 import { getDeliveryDetail, getDeliveryItems } from '@/api/delivery'
+import { mediaUrl } from '@/utils/url'
 
 export default {
   name: 'SelectResult',
@@ -147,12 +148,13 @@ export default {
         action: '提醒用户选片',
       }
     },
-    /** 客户已选文件；若标记缺失（旧数据）则退回全部文件，避免网格空白 */
+    /** 客户已选文件；若标记缺失（旧数据）则退回全部文件，避免网格空白。
+     *  ⚠️ 文件 url 是站内相对路径（/uploads/…），小程序须经 mediaUrl 补 API_BASE 才能加载 */
     shownPics() {
       const picked = this.items.filter((it) => Number(it.is_selected) === 1)
       const list = (picked.length ? picked : this.items).map((it, i) => ({
         key: it.id != null ? it.id : i,
-        img: it.url,
+        img: mediaUrl(it.url),
       }))
       return this.expanded ? list : list.slice(0, 4)
     },

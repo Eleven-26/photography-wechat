@@ -127,6 +127,7 @@
  */
 import { getOrderDetail } from '@/api/order'
 import { getDeliveryDetail, getDeliveryItems } from '@/api/delivery'
+import { mediaUrl } from '@/utils/url'
 
 /** DeliveryItem.kind：1-样片 2-已选 3-精修成品（enum.DeliveryItemKind） */
 const KIND_SELECTED = 2
@@ -211,7 +212,8 @@ export default {
         id: it.id,
         name: it.filename || `IMAGE_${it.id}`,
         note: it.feedback_content || '',
-        img: it.url,
+        // 文件 url 是站内相对路径（/uploads/…），小程序须经 mediaUrl 补 API_BASE 才能加载
+        img: mediaUrl(it.url),
       })
       this.doneList = items.filter((it) => it.kind === KIND_RETOUCHED).map(toCard)
       this.todoList = items.filter((it) => it.kind === KIND_SELECTED).map(toCard)

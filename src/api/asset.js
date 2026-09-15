@@ -20,8 +20,12 @@
 import { rpc } from '@/api/common/http'
 import { API_PATHS } from '@/api/common/apiPath'
 
-/** 作品列表 @param {Object} params { page, page_size, keyword?, category?, status?, featured? } → PageOK */
-export const getAssetList = (params) => rpc(API_PATHS.asset.list, params)
+/**
+ * 作品列表
+ * @param {Object} params { page, page_size, keyword?, category?, status?, featured? } → PageOK
+ * @param {Object} [extra] 透传 { loading, silent }（「我的」页静默取作品/精选总数用）
+ */
+export const getAssetList = (params, extra = {}) => rpc(API_PATHS.asset.list, params, null, extra)
 
 /** 作品详情 @param {number} id */
 export const getAssetDetail = (id) => rpc(API_PATHS.asset.detail, {}, id)

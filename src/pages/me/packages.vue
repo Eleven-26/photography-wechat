@@ -13,7 +13,7 @@
         <text class="page-pk__ov-label">已上架 · 客户可见</text>
         <view class="page-pk__ov-nums">
           <text class="page-pk__ov-num">{{ liveCount }}</text>
-          <text class="page-pk__ov-total"> / {{ packages.length }} 个</text>
+          <text class="page-pk__ov-total"> / {{ totalCountText }} 个</text>
         </view>
       </view>
       <text class="page-pk__ov-hint">{{ '下架套餐客户不可见\n不影响已成交订单' }}</text>
@@ -87,10 +87,19 @@ export default {
       packages: [],
       loading: false,
       switching: false,
+      /** 套餐总数（服务端 total，不受分页影响）；null = 未取到 → 显示占位符而非错值 */
+      totalCount: null,
+      /** 已上架（status=2）总数：**单独取 total**，只在已加载的 50 条里筛会漏计 */
+      liveTotal: null,
     }
   },
   computed: {
-    liveCount() { return this.packages.filter((p) => Number(p.status) === 2).length },
+    liveCount() {
+      return this.liveTotal === null ? '—' : this.liveTotal
+    },
+    totalCountText() {
+      return this.totalCount === null ? '—' : this.totalCount
+    },
     rows() {
       return this.packages.map((p) => ({
         id: p.id,
@@ -116,8 +125,15 @@ export default {
   methods: {
     async fetchPackages() {
       this.loading = true
-      const res = await getPackageList({ page: 1, page_size: 50 }).catch(() => null)
-      this.packages = (res && res.list) || []
+      const [all, live] = await Promise.all([
+        getPackageList({ page: 1, page_size: 50 }).catch(() => null),
+        // 已上架总数单独取（静默，避免第二条请求再闪一次 loading）
+        getPackageList({ page: 1, page_size: 1, status: '2' }, { loading: false, silent: true })
+          .catch(() => null),
+      ])
+      this.packages = (all && all.list) || []
+      if (all) this.totalCount = Number(all.total) || 0
+      if (live) this.liveTotal = Number(live.total) || 0
       this.loading = false
     },
     goBack() {

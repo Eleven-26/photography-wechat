@@ -78,9 +78,14 @@
  *   微信收款码 → type=wechat（qrcode） / 支付宝收款码 → type=alipay（qrcode）
  * ⚠️ 后端无独立「开户行」字段：以 name（收款方式名称）承载，语义等价于「银行名称 · 支行」。
  * ⚠️ 收款码走通用上传 /upload/file（biz_type 记类型名）后再写回 qrcode。
+ *
+ * ⚠️⚠️ 2026-09-15：**收款功能尚未上线，本页当前无入口可达** ——
+ *   me/index.vue 与 me/booking-home.vue 中的「收款设置」入口均已注释隐藏（仅断入口、未删代码），
+ *   本页文件与 pages.json 路由**原样保留**。功能上线时把那两处入口接回即可，本页无需改动。
  */
 import { listPaymentMethods, createPaymentMethod, updatePaymentMethod } from '@/api/settings'
 import { uploadFile } from '@/api/upload'
+import { mediaUrl } from '@/utils/url'
 
 const QR_PLACEHOLDER = '/static/img/qr-pay.png'
 
@@ -115,10 +120,12 @@ export default {
       const m = this.find(type)
       return !!(m && m.status === 1)
     },
-    /** 收款码 URL（未设置回落占位图） */
+    /** 收款码 URL（未设置回落占位图）。
+     *  上传返回的是站内相对路径（/uploads/…），小程序无 origin，须补 API_BASE 才能加载；
+     *  /static/… 这类包内资源由 mediaUrl 原样返回，不会被误加后端域名。 */
     qrOf(type) {
       const m = this.find(type)
-      return (m && m.qrcode) || QR_PLACEHOLDER
+      return mediaUrl((m && m.qrcode) || QR_PLACEHOLDER)
     },
     async fetchMethods() {
       const res = await listPaymentMethods().catch(() => null)

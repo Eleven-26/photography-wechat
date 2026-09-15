@@ -8,94 +8,84 @@
         <view class="page-pv__nav-btn pressable" @click="share"><AppIcon name="me-share" :size="18" /></view>
       </view>
       <view class="page-pv__hero-main">
-        <text class="page-pv__hero-title">路先生摄影</text>
-        <text class="page-pv__hero-sub">专注亲子 / 家庭 · 用光影记录值得珍藏的瞬间</text>
-        <view class="page-pv__hero-meta">
-          <view class="page-pv__meta-item">
-            <AppIcon name="pv-star" :size="14" />
-            <text>4.9</text>
-          </view>
-          <text class="page-pv__meta-item">326次服务</text>
-          <text class="page-pv__meta-item">8年经验</text>
-        </view>
+        <text class="page-pv__hero-title">{{ heroTitle }}</text>
+        <text v-if="studio.intro" class="page-pv__hero-sub">{{ studio.intro }}</text>
       </view>
     </view>
 
-    <!-- 数据条 #1D1E22 r16 stroke #2B2C30 三列 -->
+    <!-- 数据条：只保留有真实来源的一项。
+         原设计三项（100+ 原创作品 / 326 服务客户 / 98% 好评率）中，「服务客户数」「好评率」
+         后端既无对应列（StudioSetting 无 served_count / positive_rate）也无聚合接口，
+         按「无接口先隐藏」处理 —— 不再用写死值顶替。 -->
     <view class="page-pv__stats">
       <view class="page-pv__stat">
-        <text class="page-pv__stat-num">100+</text>
+        <text class="page-pv__stat-num">{{ statWorks }}</text>
         <text class="page-pv__stat-label">原创作品</text>
-      </view>
-      <view class="page-pv__divider" />
-      <view class="page-pv__stat">
-        <text class="page-pv__stat-num">326</text>
-        <text class="page-pv__stat-label">服务客户</text>
-      </view>
-      <view class="page-pv__divider" />
-      <view class="page-pv__stat">
-        <text class="page-pv__stat-num">98%</text>
-        <text class="page-pv__stat-label">好评率</text>
       </view>
     </view>
 
-    <!-- 精选服务（y442 标题 + y493 横滑卡 200x215） -->
+    <!-- 精选服务（y442 标题 + y493 横滑卡 200x215）：取已上架套餐（biz_package status=2） -->
     <view class="page-pv__sec">精选服务</view>
     <scroll-view scroll-x class="page-pv__svc-scroll" :show-scrollbar="false">
       <view class="page-pv__svc-row">
-        <view v-for="s in services" :key="s.name" class="page-pv__svc">
-          <view class="page-pv__svc-img" :style="{ background: s.bg }" />
+        <view v-for="p in packages" :key="p.id" class="page-pv__svc">
+          <image v-if="p.cover" class="page-pv__svc-img" :src="p.cover" mode="aspectFill" />
+          <view v-else class="page-pv__svc-img page-pv__svc-img--ph" />
           <view class="page-pv__svc-body">
-            <text class="page-pv__svc-name">{{ s.name }}</text>
-            <text class="page-pv__svc-spec">{{ s.spec }}</text>
-            <text class="page-pv__svc-price">{{ s.price }}</text>
+            <text class="page-pv__svc-name">{{ p.name }}</text>
+            <text class="page-pv__svc-spec">{{ pkgMeta(p) }}</text>
+            <text class="page-pv__svc-price">{{ priceText(p) }}</text>
           </view>
         </view>
       </view>
     </scroll-view>
 
-    <!-- 精选作品（y708 标题 + 双列 165x220） -->
+    <!-- 精选作品（y708 标题 + 双列 165x220）：取 asset/list?featured=1 -->
     <view class="page-pv__sec-row">
       <text class="page-pv__sec">精选作品</text>
       <text class="page-pv__more">查看全部 ›</text>
     </view>
     <view class="page-pv__works">
-      <view v-for="(w, i) in works" :key="i" class="page-pv__work" :style="{ background: w }">
+      <view v-for="(w, i) in works" :key="w.id || i" class="page-pv__work">
+        <image v-if="w.cover" class="page-pv__work-img" :src="w.cover" mode="aspectFill" />
+        <view v-else class="page-pv__work-ph" />
         <view class="page-pv__work-fav"><AppIcon name="pv-fav" :size="13" /></view>
       </view>
     </view>
 
-    <!-- 服务流程（y1443 标题 + y1492 流程卡 4+3 两行） -->
+    <!-- 服务流程（y1443 标题 + y1492 流程卡 4+3 两行）：取 studio.service_flow，为空回落通用步骤文案 -->
     <view class="page-pv__sec">服务流程</view>
     <view class="page-pv__flow">
       <view class="page-pv__flow-row">
-        <template v-for="(st, i) in flowRow1" :key="st.label">
+        <template v-for="(label, i) in flowRow1" :key="label">
           <view class="page-pv__flow-step">
-            <AppIcon :name="st.icon" :size="22" />
-            <text>{{ st.label }}</text>
+            <AppIcon :name="`pv-step${i + 1}`" :size="22" />
+            <text>{{ label }}</text>
           </view>
           <AppIcon v-if="i < flowRow1.length - 1" name="chevron-right-gray" :size="14" />
         </template>
       </view>
       <view class="page-pv__flow-row">
-        <template v-for="(st, i) in flowRow2" :key="st.label">
+        <template v-for="(label, i) in flowRow2" :key="label">
           <view class="page-pv__flow-step">
-            <AppIcon :name="st.icon" :size="22" />
-            <text>{{ st.label }}</text>
+            <AppIcon :name="`pv-step${i + 5}`" :size="22" />
+            <text>{{ label }}</text>
           </view>
           <AppIcon v-if="i < flowRow2.length - 1" name="chevron-right-gray" :size="14" />
         </template>
       </view>
     </view>
 
-    <!-- 常见问题（y1642 标题 + y1693 三组 QA） -->
-    <view class="page-pv__sec">常见问题</view>
-    <view class="page-pv__faq">
-      <view v-for="(q, i) in faqs" :key="i" class="page-pv__qa" :class="{ 'page-pv__qa--line': i > 0 }">
-        <text class="page-pv__q">{{ q.q }}</text>
-        <text class="page-pv__a">{{ q.a }}</text>
+    <!-- 常见问题（y1642 标题 + y1693 三组 QA）：取 studio.faq（JSON 数组），无数据整段隐藏 -->
+    <template v-if="faqs.length">
+      <view class="page-pv__sec">常见问题</view>
+      <view class="page-pv__faq">
+        <view v-for="(q, i) in faqs" :key="i" class="page-pv__qa" :class="{ 'page-pv__qa--line': i > 0 }">
+          <text class="page-pv__q">{{ q.q }}</text>
+          <text class="page-pv__a">{{ q.a }}</text>
+        </view>
       </view>
-    </view>
+    </template>
 
     <!-- 底栏：毛玻璃 + 白胶囊「定制需求」56 高（y1919） -->
     <view class="page-pv__foot">
@@ -109,43 +99,129 @@
 /**
  * ME03b 客户视角预览（稿 11:623 实测 1:1）——客户端暗色沉浸样式
  * Hero 360（实拍图→渐变替代，联调换图）→ 数据条 → 精选服务横滑 → 精选作品双列 → 服务流程 4+3 → 常见问题 → 白胶囊「定制需求」底栏。
+ *
+ * ⚠️ 2026-09-15：本页原为**整页样例数据**（店名「路先生摄影」、数据条 100+/326/98%、
+ * 2 个写死套餐、6 个灰块「作品」、3 条写死 FAQ），现已改接真实数据，口径与 H5 客户端首页（C01）一致：
+ *   - 店名 / 简介   → /studio/get 的 slogan / intro（工作室封面后端无字段，Hero 维持深色渐变）
+ *   - 原创作品数    → POST /asset/list 的 **total**
+ *   - 精选服务      → POST /package/list?status=2（已上架套餐，最多 6 个）
+ *   - 精选作品      → POST /asset/list?featured=1（封面取 cover，缺省回退 images 首图）
+ *   - 服务流程      → /studio/get 的 service_flow（JSON 数组）；为空回退设计稿通用步骤文案（纯 UI 文案）
+ *   - 常见问题      → /studio/get 的 faq（JSON 数组）；无数据整段隐藏，不摆假问答
+ *   - 「服务客户数 / 好评率」后端**无来源字段**也无聚合接口 → 整项隐藏，不用写死值顶替
+ *
+ * ⚠️ 小程序无 origin：后端返回的 `/media/…`、`/uploads/…` 是站内相对路径，
+ *    必须经 `mediaUrl()` 补 API_BASE 才能加载（否则列表全是灰块，看着像后端没数据）。
  */
+import { getStudioSettings } from '@/api/settings'
+import { getPackageList } from '@/api/package'
+import { getAssetList } from '@/api/asset'
+import { formatAmount } from '@/utils/format'
+import { mediaUrl } from '@/utils/url'
+
+/** 解析后端 JSON 数组字符串（biz_studio_setting.faq / service_flow）；空值或非法返回 [] */
+function parseList(raw) {
+  if (!raw) return []
+  try {
+    const v = typeof raw === 'string' ? JSON.parse(raw) : raw
+    return Array.isArray(v) ? v : []
+  } catch {
+    return []
+  }
+}
+
+/** 服务流程兜底：设计稿通用步骤（纯 UI 文案、非业务数据），与 H5 端 C01 同口径 */
+const DEFAULT_FLOW = ['浏览作品', '选择套餐', '预约档期', '拍摄', '在线选片', '精修交付', '下载成片']
+
 export default {
   name: 'MePreview',
   data() {
     return {
-      services: [
-        { name: '家庭纪念写真', spec: '2.5h · 20张精修', price: '¥2,680', bg: 'linear-gradient(135deg, #3A3D44 0%, #22252A 100%)' },
-        { name: '个人写真', spec: '1.5h · 20张精修', price: '¥1,580', bg: 'linear-gradient(135deg, #42454C 0%, #26282D 100%)' },
-      ],
-      works: ['#2A2C31', '#34363B', '#2E3035', '#383A3F', '#2A2C31', '#313338'],
-      flowRow1: [
-        { icon: 'pv-step1', label: '浏览作品' },
-        { icon: 'pv-step2', label: '选择套餐' },
-        { icon: 'pv-step3', label: '预约档期' },
-        { icon: 'pv-step4', label: '拍摄' },
-      ],
-      flowRow2: [
-        { icon: 'pv-step5', label: '在线选片' },
-        { icon: 'pv-step6', label: '精修交付' },
-        { icon: 'pv-step7', label: '下载成片' },
-      ],
-      faqs: [
-        { q: '拍摄需要提前多久预约？', a: '建议提前3-5天预约，周末档期较紧张，建议尽早预约。' },
-        { q: '如果下雨怎么办？', a: '72 小时外免费改期；72 小时内需支付 20% 调度费。' },
-        { q: '照片多久能拿到？', a: '拍摄后7个工作日内完成精修并交付，高清下载有效期30天。' },
-      ],
+      /** 工作室设置（slogan 店名 / intro 简介 / faq / service_flow / homepage_url） */
+      studio: {},
+      shareUrl: '',
+      /** 作品总数；null = 未取到（渲染占位符，不显示假数字） */
+      assetTotal: null,
+      /** 已上架套餐 / 精选作品（封面已解析为可加载地址） */
+      packages: [],
+      works: [],
+      faqs: [],
+      flow: [],
     }
   },
+  computed: {
+    heroTitle() {
+      return this.studio.slogan || '工作室主页'
+    },
+    statWorks() {
+      return this.assetTotal === null ? '—' : String(this.assetTotal)
+    },
+    flowRow1() {
+      return (this.flow.length ? this.flow : DEFAULT_FLOW).slice(0, 4)
+    },
+    flowRow2() {
+      return (this.flow.length ? this.flow : DEFAULT_FLOW).slice(4)
+    },
+  },
+  onLoad() {
+    this.loadAll()
+  },
   methods: {
+    formatAmount,
+    /** 封面：优先 cover，否则取 images（逗号分隔）首图；统一补成可加载地址 */
+    coverOf(row) {
+      const raw = row.cover || String(row.images || '').split(',')[0] || ''
+      return mediaUrl(raw)
+    },
+    /** 套餐规格行：分类 · 时长 · 精修张数（对齐 biz_package 字段） */
+    pkgMeta(p) {
+      const hours = p.shoot_hours != null ? `约${p.shoot_hours}h` : ''
+      const photos = p.photos_included != null ? `精修${p.photos_included}张` : ''
+      return [p.category, hours, photos].filter(Boolean).join(' · ') || '详情咨询'
+    },
+    priceText(p) {
+      return p.base_price != null ? `¥${formatAmount(p.base_price)}` : '面议'
+    },
+    /** 全量拉取并映射为展示结构；各自失败时保持空态，不回落样例数据 */
+    async loadAll() {
+      const quiet = { loading: false, silent: true }
+      const [st, pkg, featured, all] = await Promise.all([
+        getStudioSettings(quiet).catch(() => null),
+        getPackageList({ page: 1, page_size: 6, status: '2' }, quiet).catch(() => null),
+        getAssetList({ page: 1, page_size: 6, featured: '1' }, quiet).catch(() => null),
+        getAssetList({ page: 1, page_size: 1 }, quiet).catch(() => null),
+      ])
+      if (st) {
+        this.studio = st
+        this.shareUrl = st.homepage_url || ''
+        this.faqs = parseList(st.faq)
+        this.flow = parseList(st.service_flow)
+      }
+      if (pkg) {
+        this.packages = (pkg.list || []).map((p) => ({ ...p, cover: this.coverOf(p) }))
+      }
+      if (featured) {
+        this.works = (featured.list || []).map((a) => ({ id: a.id, cover: this.coverOf(a) }))
+      }
+      if (all) this.assetTotal = Number(all.total) || 0
+    },
     goBack() {
       uni.navigateBack()
     },
+    /** 分享 = 复制主页链接（小程序无法用代码唤起转发面板，也不能转发外部 H5 链接） */
     share() {
-      uni.showToast({ title: '分享（演示）', icon: 'none' })
+      if (!this.shareUrl) {
+        uni.showToast({ title: '主页链接尚未生成，请先设置主页标识', icon: 'none' })
+        return
+      }
+      uni.setClipboardData({ data: this.shareUrl })
     },
+    /** 本页是「客户视角预览」：定制需求是**客户端**入口，预览态不可提交 */
     custom() {
-      uni.showToast({ title: '定制需求（演示）', icon: 'none' })
+      uni.showToast({
+        title: '此为客户端入口，客户在主页提交后可在「定制需求」列表处理',
+        icon: 'none',
+      })
     },
   },
 }
@@ -213,16 +289,9 @@ export default {
   }
   &__hero-title { font-size: 64rpx; font-weight: 700; color: #FFFFFF; line-height: 1.2; }
   &__hero-sub { font-size: 28rpx; color: #FFFFFF; }
-  &__hero-meta { display: flex; align-items: center; gap: 32rpx; margin-top: 6rpx; }
-  &__meta-item {
-    display: flex;
-    align-items: center;
-    gap: 8rpx;
-    font-size: 26rpx;
-    color: #FFFFFF;
-    flex-shrink: 0;
-  }
 
+  /* 数据条：#1D1E22 + stroke #2B2C30。原设计三列（原创作品/服务客户/好评率），
+     后两项后端无来源已隐藏，故不再保留列分隔线（保留会画出两处悬空竖线） */
   &__stats {
     display: flex;
     align-items: stretch;
@@ -242,7 +311,6 @@ export default {
   }
   &__stat-num { font-size: 40rpx; font-weight: 700; color: #F7F8F8; }
   &__stat-label { font-size: 24rpx; color: #85878D; }
-  &__divider { width: 1rpx; background-color: #2B2C30; }
 
   &__sec {
     margin: 40rpx 36rpx 0; /* 稿：stats 底 → 精选服务 442 */
@@ -272,7 +340,13 @@ export default {
     overflow: hidden;
     flex-shrink: 0;
   }
-  &__svc-img { height: 240rpx; width: 100%; }
+  &__svc-img {
+    display: block;
+    height: 240rpx;
+    width: 100%;
+    /* 套餐无封面时的占位（渐变色块，非图片） */
+    &--ph { background: linear-gradient(135deg, #3A3D44 0%, #22252A 100%); }
+  }
   &__svc-body {
     flex: 1;
     display: flex;
@@ -299,6 +373,9 @@ export default {
     border-radius: 16rpx;
     overflow: hidden;
   }
+  &__work-img { display: block; width: 100%; height: 100%; }
+  /* 作品无封面时的占位（纯色块，非图片） */
+  &__work-ph { width: 100%; height: 100%; background-color: #2A2C31; }
   &__work-fav {
     position: absolute;
     left: 24rpx;

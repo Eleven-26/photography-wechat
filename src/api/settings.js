@@ -25,8 +25,12 @@ export const updateStudioSettings = (payload) => rpc(API_PATHS.settings.update, 
 
 /* ──── 收款方式（settings/payment-method/*；list 归 settings:view、增删改归 settings:update） ──── */
 
-/** 收款方式列表 → model.PaymentMethod[]（含 status/sort，员工端可维护） */
-export const listPaymentMethods = () => rpc(API_PATHS.settings.paymentMethodList, {})
+/**
+ * 收款方式列表 → model.PaymentMethod[]（含 status/sort，员工端可维护）
+ * @param {Object} [extra] 透传 { loading, silent }（「我的」页静默取「是否已设」用）
+ */
+export const listPaymentMethods = (extra = {}) =>
+  rpc(API_PATHS.settings.paymentMethodList, {}, null, extra)
 
 /**
  * 新建收款方式

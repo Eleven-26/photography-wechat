@@ -15,8 +15,13 @@
 import { rpc } from '@/api/common/http'
 import { API_PATHS } from '@/api/common/apiPath'
 
-/** 套餐列表 @param {Object} params { page, page_size, category?, status? } → PageOK */
-export const getPackageList = (params) => rpc(API_PATHS.package.list, params)
+/**
+ * 套餐列表
+ * @param {Object} params { page, page_size, category?, status? } → PageOK
+ * @param {Object} [extra] 透传 { loading, silent }（「我的」页静默取已上架总数用）
+ */
+export const getPackageList = (params, extra = {}) =>
+  rpc(API_PATHS.package.list, params, null, extra)
 
 /** 套餐详情 @param {number} id */
 export const getPackageDetail = (id) => rpc(API_PATHS.package.detail, {}, id)

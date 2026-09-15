@@ -13,7 +13,7 @@
       <text class="page-wu__sec-hint">已选 {{ picks.length }} 张 · 首张为封面</text>
     </view>
     <view class="page-wu__grid">
-      <view v-for="(g, i) in picks" :key="i" class="page-wu__cell">
+      <view v-for="(g, i) in pickUrls" :key="i" class="page-wu__cell">
         <image class="page-wu__img" :src="g" mode="aspectFill" />
         <view v-if="i === 0" class="page-wu__cover"><text>封面</text></view>
       </view>
@@ -102,6 +102,7 @@ import { uploadFile } from '@/api/upload'
 import { getPackageList } from '@/api/package'
 import { createAsset } from '@/api/asset'
 import { formatDate } from '@/utils/format'
+import { mediaUrl } from '@/utils/url'
 
 export default {
   name: 'MeWorksUpload',
@@ -120,6 +121,8 @@ export default {
   },
   computed: {
     pkgNames() { return ['不关联', ...this.packages.map((p) => p.name)] },
+    /** 后端返回站内相对路径（/uploads/…），小程序无 origin 须补 API_BASE 才能显示 */
+    pickUrls() { return this.picks.map((g) => mediaUrl(g)) },
     pkgText() {
       return this.pkgIndex > 0 ? this.pkgNames[this.pkgIndex] : '选填 · 展示在该套餐详情页'
     },
